@@ -13,7 +13,6 @@
 
 # misc
 .DS_Store
-.env.local_FOR_GIT
 .env.development.local
 .env.test.local
 .env.production.local
