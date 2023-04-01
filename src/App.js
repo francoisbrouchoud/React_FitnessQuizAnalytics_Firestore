@@ -1,69 +1,38 @@
+import React from "react";
 import "./App.css";
-import firebase from "firebase/compat/app";
-import firebaseApp from "./initFirebase";
-import { StyledFirebaseAuth } from "react-firebaseui";
-import { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
-import Questionnaire from "./screens/Questionnaire";
-import Home from "./screens/Home";
 
-// Configure FirebaseUI.
-const uiConfig = {
-  // Popup signin flow rather than redirect flow.
-  signInFlow: "popup",
-  // We will display Google and Facebook as auth providers.
-  signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-  callbacks: {
-    // Avoid redirects after sign-in.
-    signInSuccessWithAuthResult: () => false,
-  },
-};
+/*
+Book is a class Component now in order to use state
+ */
 
 function App() {
-  // Local signed-in state.
-  const [isSignedIn, setIsSignedIn] = useState(null);
 
-  // Listen to the Firebase Auth state and set the local state.
-  useEffect(() => {
-    const unregisterAuthObserver = firebaseApp
-      .auth()
-      .onAuthStateChanged((user) => {
-        setIsSignedIn(!!user);
-      });
-
-    // Make sure we un-register Firebase observers when the component unmounts.
-    return () => unregisterAuthObserver();
-  }, []);
-
-  // Not initialized yet - Render loading message
-  if (isSignedIn === null) {
     return (
-      <div className="App">
-        <p>Loading...</p>
-      </div>
-    );
-  }
 
-  // Not signed in - Render auth screen
-  if (!isSignedIn)
-    return (
-      <div className="App">
-        <StyledFirebaseAuth
-          uiConfig={uiConfig}
-          firebaseAuth={firebaseApp.auth()}
-        />
-      </div>
+        <div className="App">
+            <header className="AppHeader">
+                <div class="HeadIconsPosition">
+                    <img class="headerIcons" src={require('./Pictures/fonctionnement.png')}/>
+                    <h1>Fitness Check</h1>
+                </div>
+                <div class="HeadIconsPosition">
+                    <img className="headerIcons" src={require('./Pictures/information.png')}/>
+                    <img class="headerIcons" src={require('./Pictures/deconnexion.png')}/>
+                    <h1>Logout</h1>
+                </div>
+            </header>
+            <div class="ContainDoOrConsultQuizz">
+                <div class="DoOrConsultQuizz">
+                    <img class="headerIcons" src={require('./Pictures/ideas.png')}/>
+                    <p class="buttonTitle">Faire le quizz</p>
+                </div>
+                <div class="DoOrConsultQuizz">
+                    <img class="headerIcons" src={require('./Pictures/research.png')}/>
+                    <p class="buttonTitle">Voir mes résultats</p>
+                </div>
+            </div>
+        </div>
     );
-
-  // Signed in - Render app
-  return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/questionnaire" element={<Questionnaire />} />
-      </Routes>
-    </div>
-  );
 }
 
 export default App;
