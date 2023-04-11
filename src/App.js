@@ -254,8 +254,100 @@ function SurveyPartTwo() {
 
 
 
-
+//Provisoire questionnaire 1
+//TODO faire afficher les messages, enregister les points
 function SurveyPartOne() {
+    const QuestionZone = ({questionId, messageToShow, questionText, choices, onChange, value}) => (
+        <div className="questionZone">
+            <h3>{questionText}</h3>
+            {/*Tentative d'affichage de message quand plus de question*/}
+            <div>
+                {messageToShow ? (
+                    <div>
+                        <h2>{messageToShow.messageTitle}</h2>
+                        <p>{messageToShow.messageText}</p>
+                        <ul>
+                            {messageToShow.advices && messageToShow.advices.map((advice, index) => (
+                                <li key={index}>{advice}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ) : (
+                    <div>
+                        {choices.map((choice, index) => (
+                            <label key={index}>
+                                <input
+                                    type="radio"
+                                    name={questionId}
+                                    value={choice}
+                                    onChange={onChange}
+                                    checked={value === choice}
+                                />
+                                {choice}
+                            </label>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    const Survey = ({ questions, onSubmit }) => {
+        const [responses, setResponses] = useState({});
+        const [messageToShow, setMessageToShow] = useState(null);
+        const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+        const handleChange = (event) => {
+            const questionId = event.target.name;
+            const { value } = event.target;
+            setResponses({ ...responses, [questionId]: { id: questionId, value } });
+        };
+
+        const handleSubmit = (event) => {
+            event.preventDefault();
+            onSubmit(responses);
+        };
+        //Tentative d'affichage de message quand plus de question
+        const next = () => {
+            if (responses.hasOwnProperty(question.questionId)) {
+                const nextQuestionOrMessage = getNextQuestion(
+                    question.questionId,
+                    responses[question.questionId].value
+                );
+
+                if (nextQuestionOrMessage.messageId) {
+                    setMessageToShow(nextQuestionOrMessage);
+                } else {
+                    setCurrentQuestionIndex(
+                        questions.findIndex((q) => q.questionId === nextQuestionOrMessage.questionId)
+                    );
+                }
+            }
+        };
+
+        const question = questions[currentQuestionIndex];
+
+        return (
+            <form onSubmit={handleSubmit}>
+                <QuestionZone
+                    questionId={question.questionId}
+                    questionText={question.questionText}
+                    choices={question.choices}
+                    onChange={handleChange}
+                    value={responses[question.questionId]?.value}
+                />
+                {currentQuestionIndex < questions.length - 1 ? (
+                    <button type="button" onClick={next}>
+                        Suivant
+                    </button>
+                ) : (
+                    <button type="submit">Valider mon questionnaire</button>
+                )}
+            </form>
+        );
+    };
+
+
 
     const getNextQuestion = (currentQuestionId, answer) => {
         switch (currentQuestionId) {
@@ -371,7 +463,17 @@ function SurveyPartOne() {
         },
     ]
 
-
+    return (
+        <div className="App">
+            <h1>Quizz Part 1 - essai ne fonctionne pas encore pour les messages</h1>
+            <Survey
+                questions={questionsPartOne}
+                onSubmit={(responses) => {
+                    console.log("Réponses du sondage :", responses);
+                }}
+            />
+        </div>
+    );
 
 }
 
