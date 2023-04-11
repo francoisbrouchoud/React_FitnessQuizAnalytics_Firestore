@@ -72,7 +72,7 @@ function SurveyPartTwo() {
             const questionId = event.target.name;
             const { value } = event.target;
             const points = event.target.dataset.points;
-            setResponses({ ...responses, [questionId]: { value, points } });
+            setResponses({ ...responses, [questionId]: {id: questionId, value, points } });
         };
 
         const handleSubmit = (event) => {
@@ -88,10 +88,13 @@ function SurveyPartTwo() {
                 setErrorMessage('');
             }
 
-            const points = Object.values(responses).map((response) => response.points);
+            const points = Object.keys(responses).map((questionId) => {
+                const { id, points } = responses[questionId];
+                return { id, points };
+            });
 
 
-            console.log("Réponses deeeu sondage :", points);
+            console.log("Réponses du sondage :", points);
         };
 
         //retour en arrière teste si on ne sort pa du tableau à gauche
