@@ -42,7 +42,7 @@ function App() {
 
 
 function SurveyPartTwo() {
-    const QuestionZone = ({ questionText, questionSecondaryText, choices, onChange, value }) => (
+    const QuestionZone = ({ questionText, questionSecondaryText, choices, onChange, value, points }) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
             {/*texte secondaire si présent*/}
@@ -53,6 +53,7 @@ function SurveyPartTwo() {
                         type="radio"
                         name={questionText}
                         value={choice}
+                        data-points={points[index]}
                         onChange={onChange}
                         checked={value === choice}
                     />
@@ -68,13 +69,14 @@ function SurveyPartTwo() {
 
         const handleChange = (event) => {
             const { name, value } = event.target;
-          //  setPoints({...points, [name]: value })
-            setResponses({ ...responses, [name]: value });
+            const points = event.target.dataset.points;
+            setResponses({ ...responses, [name]: { value, points } });
         };
 
         const handleSubmit = (event) => {
             event.preventDefault();
-            onSubmit(responses);
+            const points = Object.values(responses).map((response) => response.points);
+            onSubmit(points);
         };
 
         //retour en arrière teste si on ne sort pa du tableau à gauche
@@ -101,7 +103,8 @@ function SurveyPartTwo() {
                     questionSecondaryText={question.questionSecondaryText}
                     choices={question.choices}
                     onChange={handleChange}
-                    value={responses[question.questionText]}
+                    value={responses[question.questionText]?.value}
+                    points={questions[currentQuestionIndex].points}
                 />
                 {currentQuestionIndex > 0 && (
                     <button type="button" onClick={back}>Précédant</button>
@@ -148,8 +151,9 @@ function SurveyPartTwo() {
     ];
 
     const handleSubmit = (points) => {
-        // go to final page with spider graphs
-        console.log("Réponses du sondage :",  points);
+        //Affichage F12 > console
+        console.log("Réponses du sondage :", points);
+        //TODO aller à la page final avec graphiques et recommendation
     };
 
 
