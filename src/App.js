@@ -34,6 +34,8 @@ function App() {
             </div>
 
             <SurveyPartTwo />
+            <SurveyPartOne />
+
         </div>
 
     );
@@ -250,7 +252,94 @@ function SurveyPartTwo() {
     );
 }
 
-function ChangeColor(){
+
+
+
+function SurveyPartOne() {
+
+    const questionsPartOne = [
+        {
+            questionId: 101,
+            questionText: "Est-ce que vous avez une activité physique régulière ? ",
+            choices: ["Oui", "Non"],
+        },
+        {
+            questionId: 102,
+            questionText: "Diriez-vous que vous êtes actif/-ve au moins 30 minutes chaque jour (au moins 5 jours par semaine) ?",
+            choices: ["Oui", "Non"],
+        },
+        {
+            questionId: 103,
+            questionText: "Est-ce qu’il vous arrive parfois/régulièrement de transpirer ou d’être essoufflé/-e durant cette activité ?",
+            choices: ["Oui", "Non"],
+        },
+        {
+            questionId: 104,
+            questionText: "Est-ce que vous auriez envie de reprendre une activité physique plus importante dans les prochains mois?",
+            choices: ["Oui", "Non"],
+        },
+        {
+            questionId: 105,
+            questionText: "Est-ce que vous connaisez les avantages que l'activité physique peut apporter pour la santé ?",
+            choices: ["Oui", "Non"],
+        },
+        {
+            questionId: 106,
+            questionText: "Est-ce que vous connaisez les avantages que l'activité physique peut apporter pour la santé ?",
+            choices: ["Oui", "Non"],
+        },
+    ];
+
+    const messagePartOne = [
+        {
+            messageId: 201,
+            messageTitle: "BOX: Précontemplation 1 (indétermination)",
+            messageText: "Le patient n’envisage pas de reprendre une activité physique et il n'est pas consient de risque de l'inactivité ou des benefices de l'activité physique.",
+            advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité", "– Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
+            points: 1
+        },
+        {
+            messageId: 202,
+            messageTitle: "BOX: Précontemplation 2 (indétermination)",
+            messageText: "Le patient n’envisage pas de reprendre une activité physique mais il connais les avantes de l'activité physique. ",
+            advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité"],
+            points: 2
+        },
+        {
+            messageId: 203,
+            messageTitle: "Contemplation (intention)",
+            messageText: "Le patient est intéressé ou réfléchit à modifier son activité",
+            advices: ["– Entretien motivationnel (tab. 3)", "– Pouvoir répondre aux éventuelles objections (cf. tab. 4)", "– Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
+            points: 3
+        },
+        {
+            messageId: 204,
+            messageTitle: "Préparation 1",
+            messageText: "Le patient est actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
+            points: 4
+        },
+        {
+            messageId: 205,
+            messageTitle: "Préparation 2",
+            messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
+            advices: ["- proposer brochures sur l'activité physique"],
+            points: 5
+        },
+        {
+            messageId: 206,
+            messageTitle: "Action et maintien",
+            messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine",
+            messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
+            points: 2
+        },
+    ]
+
+
+
+}
+
+
+            function ChangeColor(){
     const[color, setColor] = useState('black');
     function handleClick (){
         setColor('blue');
