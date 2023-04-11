@@ -33,7 +33,7 @@ function App() {
                 </div>
             </div>
 
-            <Questionnaire />
+            <SurveyPartTwo />
 
 
         </div>
@@ -190,26 +190,10 @@ function SurveyPartTwo() {
 
     return (
         <div>
-            <h1>Questionnaire</h1>
-            <h2>Question {index + 1}</h2>
-            <p>{questions[index].question}</p>
-            {
-                questions[index].reponses.map((r) =>
-                        <div key={questions[index].reponses.id}>
-                            <form>
-                                <label>
-                                    <input
-                                    type="radio"
-                                    name="reponse"
-                                    value={r.id}
-                                   // checked={q[index] === q.reponses.id}
-                                    checked={r.isChecked}
-                                    onChange={handleReponseChange}
-                                />
-                                    <span>{r.text}</span>
-                                </label>
-                            </form>
-                        </div>
+            <div className="App">
+                <h1>Survey</h1>
+                <Survey questions={questions} onSubmit={handleSubmit} />
+            </div>
 
             {/*<h1>Questionnaire</h1>*/}
             {/*<h2>Question {index + 1}</h2>*/}
