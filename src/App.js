@@ -232,7 +232,7 @@ function SurveyPartTwo() {
     return (
         <div>
             <div className="App">
-                <h1>Survey</h1>
+                <h1>Quizz</h1>
                 <Survey questions={questions} onSubmit={handleSubmit} />
             </div>
 
