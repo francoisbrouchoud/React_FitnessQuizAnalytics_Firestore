@@ -66,6 +66,7 @@ function SurveyPartTwo() {
     const Survey = ({ questions, onSubmit }) => {
         const [responses, setResponses] = useState({});
         const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+        const [errorMessage, setErrorMessage] = useState('');
 
         const handleChange = (event) => {
             const { name, value } = event.target;
@@ -75,6 +76,17 @@ function SurveyPartTwo() {
 
         const handleSubmit = (event) => {
             event.preventDefault();
+
+            const userAnsweredAllQuestions = questions.every((question) => responses.hasOwnProperty(question.questionText));
+
+            if (!userAnsweredAllQuestions) {
+                setErrorMessage('Veuillez svp répondre à toutes les questions.');
+                return;
+            } else {
+                //supprime le message d'erreur
+                setErrorMessage('');
+            }
+
             const points = Object.values(responses).map((response) => response.points);
             onSubmit(points);
         };
@@ -106,6 +118,7 @@ function SurveyPartTwo() {
                     value={responses[question.questionText]?.value}
                     points={questions[currentQuestionIndex].points}
                 />
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
                 {currentQuestionIndex > 0 && (
                     <button type="button" onClick={back}>Précédant</button>
                 )}
