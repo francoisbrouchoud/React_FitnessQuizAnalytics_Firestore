@@ -188,6 +188,47 @@ function SurveyPartTwo() {
     // Récupère la question et les réponses de la question actuelle à partir du tableau de questions
     //const [,question, options] = questions[index];
 
+
+    const questions = [
+        {
+            questionText: "Quels dispositifs d'aide à la marche utilisez vous ? ",
+            choices: ["aucune", "une canne", "deux cannes", "déambulateur", "cadre de marche", "j'ai besoin de l'aide d'une tierce personne"],
+            points:[5,4,3,2,2,1]
+        },
+        {
+            questionText: "Par rapport à la vitesse de marche moyenne (celle de vos proches, de vos amis et des gens de votre âge), pensez-vous marcher habituellement… (cocher une seule case)",
+            choices: ["Nettement moins vite", "Un peu moins vite", "A la même vitesse", "Un peu plus vite", "Nettement plus vite"],
+            points: [1, 2, 3, 4, 5]
+        },
+        {
+            questionText: "Entourez le temps maximal que vous pouvez pensez pouvoir tenir aux différentes allures suivantes facilement, sur terrain plat et sans vous arrêter pour vous reposer:",
+            questionSecondaryText: "Marcher lentement (une vitesse plus lente que celle de vos proches, de vos amis ou des gens de votre âge)",
+            choices: ["impossible", "1 minute", "5 minutes", "15 minutes", "30 minutes", "1 heure", "2 heures", "3 heures & plus"],
+            points: [0, 1, 4, 7, 10, 13, 16, 19]
+        },
+        {
+            questionText: "Entourez le temps maximal que vous pouvez pensez pouvoir tenir aux différentes allures suivantes facilement, sur terrain plat et sans vous arrêter pour vous reposer: ",
+            questionSecondaryText: "Marcher à vitesse moyenne (la même vitesse que celle de vos proches, de vos amis ou des gens de votre âge)",
+            choices: ["impossible", "1 minute", "5 minutes", "15 minutes", "30 minutes", "1 heure", "2 heures", "3 heures & plus"],
+            points: [0, 2, 5, 8, 11, 14, 17, 20]
+        },
+        {
+            questionText: "Entourez le temps maximal que vous pouvez pensez pouvoir tenir aux différentes allures suivantes facilement, sur terrain plat et sans vous arrêter pour vous reposer: ",
+            questionSecondaryText: "Marcher rapidement (une vitesse plus rapide que celle de vos proches, de vos amis ou des gens de votre âge)",
+            choices: ["impossible", "1 minute", "5 minutes", "15 minutes", "30 minutes", "1 heure", "2 heures", "3 heures & plus"],
+            points: [0, 3, 6, 9, 12, 15, 18, 21]
+        }
+
+
+    ];
+
+
+    const handleSubmit = (points) => {
+        // go to final page with spider graphs
+        console.log("Réponses du sondage :",  points);
+    };
+
+
     return (
         <div>
             <div className="App">
