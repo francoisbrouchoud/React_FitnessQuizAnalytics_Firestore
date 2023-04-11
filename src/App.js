@@ -45,7 +45,84 @@ function App() {
 
 
 
-function Questionnaire() {
+function SurveyPartTwo() {
+    const QuestionZone = ({ questionText, questionSecondaryText, choices, onChange, value }) => (
+        <div className="questionZone">
+            <h3>{questionText}</h3>
+            {/*texte secondaire si présent*/}
+            {questionSecondaryText && <p>{questionSecondaryText}</p>}
+            {choices.map((choice, index) => (
+                <label key={index}>
+                    <input
+                        type="radio"
+                        name={questionText}
+                        value={choice}
+                        onChange={onChange}
+                        checked={value === choice}
+                    />
+                    {choice}
+                </label>
+            ))}
+        </div>
+    );
+
+    const Survey = ({ questions, onSubmit }) => {
+        const [responses, setResponses] = useState({});
+        //const [points, setPoints] = useState({});
+        const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+        const handleChange = (event) => {
+            const { name, value } = event.target;
+          //  setPoints({...points, [name]: value })
+            setResponses({ ...responses, [name]: value });
+        };
+
+        const handleSubmit = (event) => {
+            event.preventDefault();
+            onSubmit(responses);
+        };
+
+        //retour en arrière teste si on ne sort pa du tableau à gauche
+        const back = () => {
+            if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(currentQuestionIndex - 1);
+            }
+        };
+
+        //aller en avant teste si on ne sort pa du tableau à droite
+        const next = () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            }
+        };
+
+        //Question courrante à l'index donné
+        const question = questions[currentQuestionIndex];
+
+        return (
+            <form onSubmit={handleSubmit}>
+                <QuestionZone
+                    questionText={question.questionText}
+                    questionSecondaryText={question.questionSecondaryText}
+                    choices={question.choices}
+                    onChange={handleChange}
+                    value={responses[question.questionText]}
+                />
+                {currentQuestionIndex > 0 && (
+                    <button type="button" onClick={back}>Précédant</button>
+                )}
+                {/*si on arrive au bout on remplace le bouton suivant par submit*/}
+                {currentQuestionIndex < questions.length - 1 ? (
+                    <button type="button" onClick={next}>Suivant</button>
+                ) : (
+                    <button type="submit">Valider mon questionnaire</button>
+                )}
+            </form>
+        );
+    };
+
+
+
     // État local qui stocke les réponses de l'utilisateur
     // const [reponses, setReponses] = useState([{id: 'a', text: 'Roufdggfe'}, { id: 'b', text: 'Bleu' },
     //     { id: 'c', text: 'Vert' },]);
