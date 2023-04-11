@@ -89,7 +89,9 @@ function SurveyPartTwo() {
             }
 
             const points = Object.values(responses).map((response) => response.points);
-            onSubmit(points);
+
+
+            console.log("Réponses deeeu sondage :", points);
         };
 
         //retour en arrière teste si on ne sort pa du tableau à gauche
@@ -170,17 +172,11 @@ function SurveyPartTwo() {
         }
     ];
 
-    const handleSubmit = (points) => {
-        //Affichage F12 > console
-        console.log("Réponses du sondage :", points);
-        //TODO aller à la page final avec graphiques et recommendation
-    };
-
 
     return (
             <div className="App">
                 <h1>Quizz</h1>
-                <Survey questions={questions} onSubmit={handleSubmit} />
+                <Survey questions={questions}  />
             </div>
     );
 }
