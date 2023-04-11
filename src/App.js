@@ -88,13 +88,13 @@ function SurveyPartTwo() {
                 setErrorMessage('');
             }
 
-            const points = Object.keys(responses).map((questionId) => {
+            const results = Object.keys(responses).map((questionId) => {
                 const { id, points } = responses[questionId];
                 return { id, points };
             });
 
-
-            console.log("Réponses du sondage :", points);
+            //TODO ici on peut gérer les résultat
+            console.log("Réponses du sondage :", results);
         };
 
         //retour en arrière teste si on ne sort pa du tableau à gauche
