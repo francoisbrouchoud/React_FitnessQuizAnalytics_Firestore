@@ -1,7 +1,11 @@
 import "./App.css";
+
 import firebase from "firebase/compat/app";
 import firebaseApp from "./initFirebase";
+import {  db , auth} from "./initFirebase";
 import { StyledFirebaseAuth } from "react-firebaseui";
+import 'firebaseui/dist/firebaseui.css'
+
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
@@ -10,16 +14,21 @@ import Home from "./screens/Home";
 // Configure FirebaseUI.
 const uiConfig = {
   // Popup signin flow rather than redirect flow.
-  signInFlow: "popup",
+  signInFlow: "redirect",
   // We will display Google and Facebook as auth providers.
-  signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-  callbacks: {
-    // Avoid redirects after sign-in.
-    signInSuccessWithAuthResult: () => false,
-  },
+  signInOptions:
+      [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
+      ],
+  callbacks: // What to do after sign-in success or failure.
+      {
+        // Avoid redirects after sign-in.
+        signInSuccessWithAuthResult: () => false,
+      },
 };
 
-function App() {
+export default function App() {
   // Local signed-in state.
   const [isSignedIn, setIsSignedIn] = useState(null);
 
@@ -48,10 +57,12 @@ function App() {
   if (!isSignedIn)
     return (
       <div className="App">
-        <StyledFirebaseAuth
-          uiConfig={uiConfig}
-          firebaseAuth={firebaseApp.auth()}
-        />
+          <h1>Fitness Check - WebApp</h1>
+          <h2>Please sign-in:</h2>
+          <StyledFirebaseAuth
+            uiConfig={uiConfig}
+            firebaseAuth={firebaseApp.auth()}
+          />
       </div>
     );
 
@@ -59,11 +70,10 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/"              element={<Home />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
       </Routes>
     </div>
   );
 }
 
-export default App;
