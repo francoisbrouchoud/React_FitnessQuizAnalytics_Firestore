@@ -42,7 +42,7 @@ function App() {
 
 
 function SurveyPartTwo() {
-    const QuestionZone = ({ questionText, questionSecondaryText, choices, onChange, value, points }) => (
+    const QuestionZone = ({questionId, questionText, questionSecondaryText, choices, onChange, value, points }) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
             {/*texte secondaire si présent*/}
@@ -51,7 +51,7 @@ function SurveyPartTwo() {
                 <label key={index}>
                     <input
                         type="radio"
-                        name={questionText}
+                        name={questionId}
                         value={choice}
                         data-points={points[index]}
                         onChange={onChange}
@@ -69,15 +69,16 @@ function SurveyPartTwo() {
         const [errorMessage, setErrorMessage] = useState('');
 
         const handleChange = (event) => {
-            const { name, value } = event.target;
+            const questionId = event.target.name;
+            const { value } = event.target;
             const points = event.target.dataset.points;
-            setResponses({ ...responses, [name]: { value, points } });
+            setResponses({ ...responses, [questionId]: { value, points } });
         };
 
         const handleSubmit = (event) => {
             event.preventDefault();
 
-            const userAnsweredAllQuestions = questions.every((question) => responses.hasOwnProperty(question.questionText));
+            const userAnsweredAllQuestions = questions.every((question) => responses.hasOwnProperty(question.questionId));
 
             if (!userAnsweredAllQuestions) {
                 setErrorMessage('Veuillez svp répondre à toutes les questions.');
@@ -111,11 +112,12 @@ function SurveyPartTwo() {
         return (
             <form onSubmit={handleSubmit}>
                 <QuestionZone
+                    questionId={question.questionId}
                     questionText={question.questionText}
                     questionSecondaryText={question.questionSecondaryText}
                     choices={question.choices}
                     onChange={handleChange}
-                    value={responses[question.questionText]?.value}
+                    value={responses[question.questionId]?.value}
                     points={questions[currentQuestionIndex].points}
                 />
                 {errorMessage && <p className="error-message">{errorMessage}</p>}
