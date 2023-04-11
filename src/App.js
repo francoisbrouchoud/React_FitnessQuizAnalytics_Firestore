@@ -257,6 +257,43 @@ function SurveyPartTwo() {
 
 function SurveyPartOne() {
 
+    const getNextQuestion = (currentQuestionId, answer) => {
+        switch (currentQuestionId) {
+            case 101:
+                if (answer === "Oui") {
+                    return questionsPartOne[1];
+                } else {
+                    return questionsPartOne[3];
+                }
+            case 102:
+                if (answer === "Oui") {
+                    return questionsPartOne[2];
+                } else {
+                    return messagePartOne[3];
+                }
+            case 103:
+                if (answer === "Oui") {
+                    return messagePartOne[5];
+                } else {
+                    return messagePartOne[4];
+                }
+            case 104:
+                if (answer === "Oui") {
+                    return messagePartOne[2];
+                } else {
+                    return questionsPartOne[4];
+                }
+            case 105:
+                if (answer === "Oui") {
+                    return messagePartOne[1];
+                } else {
+                    return messagePartOne[0];
+                }
+            default:
+                return null;
+        }
+    };
+
     const questionsPartOne = [
         {
             questionId: 101,
