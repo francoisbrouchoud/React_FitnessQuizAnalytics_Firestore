@@ -13,8 +13,8 @@ export default function Home() {
        const questionsCol  = collection(db, 'questions');
        const questionSnapshot = await getDocs(questionsCol);
        const questionList = questionSnapshot.docs.map((doc) => doc.data());
-       //return questionList;
-       getQuestions(db).then((questions) => console.log(questions))
+       return questionList;
+       //getQuestions(db).then((questions) => console.log(questions))
        //console.log(questions.toString());
        
    };
