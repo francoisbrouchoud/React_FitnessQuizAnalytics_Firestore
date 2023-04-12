@@ -2,23 +2,17 @@ import firebaseApp, {db} from "../initFirebase";
 import {collection, getDocs} from 'firebase/firestore';
 import { Link } from "react-router-dom";
 import {useState} from "react";
+import GetQuestions from "../components/GetQuestions";
+import InitQuestionsPart2 from "../components/InitQuestionsPart2";
 
 export default function Home() {
-  const [questions, setQuestions] = useState([]);
   
   // Sign out
   const handleSignOutClick = async () => {
     await firebaseApp.auth().signOut();
   };
   
-  const fetchQuestions = async () =>
-  {
-      const questionsCollection = collection(db, 'questions');
-      const questionsSnapshot = await getDocs(questionsCollection);
-      const questionsData = questionsSnapshot.docs.map(doc => doc.data());
-      setQuestions(questionsData);
   
-  };
   
   
   
@@ -31,8 +25,9 @@ export default function Home() {
       </p>
       <button onClick={handleSignOutClick}>Sign Out</button>
       
-      <button onClick={fetchQuestions}>DB Get Data</button>
-      <p>{JSON.stringify(questions)}</p>
+      <GetQuestions />
+      <InitQuestionsPart2/>
+      
     </div>
     
   );
