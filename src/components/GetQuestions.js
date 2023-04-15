@@ -12,10 +12,12 @@ export default function GetQuestions()
 	{
 		try
 		{
-			const questionsCollection = collection(db, 'questions');
-			const questionsSnapshot = await getDocs(questionsCollection, orderBy('questionId', 'asc'));
+
+			const questionsCollection = collection(db, 'questions_partB');
+			const questionsSnapshot = await getDocs(questionsCollection, orderBy("questionId", "asc"));
 			const questionsData = questionsSnapshot.docs.map(doc => doc.data());
 			setQuestions(questionsData);
+		
 		}
 		catch (error)
 		{
