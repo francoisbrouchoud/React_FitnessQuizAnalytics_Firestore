@@ -1,6 +1,8 @@
 import React, {useState} from "react";
+import {questionDataPartB} from "../data/survey.js";
 
 export default function SurveyPartB() {
+    
     const QuestionZone = ({questionId, questionText, questionSecondaryText, choices, onChange, value, points }) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
