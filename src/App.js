@@ -33,82 +33,83 @@ const uiConfig = {
 
 export default function App()
 {
-	// Local signed-in state.
-	const [isSignedIn, setIsSignedIn] = useState(null);
-	
-	
-	// Listen to the Firebase Auth state and set the local state.
-	useEffect(() =>
-			  {
-				  const unregisterAuthObserver = firebaseApp
-					  .auth()
-					  .onAuthStateChanged((user) =>
-										  {
-											  setIsSignedIn(!!user);
-										  });
-				  
-				  // Make sure we un-register Firebase observers when the component unmounts.
-				  return () => unregisterAuthObserver();
-			  }, []);
-	
-	// Methode to reset password
-	const handleResetPasswordClick = () =>
-	{
-		const email = prompt("Please enter your email address");
-		
-		// Validate email format
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		if (!emailRegex.test(email)) {
-			alert("Please enter a valid email address.");
-			return;
-		}
-		
-		firebaseApp
-			.auth()
-			.sendPasswordResetEmail(email)
-			.then(() =>
-				  {
-					  alert("Password reset email sent! Check your inbox.");
-				  })
-			.catch((error) =>
-				   {
-					   console.error(error);
-					   alert("Error sending password reset email. Verify email address & Please try again.");
-				   });
-	};
-	
-	// Not initialized yet - Render loading message
-	if (isSignedIn === null)
-	{
-		return (
-			<div className="App">
-				<p>Loading...</p>
-			</div>
-		);
-	}
-	
-	// Not signed in - Render auth screen
-	if (!isSignedIn)
-		return (
-			<div className="App">
-				<h1>Fitness Check - WebApp</h1>
-				<h2>Please sign-in:</h2>
-				<StyledFirebaseAuth
-					uiConfig={uiConfig}
-					firebaseAuth={firebaseApp.auth()}
-				/>
-				<button onClick={handleResetPasswordClick}>Forgot Password</button>
-			</div>
-		);
-	
-	// Signed in - Render app
-	return (
-		<div className="App">
-			<Routes>
-				<Route path="/" 				element={<Home/>}/>
-				<Route path="/questionnaire" 	element={<Questionnaire/>}/>
-			</Routes>
-		</div>
-	);
+    // Local signed-in state.
+    const [isSignedIn, setIsSignedIn] = useState(null);
+
+
+    // Listen to the Firebase Auth state and set the local state.
+    useEffect(() =>
+    {
+        const unregisterAuthObserver = firebaseApp
+            .auth()
+            .onAuthStateChanged((user) =>
+            {
+                setIsSignedIn(!!user);
+            });
+
+        // Make sure we un-register Firebase observers when the component unmounts.
+        return () => unregisterAuthObserver();
+    }, []);
+
+    // Methode to reset password
+    const handleResetPasswordClick = () =>
+    {
+        const email = prompt("Please enter your email address");
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        firebaseApp
+            .auth()
+            .sendPasswordResetEmail(email)
+            .then(() =>
+            {
+                alert("Password reset email sent! Check your inbox.");
+            })
+            .catch((error) =>
+            {
+                console.error(error);
+                alert("Error sending password reset email. Verify email address & Please try again.");
+            });
+    };
+
+    // Not initialized yet - Render loading message
+    if (isSignedIn === null)
+    {
+        return (
+            <div className="App">
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
+    // Not signed in - Render auth screen
+    if (!isSignedIn)
+        return (
+            <div className="App">
+                <h1>Fitness Check - WebApp</h1>
+                <h2>Please sign-in:</h2>
+                <StyledFirebaseAuth
+                    uiConfig={uiConfig}
+                    firebaseAuth={firebaseApp.auth()}
+                />
+                <button onClick={handleResetPasswordClick}>Forgot Password</button>
+            </div>
+        );
+
+    // Signed in - Render app
+    return (
+        <div className="App">
+            <Routes>
+                <Route path="/" 				element={<Home/>}/>
+                <Route path="/questionnaire" 	element={<Questionnaire/>}/>
+            </Routes>
+        </div>
+    );
 }
 
+export default App;
