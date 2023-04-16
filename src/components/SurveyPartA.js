@@ -3,23 +3,15 @@
 import React, {useState} from "react";
 
 export default function SurveyPartA() {
-    const QuestionZone = ({
-                              questionId,
-                              messageToShow,
-                              questionText,
-                              choices,
-                              onChange,
-                              value,
-                          }) => (
+    const QuestionZone = ({questionId, messageToShow, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
-            {/*Tentative d'affichage de message quand plus de question*/}
+
             <div>
                 {messageToShow ? (
                     <div>
                         <h2>{messageToShow.messageTitle}</h2>
                         <p>{messageToShow.messageText}</p>
-                        {console.log("message")}
                         <ul>
                             {messageToShow.advices &&
                                 messageToShow.advices.map((advice, index) => (
@@ -119,131 +111,118 @@ export default function SurveyPartA() {
         );
     };
 
-
-
-
     const getNextQuestion = (currentQuestionId, response, responses) => {
         switch (currentQuestionId) {
-            case "A01":
+            case "AQst01":
                 if (response === "Oui") {
-                    return questionsPartOne[1];
+                    return questionDataPartA.find((q) => q.questionId === "AQst02");
                 } else {
-                    return questionsPartOne[3];
+                    return questionDataPartA.find((q) => q.questionId === "AQst04");
                 }
-            case "A02":
+            case "AQst02":
                 if (response  === "Oui") {
-                    return questionsPartOne[2];
+                    return questionDataPartA.find((q) => q.questionId === "AQst03");
                 } else {
-                    console.log("return message", messagePartOne[3]);
-                    return messagePartOne[3];
+                    return messageDataPartA.find((m) => m.messageId === "AMsg04");
                 }
-            case "A03":
+            case "AQst03":
                 if (response  === "Oui") {
-                    console.log("return message", messagePartOne[5]);
-                    return messagePartOne[5];
+                    return messageDataPartA.find((m) => m.messageId === "AMsg06");
                 } else {
-                    console.log("return message", messagePartOne[4]);
-                    return messagePartOne[4];
+                    return messageDataPartA.find((m) => m.messageId === "AMsg05");
                 }
-            case "A04":
+            case "AQst04":
                 if (response === "Oui") {
-                    console.log("return message", messagePartOne[2]);
-                    return messagePartOne[2];
+                    return messageDataPartA.find((m) => m.messageId === "AMsg03");
                 } else {
-                    return questionsPartOne[4];
+                    return questionDataPartA.find((q) => q.questionId === "AQst05");
                 }
-            case "A05":
-                return questionsPartOne.find((q) => q.questionId === "A06");
-            case "A06":
-                const knowsBenefits = responses["A05"]?.value == "Oui";
-                const knowsRisks = responses["A06"]?.value == "Oui";
+            case "AQst05":
+                return questionDataPartA.find((q) => q.questionId === "AQst06");
+            case "AQst06":
+                const knowsBenefits = responses["AQst05"]?.value === "Oui";
+                const knowsRisks = responses["AQst06"]?.value === "Oui";
 
-                console.log(responses["A05"]?.value);
-                console.log(responses["A06"]?.value);
-                console.log(knowsRisks);
-                console.log(knowsBenefits);
                 if (knowsBenefits || knowsRisks) {
-
-                    console.log("une des deux");
-                    return messagePartOne.find((m) => m.messageId === "AM02");
+                    return messageDataPartA.find((m) => m.messageId === "AMsg02");
                 } else {
-                    return messagePartOne.find((m) => m.messageId === "AM01");
+                    return messageDataPartA.find((m) => m.messageId === "AMsg01");
                 }
             default:
                 return null;
         }
     };
 
-    const questionsPartOne = [
+    const questionDataPartA = [
         {
-            questionId: "A01",
+            questionId: "AQst01",
             questionText: "Est-ce que vous avez une activité physique régulière ? ",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: "A02",
+            questionId: "AQst02",
             questionText: "Diriez-vous que vous êtes actif/-ve au moins 30 minutes chaque jour (au moins 5 jours par semaine) ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: "A03",
+            questionId: "AQst03",
             questionText: "Est-ce qu’il vous arrive parfois/régulièrement de transpirer ou d’être essoufflé/-e durant cette activité ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: "A04",
+            questionId: "AQst04",
             questionText: "Est-ce que vous auriez envie de reprendre une activité physique plus importante dans les prochains mois ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: "A05",
+            questionId: "AQst05",
             questionText: "Est-ce que vous connaisez les avantages que l'activité physique peut apporter pour la santé ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: "A06",
+            questionId: "AQst06",
             questionText: "Est-ce que vous connaisez les risques de l'inactivité ?",
             choices: ["Oui", "Non"],
         },
     ];
 
-    const messagePartOne = [
+    const messageDataPartA = [
         {
-            messageId: "AM01",
+            messageId: "AMsg01",
             messageTitle: "BOX: Précontemplation 1 (indétermination)",
             messageText: "Le patient n’envisage pas de reprendre une activité physique et il n'est pas consient de risque de l'inactivité ou des benefices de l'activité physique.",
             advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité", "– Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
             points: 1
         },
         {
-            messageId: "AM02",
+            messageId: "AMsg02",
             messageTitle: "BOX: Précontemplation 2 (indétermination)",
             messageText: "Le patient n’envisage pas de reprendre une activité physique mais il connais les avantes de l'activité physique. ",
             advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité"],
             points: 2
         },
         {
-            messageId: "AM03",
+            messageId: "AMsg03",
             messageTitle: "Contemplation (intention)",
             messageText: "Le patient est intéressé ou réfléchit à modifier son activité",
             advices: ["– Entretien motivationnel (tab. 3)", "– Pouvoir répondre aux éventuelles objections (cf. tab. 4)", "– Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
             points: 3
         },
         {
-            messageId: "AM04",
+            messageId: "AMsg04",
             messageTitle: "Préparation 1",
             messageText: "Le patient est actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
             points: 4
         },
         {
-            messageId: "AM05",
+            messageId: "AMsg05",
             messageTitle: "Préparation 2",
             messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
             advices: ["- proposer brochures sur l'activité physique"],
             points: 5
         },
         {
-            messageId: "AM06",
+            messageId: "AMsg06",
             messageTitle: "Action et maintien",
             messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine",
             messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
@@ -255,7 +234,7 @@ export default function SurveyPartA() {
         <div className="App">
             <h1>Questionnaire A</h1>
             <Survey
-                questions={questionsPartOne}
+                questions={questionDataPartA}
                 onSubmit={(responses) => {
                     console.log("Réponses du sondage :", responses);
                 }}
