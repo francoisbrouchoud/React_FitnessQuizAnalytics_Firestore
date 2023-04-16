@@ -39,9 +39,6 @@ export default function App()
 {
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
-    const [userDatas, setUserDatas] = useState(null);   // TODO : Supprimer, car updateUser se fait avec otut 1 methode et pas les 2 différetnes
-    
-
 
     // Listen to the Firebase Auth state and set the local state.
     useEffect(() =>
@@ -76,47 +73,6 @@ export default function App()
         // If user is signed in (AUTH), create a default user in the DB
         if (isSignedIn)
         {
-            // Set the USER DATAS in the state (to be used in the app)
-            /* // Utiliser ces USER DATAS pour les 2 methodes CREATE USER & UPDATE USER, donner en param de UPDATE USER, pour que les 2 methodes ayent les mêmes data de réference
-            setUserDatas(
-                {
-                    email: auth.currentUser.email,
-                    uid:   auth.currentUser.uid,
-                    isAdmin: true,
-                    //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
-                    //lastName: "Doe",
-                    birthDate: 1800,
-                    xolo: "non"
-                }
-            )
-            console.log("USER DATAS : " + userDatas);*/
-             /*
-            const docRef = doc(db, "users", auth.currentUser.email);
-            const docSnap = async () =>
-            {
-                const snapShot = await getDoc(docRef);
-                return snapShot;
-            }
-            
-            
-            const checkIfDocumentExists = async () => {
-                const snapshot = await docSnap();
-                if (snapshot.exists())
-                {
-                    console.log("Document data already exist :", snapshot.data());
-                    // TODO : (merge it with the new data from the auth provider)
-                    await updateUserProfile(auth.currentUser.email, {xolo: "pouet pouet ratatouille !!!"});
-                    //await createDefaultUser();
-                }
-                else
-                {
-                    console.log("Document doesn't exist, created default user");
-                    await createDefaultUser();
-                }
-            };
-            
-            checkIfDocumentExists().then(r => console.log("checkIfDocumentExists() result : " + r));*/
-           
             createDefaultUser().then(r => console.log("createDefaultUser() result : " + r));
             
         }
@@ -127,18 +83,53 @@ export default function App()
     {
         // Create a new user profile in the DB if it doesn't exist yet for the current user email address (auth.currentUser.email)
         const userRef = doc(db, "users", auth.currentUser.email);
-        await setDoc(userRef, {
+        const data = {
             email: auth.currentUser.email,
             uid:   auth.currentUser.uid,
             isAdmin: true,
             //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
             lastName: "DoeHEHE",
             birthDate: 1800,
-            xolo: "non"
-        }, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
+            xolo: "non",
+            xolo2: "non",
+        }
         
-        console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
+        // Get the user profile from the DB
+        const docSnap = async () =>
+        {
+            const snapShot = await getDoc(userRef);
+            return snapShot;
+        }
+        const snapshot = await docSnap();
         
+        // If the user profile doesn't exist, create it
+        // If the user profile already exists, update it
+        // TODO : Bon ben IF et ELSE font la même chose ici, car le ELSE utilise l'option MERGE qui met à jour les données existantes
+        if (snapshot.exists())
+        {
+            console.log("Document data already exist :", snapshot.data());
+            // Merge it with the new data from the auth provider (if it exists)
+            
+            // TODO : VOIR QUELLE VERSION EST INTERESSANTE
+            // VERSION 1
+            // await updateDoc(userRef, data)
+            
+            // VERSION 2
+            const oldUserData = snapshot.data();
+            const newUserData = data;
+            const mergedUserData = { ...oldUserData, ...newUserData };
+            
+            // Only update the user profile if the data has changed. This prevents an infinite loop of updates.
+            if (JSON.stringify(oldUserData) !== JSON.stringify(mergedUserData)) {
+                await setDoc(userRef, mergedUserData);
+            }
+        }
+        else // If the user profile doesn't exist, create it
+        {
+            console.log("Document doesn't exist, created default user");
+            await setDoc(userRef, data, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
+            console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
+        }
     }
     
     const updateUserProfile = async (userId, newUserData) =>
