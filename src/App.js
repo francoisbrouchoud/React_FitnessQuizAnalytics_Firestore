@@ -3,7 +3,7 @@ import "./App.css";
 import firebase from "firebase/compat/app";
 import firebaseApp from "./initFirebase";
 import {db, auth} from "./initFirebase";
-import {addDoc, collection, doc, setDoc, updateDoc} from "firebase/firestore";
+import {addDoc, collection, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import {getAdditionalUserInfo, User, } from "firebase/auth"
 import {StyledFirebaseAuth} from "react-firebaseui";
 import 'firebaseui/dist/firebaseui.css'
@@ -15,6 +15,7 @@ import Home from "./screens/Home";
 ;
 
 // Configure FirebaseUI.
+// This object contains the configuration for FirebaseUI, which is used to authenticate users using email and Google Sign-In providers.
 const uiConfig = {
 	// Popup signin flow rather than redirect flow.
 	signInFlow: "redirect",
@@ -43,26 +44,64 @@ export default function App()
     // Listen to the Firebase Auth state and set the local state.
     useEffect(() =>
     {
+        // This hook is used to listen to changes in the Firebase Authentication state and update the local state accordingly.
+        // The onAuthStateChanged function is passed to the firebaseApp.auth() object,
+        // which is called every time the authentication state changes.
+        // The unregisterAuthObserver function is returned from the hook,
+        // which is used to unregister the Firebase observer when the component unmounts.
         const unregisterAuthObserver = firebaseApp
                                                     .auth()
                                                     .onAuthStateChanged((user) =>
                                                     {
                                                         setIsSignedIn(!!user);
                                                     });
-        
-        /*const createDefaultUserInDB = async () =>{
-            await createDefaultUser().then(r => console.log("createDefaultUser: ", r.toString()));
-        }
-        
-        // If user is signed in, create a default user in the DB
-        if (isSignedIn)
-            createDefaultUserInDB();*/
-        
-        
+
         // Make sure we un-register Firebase observers when the component unmounts.
         return () => unregisterAuthObserver();
-    }, []); // TODO : Add isSignedIn to the dependency array to avoid infinite loop when user is signed in and createDefaultUserInDB is called (but it will create an infinite loop when user is not signed in)
+    }, []);
+    
+    
+    // Create a default user in the DB if user is signed in
+    // This hook is used to create a default user profile in Firestore when the user signs in for the first time.
+    // It listens to changes in the isSignedIn state and calls the createDefaultUser function when the state changes.
+    // The createDefaultUser function checks if the user's profile exists in Firestore and creates it if it doesn't.
+    // The function also sets the isAdmin property of the user's profile to true,
+    // which indicates that the user is an administrator.
+    useEffect(() =>
+    {
+        console.log("USE EFFECT");
+        
+        // If user is signed in (AUTH), create a default user in the DB
+        if (isSignedIn)
+        {
+            const docRef = doc(db, "users", auth.currentUser.email);
+            const docSnap = async () =>
+            {
+                const snapShot = await getDoc(docRef);
+                return snapShot;
+            }
+            
+            const checkIfDocumentExists = async () => {
+                const snapshot = await docSnap();
+                if (snapshot.exists())
+                {
+                    console.log("Document data:", snapshot.data());
+                    // TODO : (merge it with the new data from the auth provider)
+                    //await updateUser();
+                }
+                else
+                {
+                    console.log("Document doesn't exist, created default user");
+                    await createDefaultUser();
+                }
+            };
+            
+            checkIfDocumentExists().then(r => console.log("checkIfDocumentExists() result : " + r));
+           
+        }
+    }, [isSignedIn]); // Use Effect CALLED ONLY WHEN isSignedIn changes
 
+    
     // Methode to reset password
     const handleResetPasswordClick = () =>
     {
@@ -123,23 +162,22 @@ export default function App()
         const userRef = doc(db, "users", auth.currentUser.email);
         await setDoc(userRef, {
             email: auth.currentUser.email,
-            //uid:   auth.currentUser.uid,
+            uid:   auth.currentUser.uid,
             isAdmin: true,
             //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
             //lastName: "Doe",
             birthDate: 1800,
+            xolo: "non"
        
-        }/*, {merge: true}*/);
+        }, {merge: true});
         
-        console.log("user created in DB" + auth.currentUser.email);
+        console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
         
     }
     
     // Signed in - Render app
     if(isSignedIn)
     {
-        createDefaultUser().then(r => console.log("createDefaultUser: ", r));
-        
         return (
             <>
                 <div className="App">
