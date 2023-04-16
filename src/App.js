@@ -39,6 +39,8 @@ export default function App()
 {
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
+    const [userDatas, setUserDatas] = useState(null);   // TODO : Supprimer, car updateUser se fait avec otut 1 methode et pas les 2 différetnes
+    
 
 
     // Listen to the Firebase Auth state and set the local state.
@@ -74,6 +76,21 @@ export default function App()
         // If user is signed in (AUTH), create a default user in the DB
         if (isSignedIn)
         {
+            // Set the USER DATAS in the state (to be used in the app)
+            /* // Utiliser ces USER DATAS pour les 2 methodes CREATE USER & UPDATE USER, donner en param de UPDATE USER, pour que les 2 methodes ayent les mêmes data de réference
+            setUserDatas(
+                {
+                    email: auth.currentUser.email,
+                    uid:   auth.currentUser.uid,
+                    isAdmin: true,
+                    //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
+                    //lastName: "Doe",
+                    birthDate: 1800,
+                    xolo: "non"
+                }
+            )
+            console.log("USER DATAS : " + userDatas);*/
+             /*
             const docRef = doc(db, "users", auth.currentUser.email);
             const docSnap = async () =>
             {
@@ -81,13 +98,15 @@ export default function App()
                 return snapShot;
             }
             
+            
             const checkIfDocumentExists = async () => {
                 const snapshot = await docSnap();
                 if (snapshot.exists())
                 {
-                    console.log("Document data:", snapshot.data());
+                    console.log("Document data already exist :", snapshot.data());
                     // TODO : (merge it with the new data from the auth provider)
-                    //await updateUser();
+                    await updateUserProfile(auth.currentUser.email, {xolo: "pouet pouet ratatouille !!!"});
+                    //await createDefaultUser();
                 }
                 else
                 {
@@ -96,11 +115,50 @@ export default function App()
                 }
             };
             
-            checkIfDocumentExists().then(r => console.log("checkIfDocumentExists() result : " + r));
+            checkIfDocumentExists().then(r => console.log("checkIfDocumentExists() result : " + r));*/
            
+            createDefaultUser().then(r => console.log("createDefaultUser() result : " + r));
+            
         }
     }, [isSignedIn]); // Use Effect CALLED ONLY WHEN isSignedIn changes
-
+    
+    // DEFAULT USER PROFILE CREATION
+    const createDefaultUser = async () =>
+    {
+        // Create a new user profile in the DB if it doesn't exist yet for the current user email address (auth.currentUser.email)
+        const userRef = doc(db, "users", auth.currentUser.email);
+        await setDoc(userRef, {
+            email: auth.currentUser.email,
+            uid:   auth.currentUser.uid,
+            isAdmin: true,
+            //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
+            lastName: "DoeHEHE",
+            birthDate: 1800,
+            xolo: "non"
+        }, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
+        
+        console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
+        
+    }
+    
+    const updateUserProfile = async (userId, newUserData) =>
+    {
+        console.log('UPDATE USER PROFILE FOR '+ userId + " with data : " + newUserData)
+        const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+            const oldUserData = docSnap.data();
+            const mergedUserData = { ...oldUserData, ...newUserData };
+            
+            // Only update the user profile if the data has changed. This prevents an infinite loop of updates.
+            if (JSON.stringify(oldUserData) !== JSON.stringify(mergedUserData)) {
+                await setDoc(docRef, mergedUserData);
+            }
+        }
+        
+        console.log("user update result : " + docSnap.data());
+    }
     
     // Methode to reset password
     const handleResetPasswordClick = () =>
@@ -129,6 +187,10 @@ export default function App()
             });
     };
 
+    // *********************************************************************************************************************
+    // CONDITIONAL RENDERING OF THE APP (loading, auth, app)
+    // *********************************************************************************************************************
+    
     // Not initialized yet - Render loading message
     if (isSignedIn === null)
     {
@@ -152,28 +214,6 @@ export default function App()
                 <button onClick={handleResetPasswordClick}>Forgot Password</button>
             </div>
         );
-    
-    // DEFAULT USER PROFILE CREATION
-    const createDefaultUser = async () =>
-    {
-        console.log('CREATE DEFAULT USER FOR '+ auth.currentUser.email)
-        
-        // Create a new user profile in the DB if it doesn't exist yet for the current user email address (auth.currentUser.email)
-        const userRef = doc(db, "users", auth.currentUser.email);
-        await setDoc(userRef, {
-            email: auth.currentUser.email,
-            uid:   auth.currentUser.uid,
-            isAdmin: true,
-            //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
-            //lastName: "Doe",
-            birthDate: 1800,
-            xolo: "non"
-       
-        }, {merge: true});
-        
-        console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
-        
-    }
     
     // Signed in - Render app
     if(isSignedIn)
