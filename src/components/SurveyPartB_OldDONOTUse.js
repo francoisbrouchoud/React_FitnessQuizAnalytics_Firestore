@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {questionDataPartB} from "../data/survey.js";
 
-export default function SurveyPartB() {
+export default function SurveyPartB_OldDONOTUse() {
     
     const QuestionZone = ({questionId, questionText, questionSecondaryText, choices, onChange, value, points }) => (
         <div className="questionZone">
