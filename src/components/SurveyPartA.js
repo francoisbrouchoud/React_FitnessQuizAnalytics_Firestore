@@ -3,7 +3,14 @@
 import React, {useState} from "react";
 
 export default function SurveyPartA() {
-    const QuestionZone = ({questionId, messageToShow, questionText, choices, onChange, value}) => (
+    const QuestionZone = ({
+                              questionId,
+                              messageToShow,
+                              questionText,
+                              choices,
+                              onChange,
+                              value,
+                          }) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
             {/*Tentative d'affichage de message quand plus de question*/}
@@ -12,10 +19,12 @@ export default function SurveyPartA() {
                     <div>
                         <h2>{messageToShow.messageTitle}</h2>
                         <p>{messageToShow.messageText}</p>
+                        {console.log("message")}
                         <ul>
-                            {messageToShow.advices && messageToShow.advices.map((advice, index) => (
-                                <li key={index}>{advice}</li>
-                            ))}
+                            {messageToShow.advices &&
+                                messageToShow.advices.map((advice, index) => (
+                                    <li key={index}>{advice}</li>
+                                ))}
                         </ul>
                     </div>
                 ) : (
@@ -58,7 +67,8 @@ export default function SurveyPartA() {
             if (responses.hasOwnProperty(question.questionId)) {
                 const nextQuestionOrMessage = getNextQuestion(
                     question.questionId,
-                    responses[question.questionId].value
+                    responses[question.questionId].value,
+                    responses
                 );
 
                 if (nextQuestionOrMessage.messageId) {
@@ -73,8 +83,26 @@ export default function SurveyPartA() {
 
         const question = questions[currentQuestionIndex];
 
+        if (messageToShow) {
+            return (
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <h2>{messageToShow.messageTitle}</h2>
+                        <p>{messageToShow.messageText}</p>
+                        <ul>
+                            {messageToShow.advices &&
+                                messageToShow.advices.map((advice, index) => (
+                                    <li key={index}>{advice}</li>
+                                ))}
+                        </ul>
+                    </div>
+                    <button type="submit">Soumettre les données & passer au questionnaire B</button>
+                </form>
+            );
+        }
+
         return (
-            <form onSubmit={handleSubmit}>
+            <div>
                 <QuestionZone
                     questionId={question.questionId}
                     questionText={question.questionText}
@@ -82,14 +110,12 @@ export default function SurveyPartA() {
                     onChange={handleChange}
                     value={responses[question.questionId]?.value}
                 />
-                {currentQuestionIndex < questions.length - 1 ? (
+                {!messageToShow && currentQuestionIndex < questions.length  && (
                     <button type="button" onClick={next}>
                         Suivant
                     </button>
-                ) : (
-                    <button type="submit">Valider mon questionnaire</button>
                 )}
-            </form>
+            </div>
         );
     };
 
@@ -97,26 +123,30 @@ export default function SurveyPartA() {
 
     const getNextQuestion = (currentQuestionId, answer) => {
         switch (currentQuestionId) {
-            case 101:
-                if (answer === "Oui") {
+            case "A01":
+                if (response === "Oui") {
                     return questionsPartOne[1];
                 } else {
                     return questionsPartOne[3];
                 }
-            case 102:
-                if (answer === "Oui") {
+            case "A02":
+                if (response  === "Oui") {
                     return questionsPartOne[2];
                 } else {
+                    console.log("return message", messagePartOne[3]);
                     return messagePartOne[3];
                 }
-            case 103:
-                if (answer === "Oui") {
+            case "A03":
+                if (response  === "Oui") {
+                    console.log("return message", messagePartOne[5]);
                     return messagePartOne[5];
                 } else {
+                    console.log("return message", messagePartOne[4]);
                     return messagePartOne[4];
                 }
-            case 104:
-                if (answer === "Oui") {
+            case "A04":
+                if (response === "Oui") {
+                    console.log("return message", messagePartOne[2]);
                     return messagePartOne[2];
                 } else {
                     return questionsPartOne[4];
@@ -134,84 +164,84 @@ export default function SurveyPartA() {
 
     const questionsPartOne = [
         {
-            questionId: 101,
+            questionId: "A01",
             questionText: "Est-ce que vous avez une activité physique régulière ? ",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: 102,
+            questionId: "A02",
             questionText: "Diriez-vous que vous êtes actif/-ve au moins 30 minutes chaque jour (au moins 5 jours par semaine) ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: 103,
+            questionId: "A03",
             questionText: "Est-ce qu’il vous arrive parfois/régulièrement de transpirer ou d’être essoufflé/-e durant cette activité ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: 104,
-            questionText: "Est-ce que vous auriez envie de reprendre une activité physique plus importante dans les prochains mois?",
+            questionId: "A04",
+            questionText: "Est-ce que vous auriez envie de reprendre une activité physique plus importante dans les prochains mois ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: 105,
+            questionId: "A05",
             questionText: "Est-ce que vous connaisez les avantages que l'activité physique peut apporter pour la santé ?",
             choices: ["Oui", "Non"],
         },
         {
-            questionId: 106,
-            questionText: "Est-ce que vous connaisez les avantages que l'activité physique peut apporter pour la santé ?",
+            questionId: "A06",
+            questionText: "Est-ce que vous connaisez les risques de l'inactivité ?",
             choices: ["Oui", "Non"],
         },
     ];
 
     const messagePartOne = [
         {
-            messageId: 201,
+            messageId: "AM01",
             messageTitle: "BOX: Précontemplation 1 (indétermination)",
             messageText: "Le patient n’envisage pas de reprendre une activité physique et il n'est pas consient de risque de l'inactivité ou des benefices de l'activité physique.",
             advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité", "– Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
             points: 1
         },
         {
-            messageId: 202,
+            messageId: "AM02",
             messageTitle: "BOX: Précontemplation 2 (indétermination)",
             messageText: "Le patient n’envisage pas de reprendre une activité physique mais il connais les avantes de l'activité physique. ",
             advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité"],
             points: 2
         },
         {
-            messageId: 203,
+            messageId: "AM03",
             messageTitle: "Contemplation (intention)",
             messageText: "Le patient est intéressé ou réfléchit à modifier son activité",
             advices: ["– Entretien motivationnel (tab. 3)", "– Pouvoir répondre aux éventuelles objections (cf. tab. 4)", "– Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
             points: 3
         },
         {
-            messageId: 204,
+            messageId: "AM04",
             messageTitle: "Préparation 1",
             messageText: "Le patient est actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
             points: 4
         },
         {
-            messageId: 205,
+            messageId: "AM05",
             messageTitle: "Préparation 2",
             messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
             advices: ["- proposer brochures sur l'activité physique"],
             points: 5
         },
         {
-            messageId: 206,
+            messageId: "AM06",
             messageTitle: "Action et maintien",
             messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine",
             messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
-            points: 2
+            points: 6
         },
     ]
 
     return (
         <div className="App">
-            <h1>Quizz Part 1 - essai ne fonctionne pas encore pour les messages</h1>
+            <h1>Questionnaire A</h1>
             <Survey
                 questions={questionsPartOne}
                 onSubmit={(responses) => {
