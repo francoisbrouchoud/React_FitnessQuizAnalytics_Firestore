@@ -102,7 +102,7 @@ export default function SurveyPartA() {
                     onChange={handleChange}
                     value={responses[question.questionId]?.value}
                 />
-                {!messageToShow && currentQuestionIndex < questions.length  && (
+                {!messageToShow && (
                     <button type="button" onClick={next}>
                         Suivant
                     </button>
@@ -236,6 +236,7 @@ export default function SurveyPartA() {
             <Survey
                 questions={questionDataPartA}
                 onSubmit={(responses) => {
+                    console.log("")
                     console.log("Réponses du sondage :", responses);
                 }}
             />
