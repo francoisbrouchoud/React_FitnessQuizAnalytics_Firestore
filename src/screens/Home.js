@@ -40,7 +40,7 @@ export default function Home() {
             </div>
         </div>
         
-        <GetQuestions />
+        {/*<GetQuestions />*/}
         <InitQuestionsPart2/>
         
         <button onClick={handleSignOutClick}>Sign Out</button>
