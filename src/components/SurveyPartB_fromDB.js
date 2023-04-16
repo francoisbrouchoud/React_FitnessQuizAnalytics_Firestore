@@ -1,13 +1,23 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import GetQuestions from "./GetQuestions";
 import {questionDataPartB} from "../data/survey";
 
 
 
 export default function SurveyPartB() {
-    
-    const questionsFromDB = GetQuestions();
-    
+
+    const [questionsFromDB, setQuestionsFromDB] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            const data = await GetQuestions();
+            setQuestionsFromDB(data);
+            setIsLoading(false);
+        }
+        fetchData();
+    }, []);
+
     // Affichage de la question et des radioButtons
     const QuestionZone = ({questionId, questionText, questionSecondaryText, choices, onChange, value, points }) => (
         <div className="questionZone">
@@ -108,10 +118,12 @@ export default function SurveyPartB() {
     
     return (
         <div className="App">
-            <h1>Quizz</h1>
-            
-            {console.log(questionsFromDB)}
-            <Survey questionDataPartB={questionsFromDB}  />
+            <h1>Questionnaire B</h1>
+            {isLoading ? (
+                <p>Question en cours de chargement</p>
+            ) : (
+                <Survey questionDataPartB={questionsFromDB} />
+            )}
         </div>
     );
 }
