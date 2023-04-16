@@ -50,13 +50,13 @@ export default function App()
                                                         setIsSignedIn(!!user);
                                                     });
         
-        const createDefaultUserInDB = async () =>{
+        /*const createDefaultUserInDB = async () =>{
             await createDefaultUser().then(r => console.log("createDefaultUser: ", r.toString()));
         }
         
         // If user is signed in, create a default user in the DB
         if (isSignedIn)
-            createDefaultUserInDB();
+            createDefaultUserInDB();*/
         
         
         // Make sure we un-register Firebase observers when the component unmounts.
@@ -127,25 +127,31 @@ export default function App()
             isAdmin: true,
             //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
             //lastName: "Doe",
-            birthDate: 1997,
+            birthDate: 1800,
+       
         }/*, {merge: true}*/);
         
         console.log("user created in DB" + auth.currentUser.email);
-                    //+ "\nUID : "+ auth.currentUser.uid);
+        
     }
     
     // Signed in - Render app
-    return (
-        <>
-            
-            <div className="App">
-                <Routes>
-                    <Route path="/" 				element={<Home/>}/>
-                    <Route path="/questionnaire" 	element={<Questionnaire/>}/>
-                </Routes>
-            </div>
-        </>
+    if(isSignedIn)
+    {
+        createDefaultUser().then(r => console.log("createDefaultUser: ", r));
         
-    );
+        return (
+            <>
+                <div className="App">
+                    <Routes>
+                        <Route path="/" 				element={<Home/>}/>
+                        <Route path="/questionnaire" 	element={<Questionnaire/>}/>
+                    </Routes>
+                </div>
+            </>
+        
+        );
+    }
+    
 }
 
