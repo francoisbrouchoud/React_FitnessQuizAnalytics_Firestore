@@ -5,9 +5,9 @@ import SurveyPartB from "../components/SurveyPartB_fromDB";
 import React from "react";
 
 export default function Questionnaire() {
+    //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
   return (
     <div>
-        //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
         <SurveyPartB/>
         <SurveyPartA/>
       <p>
