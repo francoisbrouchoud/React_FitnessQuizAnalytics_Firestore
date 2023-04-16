@@ -66,6 +66,7 @@ export default function SurveyPartB() {
         };
 
         //aller en avant teste si on ne sort pa du tableau à droite
+        //TODO voir si on passe les radio button group en paramètres
         const next = () => {
             if (currentQuestionIndex < questions.length - 1) {
                 setCurrentQuestionIndex(currentQuestionIndex + 1);

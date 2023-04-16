@@ -7,6 +7,7 @@ import React from "react";
 export default function Questionnaire() {
   return (
     <div>
+        //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
         <SurveyPartB/>
         <SurveyPartA/>
       <p>

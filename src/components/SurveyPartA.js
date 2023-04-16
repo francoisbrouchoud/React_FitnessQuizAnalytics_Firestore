@@ -96,7 +96,7 @@ export default function SurveyPartA() {
                                 ))}
                         </ul>
                     </div>
-                    <button type="submit">Soumettre les données & passer au questionnaire B</button>
+                    <button type="submit">Soumettre les données & passer au questionnaire A</button>
                 </form>
             );
         }
