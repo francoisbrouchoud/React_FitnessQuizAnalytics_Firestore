@@ -3,6 +3,11 @@
 import React, {useState} from "react";
 
 export default function SurveyPartA() {
+    const getMessagePoints = (messageId) => {
+        const message = messageDataPartA.find((m) => m.messageId === messageId);
+        return message ? message.points : 0;
+    };
+
     const QuestionZone = ({questionId, messageToShow, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
@@ -52,7 +57,10 @@ export default function SurveyPartA() {
 
         const handleSubmit = (event) => {
             event.preventDefault();
-            onSubmit(responses);
+            const messageId = messageToShow.messageId;
+            const points = getMessagePoints(messageId);
+            console.log("Points questionnaire A : ", points);
+            console.log("Réponses du sondage : ", responses);
         };
         //Tentative d'affichage de message quand plus de question
         const next = () => {
@@ -233,13 +241,7 @@ export default function SurveyPartA() {
     return (
         <div className="App">
             <h1>Questionnaire A</h1>
-            <Survey
-                questions={questionDataPartA}
-                onSubmit={(responses) => {
-                    console.log("")
-                    console.log("Réponses du sondage :", responses);
-                }}
-            />
+            <Survey questions={questionDataPartA} />
         </div>
     );
 
