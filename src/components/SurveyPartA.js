@@ -121,7 +121,8 @@ export default function SurveyPartA() {
 
 
 
-    const getNextQuestion = (currentQuestionId, answer) => {
+
+    const getNextQuestion = (currentQuestionId, response, responses) => {
         switch (currentQuestionId) {
             case "A01":
                 if (response === "Oui") {
@@ -151,11 +152,22 @@ export default function SurveyPartA() {
                 } else {
                     return questionsPartOne[4];
                 }
-            case 105:
-                if (answer === "Oui") {
-                    return messagePartOne[1];
+            case "A05":
+                return questionsPartOne.find((q) => q.questionId === "A06");
+            case "A06":
+                const knowsBenefits = responses["A05"]?.value == "Oui";
+                const knowsRisks = responses["A06"]?.value == "Oui";
+
+                console.log(responses["A05"]?.value);
+                console.log(responses["A06"]?.value);
+                console.log(knowsRisks);
+                console.log(knowsBenefits);
+                if (knowsBenefits || knowsRisks) {
+
+                    console.log("une des deux");
+                    return messagePartOne.find((m) => m.messageId === "AM02");
                 } else {
-                    return messagePartOne[0];
+                    return messagePartOne.find((m) => m.messageId === "AM01");
                 }
             default:
                 return null;
