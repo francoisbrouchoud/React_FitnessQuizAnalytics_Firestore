@@ -2,7 +2,8 @@
 //TODO faire afficher les messages, enregister les points
 import React, {useState} from "react";
 
-export default function SurveyPartA({setResults}) {
+export default function SurveyPartA({setResults, onComplete}) {
+
 
     const QuestionZone = ({questionId, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
@@ -24,7 +25,7 @@ export default function SurveyPartA({setResults}) {
         </div>
     );
 
-    const Survey = ({ questions, onSubmit }) => {
+    const Survey = ({ questions, setResults, onComplete }) => {
         const [responses, setResponses] = useState({});
         const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
@@ -32,11 +33,6 @@ export default function SurveyPartA({setResults}) {
             const questionId = event.target.name;
             const { value } = event.target;
             setResponses({ ...responses, [questionId]: { id: questionId, value } });
-        };
-
-        const handleSubmit = (event) => {
-            event.preventDefault();
-            setResults(0);
         };
 
         //Tentative d'affichage de message quand plus de question
@@ -54,6 +50,8 @@ export default function SurveyPartA({setResults}) {
                         points: nextQuestionOrPoints.toString(),
                     };
                     setResults(pointsA);
+                    onComplete();
+
 
                 } else {
                     setCurrentQuestionIndex(
@@ -62,6 +60,13 @@ export default function SurveyPartA({setResults}) {
                 }
             }
         };
+
+        const back = () => {
+            if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(currentQuestionIndex - 1);
+            }
+        };
+
 
         const question = questions[currentQuestionIndex];
 
@@ -76,6 +81,9 @@ export default function SurveyPartA({setResults}) {
                 />
                 <button type="button" onClick={next}>
                     Suivant
+                </button>
+                <button type="button" onClick={back} disabled={currentQuestionIndex === 0}>
+                    Précédent
                 </button>
             </div>
         );
@@ -162,48 +170,42 @@ export default function SurveyPartA({setResults}) {
             messageTitle: "BOX: Précontemplation 1 (indétermination)",
             messageText: "Le patient n’envisage pas de reprendre une activité physique et il n'est pas consient de risque de l'inactivité ou des benefices de l'activité physique.",
             advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité", "– Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
-            points: 1
         },
         {
             messageId: "AMsg02",
             messageTitle: "BOX: Précontemplation 2 (indétermination)",
             messageText: "Le patient n’envisage pas de reprendre une activité physique mais il connais les avantes de l'activité physique. ",
             advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité"],
-            points: 2
         },
         {
             messageId: "AMsg03",
             messageTitle: "Contemplation (intention)",
             messageText: "Le patient est intéressé ou réfléchit à modifier son activité",
             advices: ["– Entretien motivationnel (tab. 3)", "– Pouvoir répondre aux éventuelles objections (cf. tab. 4)", "– Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
-            points: 3
         },
         {
             messageId: "AMsg04",
             messageTitle: "Préparation 1",
             messageText: "Le patient est actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
-            points: 4
         },
         {
             messageId: "AMsg05",
             messageTitle: "Préparation 2",
             messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
             advices: ["- proposer brochures sur l'activité physique"],
-            points: 5
         },
         {
             messageId: "AMsg06",
             messageTitle: "Action et maintien",
             messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine",
             messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
-            points: 6
         },
     ]
 
     return (
         <div className="App">
             <h1>Questionnaire A</h1>
-            <Survey questions={questionDataPartA} setResults={setResults} />
+            <Survey questions={questionDataPartA} setResults={setResults} onComplete={onComplete} />
         </div>
     );
 

@@ -8,6 +8,8 @@ import SetResultsToFirebase from "../components/SetResultsToFirebase";
 export default function Questionnaire() {
     const [resultsA, setResultsA] = useState(null);
     const [resultsB, setResultsB] = useState(null);
+    const [displaySurveyA, setDisplaySurveyA] = useState(true);
+    const [displaySurveyB, setDisplaySurveyB] = useState(false);
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -24,11 +26,16 @@ export default function Questionnaire() {
         }
     }, [resultsA, resultsB]);
 
+    const handleCompleteA = () => {
+        setDisplaySurveyA(false);
+        setDisplaySurveyB(true);
+    };
+
     //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
       return (
         <div>
-            <SurveyPartB setResults={setResultsB}/>
-            <SurveyPartA setResults={setResultsA}/>
+            {displaySurveyA && <SurveyPartA setResults={setResultsA} onComplete={handleCompleteA} />}
+            {displaySurveyB && <SurveyPartB setResults={setResultsB} />}
           <p>
             <Link to="/">Go To The Home Page</Link>
           </p>
