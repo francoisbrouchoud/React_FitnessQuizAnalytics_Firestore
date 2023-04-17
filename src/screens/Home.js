@@ -7,6 +7,7 @@ import InitQuestionsPart2 from "../components/InitQuestionsPart2";
 import InitQuestionsPartA from "../components/InitQuestionsPartA";
 import React from "react";
 import "../App.css";
+import InitMessagesPartA from "../components/InitMessagesPartA";
 
 
 export default function Home() {
@@ -49,6 +50,7 @@ export default function Home() {
         {/* SEED DB */}
         <InitQuestionsPartA/>
         <InitQuestionsPart2/>
+        <InitMessagesPartA/>
         
         
         <button onClick={handleSignOutClick}>Sign Out</button>

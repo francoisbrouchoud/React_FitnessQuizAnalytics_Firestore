@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import GetQuestions from "./GetQuestions";
-import {questionDataPartB} from "../data/survey";
+import {GetQuestions} from "./GetQuestions";
 import {Link} from "react-router-dom";
 
 
