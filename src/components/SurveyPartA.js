@@ -4,45 +4,28 @@ import React, {useState} from "react";
 
 export default function SurveyPartA({setResults}) {
 
-    const QuestionZone = ({questionId, messageToShow, questionText, choices, onChange, value,}) => (
+    const QuestionZone = ({questionId, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
             <h3>{questionText}</h3>
-
-            <div>
-                {messageToShow ? (
-                    <div>
-                        <h2>{messageToShow.messageTitle}</h2>
-                        <p>{messageToShow.messageText}</p>
-                        <ul>
-                            {messageToShow.advices &&
-                                messageToShow.advices.map((advice, index) => (
-                                    <li key={index}>{advice}</li>
-                                ))}
-                        </ul>
-                    </div>
-                ) : (
-                    <div>
-                        {choices.map((choice, index) => (
-                            <label key={index}>
-                                <input
-                                    type="radio"
-                                    name={questionId}
-                                    value={choice}
-                                    onChange={onChange}
-                                    checked={value === choice}
-                                />
-                                {choice}
-                            </label>
-                        ))}
-                    </div>
-                )}
-            </div>
+                <div>
+                    {choices.map((choice, index) => (
+                        <label key={index}>
+                            <input
+                                type="radio"
+                                name={questionId}
+                                value={choice}
+                                onChange={onChange}
+                                checked={value === choice}
+                            />
+                            {choice}
+                        </label>
+                    ))}
+                </div>
         </div>
     );
 
     const Survey = ({ questions, onSubmit }) => {
         const [responses, setResponses] = useState({});
-        const [messageToShow, setMessageToShow] = useState(null);
         const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
         const handleChange = (event) => {
@@ -54,10 +37,8 @@ export default function SurveyPartA({setResults}) {
         const handleSubmit = (event) => {
             event.preventDefault();
             setResults(0);
-
-            // console.log("Points questionnaire A : ", points);
-            // console.log("Réponses du sondage : ", responses);
         };
+
         //Tentative d'affichage de message quand plus de question
         const next = () => {
             if (responses.hasOwnProperty(question.questionId)) {
@@ -68,12 +49,10 @@ export default function SurveyPartA({setResults}) {
                 );
 
                 if (typeof nextQuestionOrPoints === 'number') {
-
                     const pointsA = {
                         id: 'A01',
                         points: nextQuestionOrPoints.toString(),
                     };
-
                     setResults(pointsA);
 
                 } else {
@@ -86,24 +65,6 @@ export default function SurveyPartA({setResults}) {
 
         const question = questions[currentQuestionIndex];
 
-        if (messageToShow) {
-            return (
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <h2>{messageToShow.messageTitle}</h2>
-                        <p>{messageToShow.messageText}</p>
-                        <ul>
-                            {messageToShow.advices &&
-                                messageToShow.advices.map((advice, index) => (
-                                    <li key={index}>{advice}</li>
-                                ))}
-                        </ul>
-                    </div>
-                    <button type="submit">Soumettre les données & passer au questionnaire A</button>
-                </form>
-            );
-        }
-
         return (
             <div>
                 <QuestionZone
@@ -113,11 +74,9 @@ export default function SurveyPartA({setResults}) {
                     onChange={handleChange}
                     value={responses[question.questionId]?.value}
                 />
-                {!messageToShow && (
-                    <button type="button" onClick={next}>
-                        Suivant
-                    </button>
-                )}
+                <button type="button" onClick={next}>
+                    Suivant
+                </button>
             </div>
         );
     };
