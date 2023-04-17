@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import GetQuestions from "./GetQuestions";
 import {questionDataPartB} from "../data/survey";
+import {Link} from "react-router-dom";
 
 
 
@@ -42,6 +43,8 @@ function Survey ({ questionDataPartB, setResults})
         const points = event.target.dataset.points;
         setResponses({ ...responses, [questionId]: {id: questionId, value, points } });
     };
+
+
     
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -62,7 +65,9 @@ function Survey ({ questionDataPartB, setResults})
         });
 
         setResults(resultsTemp);
-        
+
+
+
         //TODO ici on peut gérer les résultat
         //onResultsReady(results);
 
