@@ -1,7 +1,78 @@
 // DEFAULT DATA TO SEED FIREBASE DATABASE
 // This variable is used to store the current question to initialize the firestore database if it is empty.
-export const questionDataPartB =
-                 [
+export const questionDataPartA = [
+    {
+        questionId: "AQst01",
+        questionText: "Est-ce que vous avez une activité physique régulière ? ",
+        choices: ["Oui", "Non"],
+    },
+    {
+        questionId: "AQst02",
+        questionText: "Diriez-vous que vous êtes actif/-ve au moins 30 minutes chaque jour (au moins 5 jours par semaine) ?",
+        choices: ["Oui", "Non"],
+    },
+    {
+        questionId: "AQst03",
+        questionText: "Est-ce qu’il vous arrive parfois/régulièrement de transpirer ou d’être essoufflé/-e durant cette activité ?",
+        choices: ["Oui", "Non"],
+    },
+    {
+        questionId: "AQst04",
+        questionText: "Est-ce que vous auriez envie de reprendre une activité physique plus importante dans les prochains mois ?",
+        choices: ["Oui", "Non"],
+    },
+    {
+        questionId: "AQst05",
+        questionText: "Est-ce que vous connaisez les avantages que l'activité physique peut apporter pour la santé ?",
+        choices: ["Oui", "Non"],
+    },
+    {
+        questionId: "AQst06",
+        questionText: "Est-ce que vous connaisez les risques de l'inactivité ?",
+        choices: ["Oui", "Non"],
+    },
+];
+
+export const messageDataPartA = [
+    {
+        messageId: "AMsg01",
+        messageTitle: "BOX: Précontemplation 1 (indétermination)",
+        messageText: "Le patient n’envisage pas de reprendre une activité physique et il n'est pas consient de risque de l'inactivité ou des benefices de l'activité physique.",
+        advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité", "– Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
+    },
+    {
+        messageId: "AMsg02",
+        messageTitle: "BOX: Précontemplation 2 (indétermination)",
+        messageText: "Le patient n’envisage pas de reprendre une activité physique mais il connais les avantes de l'activité physique. ",
+        advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité"],
+    },
+    {
+        messageId: "AMsg03",
+        messageTitle: "Contemplation (intention)",
+        messageText: "Le patient est intéressé ou réfléchit à modifier son activité",
+        advices: ["– Entretien motivationnel (tab. 3)", "– Pouvoir répondre aux éventuelles objections (cf. tab. 4)", "– Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
+    },
+    {
+        messageId: "AMsg04",
+        messageTitle: "Préparation 1",
+        messageText: "Le patient est actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
+    },
+    {
+        messageId: "AMsg05",
+        messageTitle: "Préparation 2",
+        messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
+        advices: ["- proposer brochures sur l'activité physique"],
+    },
+    {
+        messageId: "AMsg06",
+        messageTitle: "Action et maintien",
+        messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine",
+        messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
+    },
+];
+
+//TODO correct id BQst01 ... and duplicated question
+export const questionDataPartB = [
                      {
                          questionId: "B01",
                          questionText: "Quels dispositifs d'aide à la marche utilisez vous ? ",
@@ -100,4 +171,4 @@ export const questionDataPartB =
                          choices: ["Non je ne me sens pas sûr-e", "Oui je me sens sûr-e", "Impossible de faire sans me tenir"],
                          points: [1, 2, 0]
                      }
-                 ];
+                     ];
