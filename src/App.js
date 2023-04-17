@@ -3,7 +3,7 @@ import "./App.css";
 import firebase from "firebase/compat/app";
 import firebaseApp from "./initFirebase";
 import {db, auth} from "./initFirebase";
-import {addDoc, collection, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
+import {addDoc, collection, doc, getDoc, setDoc, Timestamp, updateDoc} from "firebase/firestore";
 import {getAdditionalUserInfo, User, } from "firebase/auth"
 import {StyledFirebaseAuth} from "react-firebaseui";
 import 'firebaseui/dist/firebaseui.css'
@@ -12,6 +12,7 @@ import {useEffect, useState} from "react";
 import {Routes, Route} from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
 import Home from "./screens/Home";
+import Profile from "./screens/Profile";
 ;
 
 // Configure FirebaseUI.
@@ -87,11 +88,10 @@ export default function App()
             email: auth.currentUser.email,
             uid:   auth.currentUser.uid,
             isAdmin: true,
-            //firstName: auth.additionalUserInfo.profile.given_name, // I want to get infos from the Google account if it exists
-            lastName: "DoeHEHE",
-            birthDate: 1800,
-            xolo: "non",
-            xolo2: "non",
+            //firstName:                 ON REMPLIT CES DONNE DEPUIS LE PROFIL
+            //lastName:
+            //birthDate:
+            xolo: "non"
         }
         
         // Get the user profile from the DB
@@ -132,6 +132,9 @@ export default function App()
         }
     }
     
+    // UPDATE USER PROFILE
+    // This function is used to update the user profile in Firestore.
+    // It takes the userId and newUserData as parameters and updates the user profile in Firestore.
     const updateUserProfile = async (userId, newUserData) =>
     {
         console.log('UPDATE USER PROFILE FOR '+ userId + " with data : " + newUserData)
@@ -215,6 +218,7 @@ export default function App()
                     <Routes>
                         <Route path="/" 				element={<Home/>}/>
                         <Route path="/questionnaire" 	element={<Questionnaire/>}/>
+                        <Route path="/profile" 			element={<Profile/>}/>
                     </Routes>
                 </div>
             </>

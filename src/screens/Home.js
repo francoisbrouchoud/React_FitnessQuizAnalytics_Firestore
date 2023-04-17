@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import {useState} from "react";
 import GetQuestions from "../components/GetQuestions";
 import InitQuestionsPart2 from "../components/InitQuestionsPart2";
+import InitQuestionsPartA from "../components/InitQuestionsPartA";
 import React from "react";
 import "../App.css";
 
@@ -17,6 +18,11 @@ export default function Home() {
   return (
     <>
         <header className="AppHeader">
+            <div className="HeadIconsPosition">
+                <Link to={"/profile"}>
+                    <h1>PROFILE</h1>
+                </Link>
+            </div>
             <div className="HeadIconsPosition">
                 <img className="headerIcons" src={require('../Pictures/fonctionnement.png')}/>
                 <h1>Fitness Check</h1>
@@ -40,8 +46,10 @@ export default function Home() {
             </div>
         </div>
         
-        {/*<GetQuestions />*/}
+        {/* SEED DB */}
+        <InitQuestionsPartA/>
         <InitQuestionsPart2/>
+        
         
         <button onClick={handleSignOutClick}>Sign Out</button>
     </>
