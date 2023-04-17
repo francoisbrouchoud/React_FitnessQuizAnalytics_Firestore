@@ -6,11 +6,12 @@ import React, {useEffect, useState} from "react";
 import SetResultsToFirebase from "../components/SetResultsToFirebase";
 
 export default function Questionnaire() {
-    const [resultsA, setResultsA] = useState("gg");
+    const [resultsA, setResultsA] = useState(null);
     const [resultsB, setResultsB] = useState(null);
 
     const navigate = useNavigate();
     useEffect(() => {
+        console.log("resultat Provisoire A", resultsA);
         if(resultsA != null && resultsB != null){
             console.log("new Results A, B",  resultsA, resultsB)
             // 1 afficher le contenu de la variable

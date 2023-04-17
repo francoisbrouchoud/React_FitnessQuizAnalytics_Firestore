@@ -2,11 +2,7 @@
 //TODO faire afficher les messages, enregister les points
 import React, {useState} from "react";
 
-export default function SurveyPartA() {
-    const getMessagePoints = (messageId) => {
-        const message = messageDataPartA.find((m) => m.messageId === messageId);
-        return message ? message.points : 0;
-    };
+export default function SurveyPartA({setResults}) {
 
     const QuestionZone = ({questionId, messageToShow, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
@@ -57,25 +53,32 @@ export default function SurveyPartA() {
 
         const handleSubmit = (event) => {
             event.preventDefault();
-            const messageId = messageToShow.messageId;
-            const points = getMessagePoints(messageId);
-            console.log("Points questionnaire A : ", points);
-            console.log("Réponses du sondage : ", responses);
+            setResults(0);
+
+            // console.log("Points questionnaire A : ", points);
+            // console.log("Réponses du sondage : ", responses);
         };
         //Tentative d'affichage de message quand plus de question
         const next = () => {
             if (responses.hasOwnProperty(question.questionId)) {
-                const nextQuestionOrMessage = getNextQuestion(
+                const nextQuestionOrPoints = getNextQuestion(
                     question.questionId,
                     responses[question.questionId].value,
                     responses
                 );
 
-                if (nextQuestionOrMessage.messageId) {
-                    setMessageToShow(nextQuestionOrMessage);
+                if (typeof nextQuestionOrPoints === 'number') {
+
+                    const pointsA = {
+                        id: 'A01',
+                        points: nextQuestionOrPoints.toString(),
+                    };
+
+                    setResults(pointsA);
+
                 } else {
                     setCurrentQuestionIndex(
-                        questions.findIndex((q) => q.questionId === nextQuestionOrMessage.questionId)
+                        questions.findIndex((q) => q.questionId === nextQuestionOrPoints.questionId)
                     );
                 }
             }
@@ -131,17 +134,17 @@ export default function SurveyPartA() {
                 if (response  === "Oui") {
                     return questionDataPartA.find((q) => q.questionId === "AQst03");
                 } else {
-                    return messageDataPartA.find((m) => m.messageId === "AMsg04");
+                    return 4;
                 }
             case "AQst03":
                 if (response  === "Oui") {
-                    return messageDataPartA.find((m) => m.messageId === "AMsg06");
+                    return 6;
                 } else {
-                    return messageDataPartA.find((m) => m.messageId === "AMsg05");
+                    return 5;
                 }
             case "AQst04":
                 if (response === "Oui") {
-                    return messageDataPartA.find((m) => m.messageId === "AMsg03");
+                    return 3;
                 } else {
                     return questionDataPartA.find((q) => q.questionId === "AQst05");
                 }
@@ -152,9 +155,9 @@ export default function SurveyPartA() {
                 const knowsRisks = responses["AQst06"]?.value === "Oui";
 
                 if (knowsBenefits || knowsRisks) {
-                    return messageDataPartA.find((m) => m.messageId === "AMsg02");
+                    return 2;
                 } else {
-                    return messageDataPartA.find((m) => m.messageId === "AMsg01");
+                    return 1;
                 }
             default:
                 return null;
@@ -241,7 +244,7 @@ export default function SurveyPartA() {
     return (
         <div className="App">
             <h1>Questionnaire A</h1>
-            <Survey questions={questionDataPartA} />
+            <Survey questions={questionDataPartA} setResults={setResults} />
         </div>
     );
 
