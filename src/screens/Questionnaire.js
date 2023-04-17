@@ -6,27 +6,28 @@ import React, {useEffect, useState} from "react";
 import SetResultsToFirebase from "../components/SetResultsToFirebase";
 
 export default function Questionnaire() {
-    const [results, setResults] = useState(null);
+    const [resultsA, setResultsA] = useState("gg");
+    const [resultsB, setResultsB] = useState(null);
 
     const navigate = useNavigate();
     useEffect(() => {
-        if(results != null){
-            console.log("new Results",  results)
+        if(resultsA != null && resultsB != null){
+            console.log("new Results A, B",  resultsA, resultsB)
             // 1 afficher le contenu de la variable
             // 2 concatener les resultats a et b
-            // 3 push le resultats sur la firebase
-            SetResultsToFirebase(results);
+            // 3 push le resultats sur la firebase evt. avoir deux resultats
+            SetResultsToFirebase(resultsA, resultsB);
             // 4 renitialiser les resultat
             // 5 Changer la page
             navigate('/');
         }
-    }, [results]);
+    }, [resultsA, resultsB]);
 
     //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
       return (
         <div>
-            <SurveyPartB setResults={setResults}/>
-            <SurveyPartA/>
+            <SurveyPartB setResults={setResultsB}/>
+            <SurveyPartA setResults={setResultsA}/>
           <p>
             <Link to="/">Go To The Home Page</Link>
           </p>
