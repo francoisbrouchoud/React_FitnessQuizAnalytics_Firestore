@@ -4,7 +4,7 @@ import {questionDataPartB} from "../data/survey";
 
 
 
-export default function SurveyPartB() {
+export default function SurveyPartB({setResults}) {
 
     const [questionsFromDB, setQuestionsFromDB] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,13 +24,13 @@ export default function SurveyPartB() {
             {isLoading ? (
                 <p>Question en cours de chargement</p>
             ) : (
-                <Survey questionDataPartB={questionsFromDB} />
+                <Survey questionDataPartB={questionsFromDB} setResults={setResults} />
             )}
         </div>
     );
 }
 
-function Survey ({ questionDataPartB, onSubmit })
+function Survey ({ questionDataPartB, setResults})
 {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -55,14 +55,18 @@ function Survey ({ questionDataPartB, onSubmit })
             //supprime le message d'erreur
             setErrorMessage('');
         }
-        
-        const results = Object.keys(responses).map((questionId) => {
+
+        const resultsTemp = Object.keys(responses).map((questionId) => {
             const { id, points } = responses[questionId];
             return { id, points };
         });
+
+        setResults(resultsTemp);
         
         //TODO ici on peut gérer les résultat
-        console.log("Réponses du sondage :", results);
+        //onResultsReady(results);
+
+        //console.log("Réponses du sondage :", setResults);
     };
     
     //retour en arrière teste si on ne sort pa du tableau à gauche
