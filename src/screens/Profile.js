@@ -166,6 +166,7 @@ function ProfileEditable(props) {
                     id="first-name-input"
                     name="firstName"
                     value={editedData.firstName}
+                    //defaultValue={null}
                     onChange={handleInputChange}
                 />
             </div>
@@ -176,6 +177,7 @@ function ProfileEditable(props) {
                     id="last-name-input"
                     name="lastName"
                     value={editedData.lastName}
+                    //defaultValue={null}
                     onChange={handleInputChange}
                 />
             </div>
@@ -185,8 +187,8 @@ function ProfileEditable(props) {
                     type="date"
                     id="birth-date-input"
                     name="birthDate"
-                    
                     value={editedData.birthDate}
+                    //defaultValue={null}
                     onChange={handleInputChange}
                 />
             </div>
