@@ -107,7 +107,7 @@ function Survey ({ questionDataPartB, setResults})
             )}
             {/*si on arrive au bout on remplace le bouton suivant par submit*/}
             {currentQuestionIndex < questionDataPartB.length - 1 ? (
-                <button type="button" onClick={next}>Suivant</button>
+                <button type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>
             ) : (
                 <button type="submit">Valider mon questionnaire</button>
             )}
