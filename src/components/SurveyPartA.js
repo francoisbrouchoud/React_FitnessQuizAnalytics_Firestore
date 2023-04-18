@@ -94,7 +94,7 @@ export default function SurveyPartA({setResults, onComplete}) {
                 <button type="button" onClick={back} disabled={currentQuestionIndex === 0}>
                     Précédent
                 </button>
-                <button type="button" onClick={next}>
+                <button type="button" onClick={next} disabled={!responses[question.questionId]}>
                     Suivant
                 </button>
             </div>

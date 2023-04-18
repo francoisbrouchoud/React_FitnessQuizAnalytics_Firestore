@@ -2,8 +2,6 @@ import React, {useEffect, useState} from "react";
 import {GetQuestions} from "./GetQuestions";
 import {Link} from "react-router-dom";
 
-
-
 export default function SurveyPartB({setResults}) {
 
     const [questionsFromDB, setQuestionsFromDB] = useState([]);
@@ -34,7 +32,7 @@ function Survey ({ questionDataPartB, setResults})
 {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [errorMessage, setErrorMessage] = useState('');
+    //const [errorMessage, setErrorMessage] = useState('');
     
     const handleChange = (event) => {
         const questionId = event.target.name;
@@ -43,11 +41,11 @@ function Survey ({ questionDataPartB, setResults})
         setResponses({ ...responses, [questionId]: {id: questionId, value, points } });
     };
 
-
-    
     const handleSubmit = (event) => {
         event.preventDefault();
-        
+
+
+        /* Plus utilisé permettait de vérifier que tout était bien répondu mais géré au niveau du next
         const userAnsweredAllQuestions = questionDataPartB.every((question) => responses.hasOwnProperty(question.questionId));
         
         if (!userAnsweredAllQuestions) {
@@ -57,6 +55,8 @@ function Survey ({ questionDataPartB, setResults})
             //supprime le message d'erreur
             setErrorMessage('');
         }
+        */
+
 
         const resultsTemp = Object.keys(responses).map((questionId) => {
             const { id, points } = responses[questionId];
@@ -65,12 +65,6 @@ function Survey ({ questionDataPartB, setResults})
 
         setResults(resultsTemp);
 
-
-
-        //TODO ici on peut gérer les résultat
-        //onResultsReady(results);
-
-        //console.log("Réponses du sondage :", setResults);
     };
     
     //retour en arrière teste si on ne sort pa du tableau à gauche
@@ -103,7 +97,7 @@ function Survey ({ questionDataPartB, setResults})
             />
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             {currentQuestionIndex > 0 && (
-                <button type="button" onClick={back}>Précédant</button>
+                <button type="button" onClick={back}>Précédent</button>
             )}
             {/*si on arrive au bout on remplace le bouton suivant par submit*/}
             {currentQuestionIndex < questionDataPartB.length - 1 ? (
