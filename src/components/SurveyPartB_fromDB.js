@@ -45,7 +45,8 @@ function Survey ({ questionDataPartB, setResults})
         event.preventDefault();
 
 
-        /* Plus utilisé permettait de vérifier que tout était bien répondu mais géré au niveau du next
+        // Plus utilisé permettait de vérifier que tout était bien répondu mais géré au niveau du next
+        /*
         const userAnsweredAllQuestions = questionDataPartB.every((question) => responses.hasOwnProperty(question.questionId));
         
         if (!userAnsweredAllQuestions) {
@@ -56,6 +57,8 @@ function Survey ({ questionDataPartB, setResults})
             setErrorMessage('');
         }
         */
+
+
 
 
         const resultsTemp = Object.keys(responses).map((questionId) => {
@@ -95,14 +98,15 @@ function Survey ({ questionDataPartB, setResults})
                 value={responses[question.questionId]?.value}
                 points={questionDataPartB[currentQuestionIndex].points}
             />
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {/*{errorMessage && <p className="error-message">{errorMessage}</p>}*/}
             {currentQuestionIndex > 0 && (
                 <button type="button" onClick={back}>Précédent</button>
             )}
             {/*si on arrive au bout on remplace le bouton suivant par submit*/}
-            {currentQuestionIndex < questionDataPartB.length - 1 ? (
-                <button type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>
-            ) : (
+            {currentQuestionIndex < questionDataPartB.length - 1 && (
+                <button type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>)
+            }
+            {currentQuestionIndex === questionDataPartB.length - 1 && (
                 <button type="submit">Valider mon questionnaire</button>
             )}
         </form>
