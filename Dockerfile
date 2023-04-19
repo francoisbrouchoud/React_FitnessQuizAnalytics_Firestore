@@ -2,7 +2,7 @@
 
 # Build and compile app
 FROM node:16 as build
-MAINTAINER Roger Schaer <roger.schaer@hevs.ch>
+MAINTAINER Francois Brouchoud <francois@brouchoud.ch>
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -14,7 +14,7 @@ RUN yarn
 RUN yarn global add react-scripts
 
 # Copy app source
-COPY fitnesscheck-template /usr/src/app
+COPY . /usr/src/app
 
 # Run the build
 RUN yarn run build
