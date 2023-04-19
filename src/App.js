@@ -13,6 +13,7 @@ import {Routes, Route} from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
+import Resultats from "./screens/Resultats";
 ;
 
 // Configure FirebaseUI.
@@ -219,6 +220,7 @@ export default function App()
                         <Route path="/" 				element={<Home/>}/>
                         <Route path="/questionnaire" 	element={<Questionnaire/>}/>
                         <Route path="/profile" 			element={<Profile/>}/>
+                        <Route path="/resultats" 		element={<Resultats/>}/>
                     </Routes>
                 </div>
             </>
