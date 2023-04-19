@@ -42,8 +42,10 @@ export default function Home() {
                 </Link>
             </div>
             <div className="DoOrConsultQuizz">
-                <img className="headerIcons" src={require('../Pictures/research.png')}/>
-                <p className="buttonTitle">Voir mes résultats</p>
+                <Link to="/resultats">
+                    <img className="headerIcons" src={require('../Pictures/research.png')}/>
+                    <p className="buttonTitle">Voir mes résultats</p>
+                </Link>
             </div>
         </div>
         
