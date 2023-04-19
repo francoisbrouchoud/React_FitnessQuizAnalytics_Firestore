@@ -200,13 +200,27 @@ function ProfileEditable(props) {
 
 function ProfileReadOnly(props) {
     const { firstName, lastName, birthDate, email, isAdmin } = props;
+    const firebasename = getFirebaseAuthName();
     return (
         <div>
-            <p>First Name: {firstName}</p>
-            <p>Last Name: {lastName}</p>
+            <p>First Name: {firstName || firebasename.firstName}</p>
+            <p>Last Name: {lastName || firebasename.lastName}</p>
             <p>Birth Date: {birthDate}</p>
             <p>Email: {email}</p>
             <p>Is Admin: {isAdmin ? "Yes" : "No"}</p>
         </div>
     );
+}
+
+function getFirebaseAuthName() {
+    const user = auth.currentUser;
+    let firstName, lastName;
+
+    if (user.displayName) {
+        const names = user.displayName.split(" ");
+        firstName = names[0];
+        lastName = names[names.length - 1];
+    }
+
+    return { firstName, lastName };
 }
