@@ -70,8 +70,6 @@ export const messageDataPartA = [
         messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
     },
 ];
-
-//TODO correct id BQst01 ... and duplicated question
 export const questionDataPartB = [
                      {
                          questionId: "BQst01",

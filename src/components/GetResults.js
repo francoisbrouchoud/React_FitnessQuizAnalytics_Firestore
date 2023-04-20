@@ -1,7 +1,6 @@
 import React from "react";
 
 //TODO - A RECUPERER L'ARRAY DE RESULTAT SET PAR FRANCOIS
-//TODO - A MODIFIER QUESTIONS PARTIE B, IL MANQUE MOBILITE ET PEUR DU VIDE 2x (A REMPLACER)
 
 const reponsesSondage = [
     { id: "01", points: "2" },
@@ -33,22 +32,22 @@ export function GetResults() {
             propositionRouteMessage = "Pas de marche";
             break;
         case "4":
-            propositionRouteMessage = "5 min";
+            propositionRouteMessage = "5 min de marche";
             break;
         case "7":
-            propositionRouteMessage = "15 min";
+            propositionRouteMessage = "15 min de marche";
             break;
         case "10":
-            propositionRouteMessage = "30 min";
+            propositionRouteMessage = "30 min de marche";
             break;
         case "13":
-            propositionRouteMessage = "1h";
+            propositionRouteMessage = "1h de marche";
             break;
         case "16":
-            propositionRouteMessage = "2h";
+            propositionRouteMessage = "2h de marche";
             break;
         case "19":
-            propositionRouteMessage = "3h";
+            propositionRouteMessage = "3h de marche";
             break;
         default:
             propositionRouteMessage = "Résultat inconnu";
@@ -88,7 +87,7 @@ export function GetResults() {
     }
 
     //Dénivelé
-    //TODO - A FAIRE CALCUL DENIVELE POUR RECOMMENDATION
+    //TODO - A FAIRE CALCUL DENIVELE POUR RECOMMENDATION - A REVOIR SELON FICHIER EXCEL
     var deniveleResultat;
     var deniveleMessage = "";
 
@@ -187,16 +186,16 @@ export function GetResults() {
             activitePhysiqueMessage = "Erreur";
     }
 
-
     return (
         <div>
-            <p>Recommendations</p>
-            <p>Durée de la route à proposer : {propositionRouteMessage} </p>
-            <p>Vitesse de la marche : {vitesseMarcheMessage} </p>
-            <p>Chemins : {cheminMessage} </p>
-            <p>Le dénivelé : </p>
-            <p>Risques de chute : {risqueChuteMessage}</p>
-            <p>Brochures /Infos / Conseils "activité physique" : {activitePhysiqueMessage}</p>
+            <ul>
+                <li>{propositionRouteMessage}</li>
+                <li>{vitesseMarcheMessage}</li>
+                <li>{cheminMessage}</li>
+                <li>Dénivelé</li>
+                <li>{risqueChuteMessage}</li>
+                <li>{activitePhysiqueMessage}</li>
+            </ul>
         </div>
     );
 }
