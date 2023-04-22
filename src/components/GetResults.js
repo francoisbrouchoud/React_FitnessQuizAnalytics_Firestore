@@ -1,4 +1,7 @@
 import React from "react";
+import {collection, doc, getDocs, getDoc, setDoc, getDocFromCache, query, where, addDoc, Timestamp} from "firebase/firestore";
+import {db,auth} from "../initFirebase";
+import formattedDate from "./SetResultsToFirebase";
 
 //TODO - A RECUPERER L'ARRAY DE RESULTAT SET PAR FRANCOIS
 
@@ -21,6 +24,27 @@ const reponsesSondage = [
 ];
 
 export function GetResults() {
+
+    const getDocument = async () => {
+
+        const querySnapshot = await getDocs(collection(db, "users",auth.currentUser.email,"results"));
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(doc.id, " => ", doc.data());
+        });
+
+    }
+
+    const handleButtonClick = async () => {
+        try
+        {
+            await getDocument();
+        }
+        catch (error)
+        {
+            console.log(error);
+        }
+    };
 
 // Durée de la route à proposer
     let propositionRouteMessage = "";
@@ -196,6 +220,9 @@ export function GetResults() {
                 <li>{risqueChuteMessage}</li>
                 <li>{activitePhysiqueMessage}</li>
             </ul>
+            <div>
+                <button onClick={handleButtonClick}>Get Data</button>
+            </div>
         </div>
     );
 }

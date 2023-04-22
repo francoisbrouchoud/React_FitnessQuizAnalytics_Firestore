@@ -68,7 +68,6 @@ export default function DisplayResults() {
         },
     ]);
 
-    //TODO - A rajouter le lien <GetResults/> à la fin de la DIV
     return (
         <div style={{ height: '400px' }}>
             <ResponsiveRadar
