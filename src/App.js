@@ -8,11 +8,13 @@ import {getAdditionalUserInfo, User, } from "firebase/auth"
 import {StyledFirebaseAuth} from "react-firebaseui";
 import 'firebaseui/dist/firebaseui.css'
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Routes, Route} from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
+import {AppHeader} from "./screens/AppHeader";
+import Information from "./screens/Information";
 ;
 
 // Configure FirebaseUI.
@@ -199,13 +201,23 @@ export default function App()
     if (!isSignedIn)
         return (
             <div className="App">
-                <h1>Fitness Check - WebApp</h1>
-                <h2>Please sign-in:</h2>
-                <StyledFirebaseAuth
-                    uiConfig={uiConfig}
-                    firebaseAuth={firebaseApp.auth()}
-                />
-                <button onClick={handleResetPasswordClick}>Forgot Password</button>
+                <header className="login-header">
+                    <img src={require('./Pictures/fonctionnement.png')}/>
+                    <h1>Fitness Check</h1>
+                </header>
+                <div className="container loginContent">
+                    <div className="card">
+                        <h2>Connexion</h2>
+                        <img className="headerIcons login-icon" src={require('./Pictures/avatarHomme.png')}/>
+                        <div className="login-form">
+                            <StyledFirebaseAuth
+                              uiConfig={uiConfig}
+                              firebaseAuth={firebaseApp.auth()}
+                            />
+                        </div>
+                        <button className="primary-button" onClick={handleResetPasswordClick}>Forgot Password</button>
+                    </div>
+                </div>
             </div>
         );
     
@@ -215,11 +227,15 @@ export default function App()
         return (
             <>
                 <div className="App">
-                    <Routes>
-                        <Route path="/" 				element={<Home/>}/>
-                        <Route path="/questionnaire" 	element={<Questionnaire/>}/>
-                        <Route path="/profile" 			element={<Profile/>}/>
-                    </Routes>
+                    <AppHeader/>
+                    <div className="container">
+                        <Routes>
+                            <Route path="/" 				element={<Home/>}/>
+                            <Route path="/questionnaire" 	element={<Questionnaire/>}/>
+                            <Route path="/profile" 			element={<Profile/>}/>
+                            <Route path="/information" 			element={<Information/>}/>
+                        </Routes>
+                    </div>
                 </div>
             </>
         

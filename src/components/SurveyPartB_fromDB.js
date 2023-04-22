@@ -17,14 +17,14 @@ export default function SurveyPartB({setResults}) {
     }, []);
     
     return (
-        <div className="App">
+        <>
             <h1>Questionnaire B</h1>
             {isLoading ? (
                 <p>Question en cours de chargement</p>
             ) : (
                 <Survey questionDataPartB={questionsFromDB} setResults={setResults} />
             )}
-        </div>
+        </>
     );
 }
 
@@ -98,17 +98,19 @@ function Survey ({ questionDataPartB, setResults})
                 value={responses[question.questionId]?.value}
                 points={questionDataPartB[currentQuestionIndex].points}
             />
-            {/*{errorMessage && <p className="error-message">{errorMessage}</p>}*/}
-            {currentQuestionIndex > 0 && (
-                <button type="button" onClick={back}>Précédent</button>
-            )}
-            {/*si on arrive au bout on remplace le bouton suivant par submit*/}
-            {currentQuestionIndex < questionDataPartB.length - 1 && (
-                <button type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>)
-            }
-            {currentQuestionIndex === questionDataPartB.length - 1 && (
-                <button type="submit">Valider mon questionnaire</button>
-            )}
+            <div className="controls-btn">
+                {/*{errorMessage && <p className="error-message">{errorMessage}</p>}*/}
+                {currentQuestionIndex > 0 && (
+                  <button className="secondary-button" type="button" onClick={back}>Précédent</button>
+                )}
+                {/*si on arrive au bout on remplace le bouton suivant par submit*/}
+                {currentQuestionIndex < questionDataPartB.length - 1 && (
+                  <button className="primary-button" type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>)
+                }
+                {currentQuestionIndex === questionDataPartB.length - 1 && (
+                  <button className="primary-button" type="submit">Valider mon questionnaire</button>
+                )}
+            </div>
         </form>
     );
 };
@@ -117,22 +119,26 @@ function Survey ({ questionDataPartB, setResults})
 export function QuestionZone ({questionId, questionText, questionSecondaryText, choices, onChange, value, points }) {
     return(
         <div className="questionZone">
-            <h3>{questionText}</h3>
+            <div className="card card-title">
+                <h3>{questionText}</h3>
+            </div>
             {/*texte secondaire si présent*/}
             {questionSecondaryText && <p>{questionSecondaryText}</p>}
-            {choices.map((choice, index) => (
-                <label key={index}>
-                    <input
+            <div className="answers">
+                {choices.map((choice, index) => (
+                  <label key={index} className="card answer-card">
+                      <input
                         type="radio"
                         name={questionId}
                         value={choice}
                         data-points={points[index]}
                         onChange={onChange}
                         checked={value === choice}
-                    />
-                    {choice}
-                </label>
-            ))}
+                      />
+                      {choice}
+                  </label>
+                ))}
+            </div>
         </div>
     )
 } ;

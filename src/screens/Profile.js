@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import firebaseApp, {auth, db} from "../initFirebase";
 import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
 import {Link} from "react-router-dom";
+import {AppHeader} from "./AppHeader";
 
 export default function Profile() {
     
@@ -47,43 +48,25 @@ export default function Profile() {
     
     
     return (
-        <>
-            <header className="AppHeader">
-                <div className="HeadIconsPosition">
-                    <Link to={"/"}>
-                        <h1>HOME</h1>
-                    </Link>
-                </div>
-                <div className="HeadIconsPosition">
-                    <img className="headerIcons" src={require('../Pictures/fonctionnement.png')}/>
-                    <h1>Fitness Check</h1>
-                </div>
-                <div className="HeadIconsPosition">
-                    <img className="headerIcons" src={require('../Pictures/information.png')}/>
-                    <img className="headerIcons" src={require('../Pictures/deconnexion.png')}/>
-                    <h1>Logout</h1>
-                </div>
-            </header>
-            <div>
-                <h1>Profile</h1>
-                {/* Condition vérifiant si le profil est éditable ou non*/}
-                {/* Si on est pas en mode EDIT, on peut y passer */}
-                {!isEditable && (
-                    <>
-                        <ProfileReadOnly {...userDatas} />
-                        <button onClick={handleEdit}>EDIT</button>
-                    </>
-                )}
-                {/* EDITING MODE */}
-                {isEditable && (
-                    <>
-                        <ProfileEditable {...userDatas} />
-                        <button onClick={BACK}>BACK</button>
-                    </>
-                )}
-            </div>
-        </>
-        
+        <div className="card profile-card">
+            <h1>Profil</h1>
+            <img className="profileIcon" src={require('../Pictures/avatarHomme.png')}/>
+            {/* Condition vérifiant si le profil est éditable ou non*/}
+            {/* Si on est pas en mode EDIT, on peut y passer */}
+            {!isEditable && (
+              <>
+                  <ProfileReadOnly {...userDatas} />
+                  <button className="primary-button" onClick={handleEdit}>Modifier</button>
+              </>
+            )}
+            {/* EDITING MODE */}
+            {isEditable && (
+              <>
+                  <ProfileEditable {...userDatas} />
+                  <button className="primary-button" onClick={BACK}>Retour</button>
+              </>
+            )}
+        </div>
     );
 }
 
@@ -158,9 +141,9 @@ function ProfileEditable(props) {
     }
     
     return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="first-name-input">First Name:</label>
+        <form onSubmit={handleSubmit} className="login-form profile-form">
+            <div className="form-fields">
+                <label htmlFor="first-name-input">Prénom :</label>
                 <input
                     type="text"
                     id="first-name-input"
@@ -170,8 +153,8 @@ function ProfileEditable(props) {
                     onChange={handleInputChange}
                 />
             </div>
-            <div>
-                <label htmlFor="last-name-input">Last Name:</label>
+            <div className="form-fields">
+                <label htmlFor="last-name-input">Nom :</label>
                 <input
                     type="text"
                     id="last-name-input"
@@ -181,8 +164,8 @@ function ProfileEditable(props) {
                     onChange={handleInputChange}
                 />
             </div>
-            <div>
-                <label htmlFor="birth-date-input">Birth Date:</label>
+            <div className="form-fields">
+                <label htmlFor="birth-date-input">Date de naissance :</label>
                 <input
                     type="date"
                     id="birth-date-input"
@@ -192,7 +175,7 @@ function ProfileEditable(props) {
                     onChange={handleInputChange}
                 />
             </div>
-            <button type="submit">Update Changes</button>
+            <button className="primary-button" type="submit">Enregistrer</button>
         </form>
     );
 }
@@ -203,11 +186,11 @@ function ProfileReadOnly(props) {
     const firebasename = getFirebaseAuthName();
     return (
         <div>
-            <p>First Name: {firstName || firebasename.firstName}</p>
-            <p>Last Name: {lastName || firebasename.lastName}</p>
-            <p>Birth Date: {birthDate}</p>
-            <p>Email: {email}</p>
-            <p>Is Admin: {isAdmin ? "Yes" : "No"}</p>
+            <p><strong>Prénom :</strong> {firstName || firebasename.firstName}</p>
+            <p><strong>Nom :</strong> {lastName || firebasename.lastName}</p>
+            <p><strong>Date de naissance :</strong> {birthDate}</p>
+            <p><strong>E-mail :</strong> {email}</p>
+            <p><strong>Est admin :</strong> {isAdmin ? "Yes" : "No"}</p>
         </div>
     );
 }

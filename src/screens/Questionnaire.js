@@ -4,6 +4,7 @@ import SurveyPartA from "../components/SurveyPartA";
 import SurveyPartB from "../components/SurveyPartB_fromDB";
 import React, {useEffect, useState} from "react";
 import SetResultsToFirebase from "../components/SetResultsToFirebase";
+import {AppHeader} from "./AppHeader";
 
 export default function Questionnaire() {
     const [resultsA, setResultsA] = useState(null);
@@ -33,12 +34,12 @@ export default function Questionnaire() {
 
     //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
       return (
-        <div>
+        <>
             {displaySurveyA && <SurveyPartA setResults={setResultsA} onComplete={handleCompleteA} />}
             {displaySurveyB && <SurveyPartB setResults={setResultsB} />}
-          <p>
-            <Link to="/">Go To The Home Page</Link>
-          </p>
-        </div>
+            <p>
+                <Link to="/">Go To The Home Page</Link>
+            </p>
+        </>
       );
 }

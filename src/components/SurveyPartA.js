@@ -19,21 +19,23 @@ export default function SurveyPartA({setResults, onComplete}) {
     
     const QuestionZone = ({questionId, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
-            <h3>{questionText}</h3>
-                <div>
-                    {choices.map((choice, index) => (
-                        <label key={index}>
-                            <input
-                                type="radio"
-                                name={questionId}
-                                value={choice}
-                                onChange={onChange}
-                                checked={value === choice}
-                            />
-                            {choice}
-                        </label>
-                    ))}
-                </div>
+            <div className="card card-title">
+                <h3>{questionText}</h3>
+            </div>
+            <div className="answers">
+                {choices.map((choice, index) => (
+                    <label key={index} className="card answer-card">
+                        <input
+                            type="radio"
+                            name={questionId}
+                            value={choice}
+                            onChange={onChange}
+                            checked={value === choice}
+                        />
+                        {choice}
+                    </label>
+                ))}
+            </div>
         </div>
     );
 
@@ -91,12 +93,14 @@ export default function SurveyPartA({setResults, onComplete}) {
                     onChange={handleChange}
                     value={responses[question.questionId]?.value}
                 />
-                <button type="button" onClick={back} disabled={currentQuestionIndex === 0}>
-                    Précédent
-                </button>
-                <button type="button" onClick={next} disabled={!responses[question.questionId]}>
-                    Suivant
-                </button>
+                <div className="controls-btn">
+                    <button className="secondary-button" type="button" onClick={back} disabled={currentQuestionIndex === 0}>
+                        Précédent
+                    </button>
+                    <button className="primary-button" type="button" onClick={next} disabled={!responses[question.questionId]}>
+                        Suivant
+                    </button>
+                </div>
             </div>
         );
     };
@@ -145,14 +149,14 @@ export default function SurveyPartA({setResults, onComplete}) {
 
 
     return (
-        <div className="App">
+        <>
             <h1>Questionnaire A</h1>
             {isLoading ? (
                 <p>Question en cours de chargement</p>
             ) : (
             <Survey questions={questionsFromDBPartA} setResults={setResults} onComplete={onComplete} />
             )}
-        </div>
+        </>
     );
 
 }

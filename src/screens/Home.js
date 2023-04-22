@@ -8,52 +8,29 @@ import InitQuestionsPartA from "../components/InitQuestionsPartA";
 import React from "react";
 import "../App.css";
 import InitMessagesPartA from "../components/InitMessagesPartA";
+import { AppHeader } from "./AppHeader";
 
 
 export default function Home() {
-  // Sign out
-  const handleSignOutClick = async () => {
-    await firebaseApp.auth().signOut();
-  };
-
   return (
     <>
-        <header className="AppHeader">
-            <div className="HeadIconsPosition">
-                <Link to={"/profile"}>
-                    <h1>PROFILE</h1>
-                </Link>
-            </div>
-            <div className="HeadIconsPosition">
-                <img className="headerIcons" src={require('../Pictures/fonctionnement.png')}/>
-                <h1>Fitness Check</h1>
-            </div>
-            <div className="HeadIconsPosition">
-                <img className="headerIcons" src={require('../Pictures/information.png')}/>
-                <img className="headerIcons" src={require('../Pictures/deconnexion.png')}/>
-                <h1>Logout</h1>
-            </div>
-        </header>
-        <div className="ContainDoOrConsultQuizz">
-            <div className="DoOrConsultQuizz">
-                <Link to="/questionnaire">
-                    <img className="headerIcons" src={require('../Pictures/ideas.png')}/>
-                    <p className="buttonTitle">Faire le quizz</p>
-                </Link>
-            </div>
-            <div className="DoOrConsultQuizz">
-                <img className="headerIcons" src={require('../Pictures/research.png')}/>
-                <p className="buttonTitle">Voir mes résultats</p>
-            </div>
+      <div className="cards">
+        <div className="card">
+          <img className="headerIcons" src={require('../Pictures/ideas.png')}/>
+          <Link to="/questionnaire">
+            <button className="primary-button">Faire le quiz</button>
+          </Link>
         </div>
-        
-        {/* SEED DB */}
-        <InitQuestionsPartA/>
-        <InitQuestionsPart2/>
-        <InitMessagesPartA/>
-        
-        
-        <button onClick={handleSignOutClick}>Sign Out</button>
+        <div className="card">
+          <img className="headerIcons" src={require('../Pictures/research.png')}/>
+          <button className="primary-button">Voir mes résultats</button>
+        </div>
+      </div>
+
+      {/* SEED DB */}
+      <InitQuestionsPartA/>
+      <InitQuestionsPart2/>
+      <InitMessagesPartA/>
     </>
   );
 }
