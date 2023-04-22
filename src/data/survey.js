@@ -151,8 +151,8 @@ export const questionDataPartB = [
                      {
                         questionId: "BQst11",
                         questionText: "Avez-vous des problèmes de mobilité dans une ou plusieurs des articulations suivantes ? ",
-                        choices: ["Oui j'ai une mobilité réduite dans la cheville","Oui mon genou a une mobilité réduite","Oui ma hanche a une mobilité réduite","Oui ma hanche a une mobilité réduite","Non pas de problème"],
-                        points: [1, 0, 0, 1, 0],
+                        choices: ["Oui j'ai une mobilité réduite dans la cheville","Oui mon genou a une mobilité réduite","Oui ma hanche a une mobilité réduite","Non pas de problème"],
+                        points: [1, 1, 1, 0],
                         multipleChoice: true
                      },
                      {
