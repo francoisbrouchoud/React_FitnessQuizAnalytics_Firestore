@@ -9,16 +9,17 @@ import {
     GetCapaciteMonterPourcentage,
     GetMarcheTempsPourcentage,
     GetMobilitePourcentage,
-    GetSansDouleursPourcentage
+    GetSansDouleursPourcentage,
+    GetActivitePhysique
 } from './GetResults';
 
 export default function DisplayResults() {
 
+    //TODO - A gérer l'affichage de plusieurs questionnaires (fonction pour gérer s'il en existe plusieurs dans la collection du user
     const [data, setData] = useState([
         {
-            //TODO - A reprendre depuis le questionnaire A
             category: 'Activité physique',
-            score1: 2/6*100,
+            score1: GetActivitePhysique().valueOf(),
             score2: 1/6*100
         },
         {
