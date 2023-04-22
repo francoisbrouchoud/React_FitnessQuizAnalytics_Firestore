@@ -38,7 +38,22 @@ function Survey ({ questionDataPartB, setResults})
         const questionId = event.target.name;
         const { value } = event.target;
         const points = event.target.dataset.points;
-        setResponses({ ...responses, [questionId]: {id: questionId, value, points } });
+        const multipleChoice = event.target.dataset.multiplechoice === "true";
+
+        if (multipleChoice) {
+            if (event.target.checked) {
+                const previousResponses = responses[questionId]?.value || [];
+                const pointsForAlreadyCheckedBoxes = responses[questionId]?.points || 0;
+                setResponses({...responses, [questionId]: {id: questionId, value: [...previousResponses, value], points: (parseInt(pointsForAlreadyCheckedBoxes) + parseInt(points)).toString()}});
+            } else {
+                const updatedResponses = responses[questionId].value.filter(
+                    (choice) => choice !== value
+                );
+                setResponses({...responses, [questionId]: {id: questionId,  value: updatedResponses, points: (parseInt(responses[questionId].points) - parseInt(points)).toString()}});
+            }
+        } else {
+                setResponses({ ...responses, [questionId]: { id: questionId, value, points }});
+        }
     };
 
     const handleSubmit = (event) => {
@@ -79,6 +94,14 @@ function Survey ({ questionDataPartB, setResults})
     
     //aller en avant teste si on ne sort pa du tableau à droite
     const next = () => {
+        if (questionDataPartB[currentQuestionIndex].multipleChoice) {
+            const checkBoxesSelected = responses[question.questionId]?.value;
+            if (!checkBoxesSelected || checkBoxesSelected.length === 0) {
+                alert("Sélectionner au minimum une case");
+                return;
+            }
+        }
+
         if (currentQuestionIndex < questionDataPartB.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
@@ -97,6 +120,7 @@ function Survey ({ questionDataPartB, setResults})
                 onChange={handleChange}
                 value={responses[question.questionId]?.value}
                 points={questionDataPartB[currentQuestionIndex].points}
+                multipleChoice={question.multipleChoice}
             />
             <div className="controls-btn">
                 {/*{errorMessage && <p className="error-message">{errorMessage}</p>}*/}
@@ -116,7 +140,7 @@ function Survey ({ questionDataPartB, setResults})
 };
 
 // Affichage de la question et des radioButtons
-export function QuestionZone ({questionId, questionText, questionSecondaryText, choices, onChange, value, points }) {
+export function QuestionZone ({questionId, questionText, questionSecondaryText, choices, onChange, value, points, multipleChoice }) {
     return(
         <div className="questionZone">
             <div className="card card-title">
@@ -128,12 +152,13 @@ export function QuestionZone ({questionId, questionText, questionSecondaryText, 
                 {choices.map((choice, index) => (
                   <label key={index} className="card answer-card">
                       <input
-                        type="radio"
+                        type={multipleChoice ? "checkbox" : "radio"}
                         name={questionId}
                         value={choice}
                         data-points={points[index]}
+                        data-multiplechoice={multipleChoice}
                         onChange={onChange}
-                        checked={value === choice}
+                        checked={multipleChoice ? value?.includes(choice) : value === choice}
                       />
                       {choice}
                   </label>

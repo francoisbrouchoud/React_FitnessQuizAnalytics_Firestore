@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {collection, getDocs, orderBy} from "firebase/firestore";
 import {db} from "../initFirebase";
 
+
+//TODO refactor
 export async function GetQuestions()
 {
 	// variable to store the questions from the database
