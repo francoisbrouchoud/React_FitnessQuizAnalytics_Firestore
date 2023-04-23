@@ -138,9 +138,11 @@ function Survey ({ questionDataPartB, setResults})
             />
             <div className="controls-btn">
                 {/*{errorMessage && <p className="error-message">{errorMessage}</p>}*/}
-                {currentQuestionIndex > 0 && (
+                {currentQuestionIndex > 0 ? (
                   <button className="secondary-button" type="button" onClick={back}>Précédent</button>
-                )}
+                ) : (
+                    <div style={{flex: 1}} />
+                    )}
                 {/*si on arrive au bout on remplace le bouton suivant par submit*/}
                 {currentQuestionIndex < questionDataPartB.length - 1 && (
                   <button className="primary-button" type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>)
