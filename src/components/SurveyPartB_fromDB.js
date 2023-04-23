@@ -36,6 +36,25 @@ function Survey ({ questionDataPartB, setResults})
 
 
     useEffect(() => {
+        if (responses["BQst03"]?.points === "0") {
+            if (responses["BQst04"]?.points !== "0" || responses["BQst05"]?.points !== "0") {
+                setResponses((prevResponses) => ({
+                    ...prevResponses,
+                    BQst04: { id: "BQst04", value: "Impossible", points: "0" },
+                    BQst05: { id: "BQst05", value: "Impossible", points: "0" },
+                }));
+            }
+        }
+
+        if (responses["BQst04"]?.points === "0") {
+            if (responses["BQst05"]?.points !== "0") {
+                setResponses((prevResponses) => ({
+                    ...prevResponses,
+                    BQst05: { id: "BQst05", value: "Impossible", points: "0" },
+                }));
+            }
+        }
+
         if (responses["BQst06"]?.points === "0") {
             if (responses["BQst07"]?.points !== "0" || responses["BQst08"]?.points !== "0") {
                 setResponses((prevResponses) => ({
@@ -128,6 +147,25 @@ function Survey ({ questionDataPartB, setResults})
             setCurrentQuestionIndex(currentQuestionIndex - 1);
         }
     };
+
+    const nextQuestionMap = {
+        "BQst03": {
+            condition: (response) => response?.points === "0",
+            nextQuestionId: "BQst06",
+        },
+        "BQst04": {
+            condition: (response) => response?.points === "0",
+            nextQuestionId: "BQst06",
+        },
+        "BQst06": {
+            condition: (response) => response?.points === "0",
+            nextQuestionId: "BQst09",
+        },
+        "BQst07": {
+            condition: (response) => response?.points === "5",
+            nextQuestionId: "BQst09",
+        },
+    };
     
     //aller en avant teste si on ne sort pa du tableau à droite
     const next = () => {
@@ -145,17 +183,14 @@ function Survey ({ questionDataPartB, setResults})
         }
 
         if (currentQuestionIndex < questionDataPartB.length - 1) {
+            const nextQuestionMapping = nextQuestionMap[question.questionId];
 
-            if (
-                (question.questionId === "BQst06" && responses[question.questionId]?.points === "0") || (question.questionId === "BQst07" && responses[question.questionId]?.points === "5")
-            ) {
-                const indexOfBQst09 = questionDataPartB.findIndex((q) => q.questionId === "BQst09");
-                setCurrentQuestionIndex(indexOfBQst09);
+            if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
+                const nextQuestionIndex = questionDataPartB.findIndex((q) => q.questionId === nextQuestionMapping.nextQuestionId);
+                setCurrentQuestionIndex(nextQuestionIndex);
             } else {
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             }
-
-
         }
     };
     
