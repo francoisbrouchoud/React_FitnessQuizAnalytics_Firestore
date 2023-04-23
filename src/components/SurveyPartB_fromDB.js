@@ -33,7 +33,30 @@ function Survey ({ questionDataPartB, setResults})
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     //const [errorMessage, setErrorMessage] = useState('');
-    
+
+
+    useEffect(() => {
+        if (responses["BQst06"]?.points === "0") {
+            if (responses["BQst07"]?.points !== "0" || responses["BQst08"]?.points !== "0") {
+                setResponses((prevResponses) => ({
+                    ...prevResponses,
+                    BQst07: { id: "BQst07", value: "Infaisable", points: "0" },
+                    BQst08: { id: "BQst08", value: "Infaisable", points: "0" },
+                }));
+            }
+        }
+
+        if (responses["BQst08"]?.points === "0") {
+            if (responses["BQst09"]?.points !== "0") {
+                setResponses((prevResponses) => ({
+                    ...prevResponses,
+                    BQst09: { id: "BQst09", value: "Infaisable", points: "0" },
+                }));
+            }
+        }
+    }, [responses]);
+
+
     const handleChange = (event) => {
         const questionId = event.target.name;
         const { value } = event.target;
@@ -122,7 +145,17 @@ function Survey ({ questionDataPartB, setResults})
         }
 
         if (currentQuestionIndex < questionDataPartB.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
+
+            if (
+                (question.questionId === "BQst06" && responses[question.questionId]?.points === "0") || (question.questionId === "BQst07" && responses[question.questionId]?.points === "5")
+            ) {
+                const indexOfBQst09 = questionDataPartB.findIndex((q) => q.questionId === "BQst09");
+                setCurrentQuestionIndex(indexOfBQst09);
+            } else {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            }
+
+
         }
     };
     
