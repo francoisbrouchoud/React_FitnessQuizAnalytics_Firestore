@@ -51,6 +51,11 @@ export default function SurveyPartA({setResults, onComplete}) {
 
         //Tentative d'affichage de message quand plus de question
         const next = () => {
+            if (!responses[question.questionId]) {
+                alert("Sélectionner une réponse svp.");
+                return;
+            }
+
             if (responses.hasOwnProperty(question.questionId)) {
                 const nextQuestionOrPoints = getNextQuestion(
                     question.questionId,
@@ -102,7 +107,7 @@ export default function SurveyPartA({setResults, onComplete}) {
                         <div style={{flex: 1}} />
                         )
                     }
-                    <button className="primary-button" type="button" onClick={next} disabled={!responses[question.questionId]}>
+                    <button className="primary-button" type="button" onClick={next}>
                         Suivant
                     </button>
                 </div>

@@ -108,6 +108,11 @@ function Survey ({ questionDataPartB, setResults})
     
     //aller en avant teste si on ne sort pa du tableau à droite
     const next = () => {
+        if (!responses[question.questionId]) {
+            alert("Sélectionner une réponse svp.");
+            return;
+        }
+
         if (questionDataPartB[currentQuestionIndex].multipleChoice) {
             const checkBoxesSelected = responses[question.questionId]?.value;
             if (!checkBoxesSelected || checkBoxesSelected.length === 0) {
@@ -145,7 +150,7 @@ function Survey ({ questionDataPartB, setResults})
                     )}
                 {/*si on arrive au bout on remplace le bouton suivant par submit*/}
                 {currentQuestionIndex < questionDataPartB.length - 1 && (
-                  <button className="primary-button" type="button" onClick={next} disabled={!responses[question.questionId]}>Suivant</button>)
+                  <button className="primary-button" type="button" onClick={next}>Suivant</button>)
                 }
                 {currentQuestionIndex === questionDataPartB.length - 1 && (
                   <button className="primary-button" type="submit">Valider mon questionnaire</button>
