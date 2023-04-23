@@ -23,7 +23,7 @@ function BMICalculator() {
       setBmiComment('Votre IMC indique que vous êtes en surpoids. Vous pourriez avoir besoin de perdre du poids pour atteindre un poids santé.');
     } else if (bmiValue >= 30) {
       setBmiClass('obese');
-      setBmiComment('Votre IMC indique que vous êtes en surpoids. Vous pourriez avoir besoin de perdre du poids pour atteindre un poids santé.');
+      setBmiComment('Votre IMC indique que vous êtes obèse. Vous pourriez avoir besoin de perdre beaucoup de poids pour atteindre un poids santé.');
     }
   }
 
@@ -42,8 +42,8 @@ function BMICalculator() {
       <br />
       <button onClick={calculateBMI}>Calculer l'IMC</button>
       {bmi && (
-        <div className={`bmi-result ${bmiClass}`}>
-          <p>Votre IMC est : {bmi}</p>
+        <div className="bmi-result">
+          <p>Votre IMC est : <span className={bmiClass}>{bmi}</span></p>
           <p>{bmiComment}</p>
         </div>
       )}

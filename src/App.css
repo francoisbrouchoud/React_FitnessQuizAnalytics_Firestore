@@ -253,6 +253,19 @@ a {
 .container.loginContent {
   padding-top: 45px;
 }
+.bmi-result {
+  padding: 10px;
+  margin-top: 10px;
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+}
+.underweight, .overweight, .obese {
+  color: red;
+}
+.normal {
+  color: green;
+}
 
 /* RESPONSIVE PART */
 @media (max-width: 900px) {
