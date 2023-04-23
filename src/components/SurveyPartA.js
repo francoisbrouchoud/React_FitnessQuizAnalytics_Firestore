@@ -60,7 +60,7 @@ export default function SurveyPartA({setResults, onComplete}) {
 
                 if (typeof nextQuestionOrPoints === 'number') {
                     const pointsA = {
-                        id: 'A01',
+                        id: 'AQst',
                         points: nextQuestionOrPoints.toString(),
                     };
                     setResults(pointsA);
