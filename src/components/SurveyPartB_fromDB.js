@@ -43,8 +43,22 @@ function Survey ({ questionDataPartB, setResults})
         if (multipleChoice) {
             if (event.target.checked) {
                 const previousResponses = responses[questionId]?.value || [];
-                const pointsForAlreadyCheckedBoxes = responses[questionId]?.points || 0;
+                const pointsForAlreadyCheckedBoxes = parseInt(responses[questionId]?.points) || 0;
+
+                if (points == 0 && pointsForAlreadyCheckedBoxes > 0) {
+                    alert("Cette option n'est pas sélectionnable en combinaison des autres.");
+                    event.target.checked = false;
+                    return;
+                }
+
+                if (points == 1 && pointsForAlreadyCheckedBoxes === 0 && previousResponses.length > 0) {
+                    alert("Cette option n'est pas sélectionnable en combinaison de la dernière réponse");
+                    event.target.checked = false;
+                    return;
+                }
+
                 setResponses({...responses, [questionId]: {id: questionId, value: [...previousResponses, value], points: (parseInt(pointsForAlreadyCheckedBoxes) + parseInt(points)).toString()}});
+
             } else {
                 const updatedResponses = responses[questionId].value.filter(
                     (choice) => choice !== value
