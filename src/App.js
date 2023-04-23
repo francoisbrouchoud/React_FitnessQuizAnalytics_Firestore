@@ -16,6 +16,7 @@ import Profile from "./screens/Profile";
 import {AppHeader} from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
+import BMICalculator from "./screens/IMC-Calculator";
 ;
 
 // Configure FirebaseUI.
@@ -236,6 +237,7 @@ export default function App()
                             <Route path="/profile" 			element={<Profile/>}/>
                             <Route path="/information" 			element={<Information/>}/>
                             <Route path="/resultats" 		element={<Resultats/>}/>
+                            <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
                         </Routes>
                     </div>
                 </div>
