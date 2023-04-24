@@ -8,7 +8,6 @@ export default function Resultats(){
     return(
         <div>
                 <DisplayResults/>
-                <GetResults/>
         </div>
     );
 
