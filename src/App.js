@@ -91,6 +91,7 @@ export default function App({currentUserAuth, data})
             email: auth.currentUser.email,
             uid:   auth.currentUser.uid,
             isAdmin: false,
+            isGroupLeader: false,
             firstName: null,
             lastName: "",
             photoURL: auth.currentUser.photoURL,
