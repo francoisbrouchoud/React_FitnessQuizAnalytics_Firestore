@@ -35,18 +35,16 @@ export function ManagesResults() {
 
     return getListeQuestionnaires();
 }
-
 export async function GetResultsFromQuestionnaire(name){
         try{
+            console.log("name :",name)
             const docRef = doc(db,"users",auth.currentUser.email,"results",name);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
             const myResultsArray = data.results;
-            console.log(reponsesSondage)
+            console.log("initial array : ",reponsesSondage)
             reponsesSondage = myResultsArray.slice();
-            console.log(reponsesSondage);
-
-            console.log(myResultsArray)
+            console.log("replace array : ",reponsesSondage);
 
             return reponsesSondage;
         } catch (e){
@@ -58,6 +56,7 @@ export async function GetResultsFromQuestionnaire(name){
 export function GetResults() {
 
     //RECOMMENDATIONS
+    //var reponsesSondage = GetResultsFromQuestionnaire(name);
 
     //Activité physique - questionnaire A
     var activitePhysiqueResultat = reponsesSondage[0].points;
@@ -207,6 +206,7 @@ export function GetResults() {
     return (
         <div>
             <ul>
+                <h1>Recommendations</h1>
                 <li>{propositionRouteMessage}</li>
                 <li>{vitesseMarcheMessage}</li>
                 <li>{cheminMessage}</li>
@@ -214,7 +214,12 @@ export function GetResults() {
                 <li>{risqueChuteMessage}</li>
                 <li>{activitePhysiqueMessage}</li>
             </ul>
+            <ul>
+                <h1>Messages For Part A</h1>
+                <li></li>
+            </ul>
         </div>
+
     );
 }
 

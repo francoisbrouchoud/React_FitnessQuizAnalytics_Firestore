@@ -10,76 +10,16 @@ import {
     GetMarcheTempsPourcentage,
     GetMobilitePourcentage,
     GetSansDouleursPourcentage,
-    GetActivitePhysique
+    GetActivitePhysique, GetResults
 } from './GetResults';
 import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
 
 export default function DisplayResults() {
 
-    const [data, setData] = useState([
-        {
-            category: 'Activité physique',
-            score: GetActivitePhysique().valueOf(),
-        },
-        {
-            category: 'Marcher sans aides',
-            score: GetMarcherSansAidesPourcentage().valueOf(),
-        },
-        {
-            category: 'Vitesse marche',
-            score: GetVitesseMarchePourcentage().valueOf(),
-        },
-        {
-            category: 'Marche temps',
-            score: GetMarcheTempsPourcentage().valueOf(),
-        },
-        {
-            category: 'Capacité monter',
-            score: GetCapaciteMonterPourcentage().valueOf(),
-        },
-        {
-            category: 'Insécurité marche',
-            score: GetInsecuriteMarchePourcentage().valueOf(),
-        },
-        {
-            category: 'Pas peur du vide',
-            score: GetPasPeurVidePourcentage().valueOf(),
-        },
-        {
-            category: 'Equilibre',
-            score: GetEquilibrePourcentage().valueOf(),
-        },
-        {
-            category: 'Sans douleurs',
-            score: GetSansDouleursPourcentage().valueOf(),
-        },
-        {
-            category: 'Mobilité',
-            score: GetMobilitePourcentage().valueOf(),
-        },
-    ]);
+    const [data, setData] = useState([]);
     const [questionnaires,setQuestionnaires] = useState([]);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
     const [results,setResults] = useState([]);
-
-    const test = [
-        { id: "AQst", points : "0"},
-        { id: "BQst01", points: "0" },
-        { id: "BQst02", points: "0" },
-        { id: "BQst03", points: "0" },
-        { id: "BQst04", points: "0" },
-        { id: "BQst05", points: "0" },
-        { id: "BQst06", points: "0" },
-        { id: "BQst07", points: "0" },
-        { id: "BQst08", points: "0" },
-        { id: "BQst09", points: "0" },
-        { id: "BQst10", points: "0" },
-        { id: "BQst11", points: "0" },
-        { id: "BQst12", points: "0" },
-        { id: "BQst13", points: "0" },
-        { id: "BQst14", points: "0" },
-        { id: "BQst15", points: "0" },
-    ];
 
     useEffect(() => {
         async function fetchQuestionnaires(){
@@ -98,6 +38,56 @@ export default function DisplayResults() {
         }
         fetchResults();
     },[selectedQuestionnaire]);
+
+    useEffect(() => {
+        if (results.length > 0) {
+            const newScores = [
+                {
+                    category: 'Activité physique',
+                    score: GetActivitePhysique(results).valueOf(),
+                },
+                {
+                    category: 'Marcher sans aides',
+                    score: GetMarcherSansAidesPourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Vitesse marche',
+                    score: GetVitesseMarchePourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Marche temps',
+                    score: GetMarcheTempsPourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Capacité monter',
+                    score: GetCapaciteMonterPourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Insécurité marche',
+                    score: GetInsecuriteMarchePourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Pas peur du vide',
+                    score: GetPasPeurVidePourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Equilibre',
+                    score: GetEquilibrePourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Sans douleurs',
+                    score: GetSansDouleursPourcentage(results).valueOf(),
+                },
+                {
+                    category: 'Mobilité',
+                    score: GetMobilitePourcentage(results).valueOf(),
+                },
+            ];
+            setData(newScores);
+        }
+    }, [results]);
+
+
 
     const getText = () => {
     if(selectedQuestionnaire === null || selectedQuestionnaire === "Sélectionner un questionnaire"){
