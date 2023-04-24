@@ -18,16 +18,15 @@ export default function Profile() {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 setUserDatas(data);
+                console.log('Users Data fetched for profile !', data);
             } else {
                 console.error('No such document!');
             }
         };
         
         // Call the function to fetch the data, use the .then() method to wait for the promise to resolve and then set the state with the result
-        fetchUserDataFromDB().then(() => {
-            console.log('Users Data fetched for profile !', userDatas);
-        });
-        
+        fetchUserDataFromDB()
+
     }, [isEditable]);
     
     // BTN EDIT PROFILE
@@ -42,9 +41,6 @@ export default function Profile() {
         setIsSaved(true);
     }
     
-    // CALLBACK FUNCTION POUR RECUPERER LES DONNEES DU FORM ENFANT
-    // Cette fonction recevra les données modifiées du formulaire en tant qu'argument et les mettra à jour dans l'état
-    // du composant parent, puis enverra les données mises à jour à la base de données ou à l'API.
     
     return (
         <div className="card profile-card">
@@ -79,6 +75,8 @@ function ProfileEditable(props) {
                     lastName:   props.lastName,
                     birthDate:  props.birthDate
                  });
+    
+    //console.log("ProfileEditable props : " , props);
     
     // OLD VERSION --> REFACTOR IN 1 METHODE
     /*function handleFirstNameChange(event) {
@@ -183,13 +181,14 @@ function ProfileEditable(props) {
 function ProfileReadOnly(props) {
     const { firstName, lastName, birthDate, email, isAdmin } = props;
 
+    //console.log("ProfileReadOnly props : " , props);
     return (
         <div>
-            <p><strong>Prénom :</strong> {firstName }</p>
-            <p><strong>Nom :</strong> {lastName }</p>
+            <p><strong>Prénom :</strong>            {firstName }</p>
+            <p><strong>Nom :</strong>               {lastName }</p>
             <p><strong>Date de naissance :</strong> {birthDate}</p>
-            <p><strong>E-mail :</strong> {email}</p>
-            <p><strong>Est admin :</strong> {isAdmin ? "Yes" : "No"}</p>
+            <p><strong>E-mail :</strong>            {email}</p>
+            <p><strong>Est admin :</strong>         {isAdmin ? "Yes" : "No"}</p>
         </div>
     );
 }

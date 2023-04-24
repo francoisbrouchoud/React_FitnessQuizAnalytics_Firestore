@@ -87,7 +87,7 @@ export default function App({currentUserAuth, data})
     {
         // Create a new user profile in the DB if it doesn't exist yet for the current user email address (auth.currentUser.email)
         const userRef = doc(db, "users", auth.currentUser.email);
-        let data = {
+        const data = {
             email: auth.currentUser.email,
             uid:   auth.currentUser.uid,
             isAdmin: false,
@@ -108,37 +108,21 @@ export default function App({currentUserAuth, data})
         // If the user profile doesn't exist, create it
         // If the user profile already exists, update it --> UPDATE SE FAIT DEPUIS LA PAGE WEB MAINTENANT
         // TODO : Bon ben IF et ELSE font la même chose ici, car le ELSE utilise l'option MERGE qui met à jour les données existantes
-        if (snapshot.exists())
-        {
-            /*
-            console.log("Document data already exist :", snapshot.data());
-            // Merge it with the new data from the auth provider (if it exists)
-            
-            // TODO : VOIR QUELLE VERSION EST INTERESSANTE
-            // VERSION 1
-            // await updateDoc(userRef, data)
-            
-            // VERSION 2
-            const oldUserData = snapshot.data();
-            const newUserData = data;
-            const mergedUserData = { ...oldUserData, ...newUserData };
-            
-            // Only update the user profile if the data has changed. This prevents an infinite loop of updates.
-            if (JSON.stringify(oldUserData) !== JSON.stringify(mergedUserData)) {
-                await setDoc(userRef, mergedUserData);
-            }*/
-        }
-        else // If the user profile doesn't exist, create it
+        if (!snapshot.exists())
         {
             console.log("Document doesn't exist, created default user");
-            console.log("TESTING GOOGLE DATA : ",   auth.currentUser.displayName,
-                                                    auth.currentUser.toJSON(),
-                                                    auth.currentUser.providerData,
-                                                    auth.currentUser.photoURL)
-            data = getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(auth.currentUser , data)
+            /*console.log("TESTING GOOGLE DATA : ",   auth.currentUser.displayName,
+                        auth.currentUser.toJSON(),
+                        auth.currentUser.providerData,
+                        auth.currentUser.photoURL)*/
+            getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(auth.currentUser , data);
             
             await setDoc(userRef, data, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
             console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
+        }
+        else
+        {
+            console.log("Document exists, no updating default user");
         }
     }
     
@@ -273,6 +257,6 @@ function getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(currentUserAuth, dat
         
         console.log("GOOGLE DATA : " , data)
     }
-    return { data };
+  
 }
 
