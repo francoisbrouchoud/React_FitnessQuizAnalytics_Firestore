@@ -4,10 +4,12 @@ import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
 import {Link} from "react-router-dom";
 import {AppHeader} from "./AppHeader";
 
+
+// TODO : Ajouter un boutton pour IsAdmin
+// TODO : Ajouter un boutton pour IsGroupLeader
 export default function Profile() {
     
     const [isEditable,  setIsEditable]  = useState(false);
-    const [isSaved,     setIsSaved]     = useState(false);  // TODO : A supprimer
     const [userDatas,        setUserDatas]  = useState({});
     
     useEffect(() => {
@@ -38,7 +40,6 @@ export default function Profile() {
     function BACK() {
         // Va changer l'affichage du composant & fetch les données de l'utilisateur depuis la DB
         setIsEditable(false);
-        setIsSaved(true);
     }
     
     
@@ -71,9 +72,10 @@ function ProfileEditable(props) {
 
     const [editedData, setEditedData] = useState(
         {
-                    firstName:  props.firstName,
-                    lastName:   props.lastName,
-                    birthDate:  props.birthDate
+                    firstName:     props.firstName,
+                    lastName:      props.lastName,
+                    birthDate:     props.birthDate,
+                    isGroupLeader: props.isGroupLeader
                  });
     
     //console.log("ProfileEditable props : " , props);
@@ -95,7 +97,9 @@ function ProfileEditable(props) {
     function handleInputChange(event) {
         const target = event.target;
         const name = target.name;
-        const value = target.value;
+        //const value = target.type === 'radio' ? target.checked : target.value;
+        const value = target.type === "checkbox" ? target.checked : target.value;
+        
         
         setEditedData((prevState) => ({
             ...prevState,
@@ -108,16 +112,15 @@ function ProfileEditable(props) {
     {
         event.preventDefault();
         // Check if all fields are not empty
-        if (Object.values(editedData).every((val) => val.trim())) {
-            // RETOURNER DATA  LES DATA A LA DB
-            await updateUserProfile(auth.currentUser.email, editedData);
-        } else {
-            // Handle empty fields error
-            console.log("Error: Fields cannot be empty!");
-        }
-        
-        
-        //await updateUserProfile(auth.currentUser.email, editedData);
+        // if (Object.values(editedData).every((val) => val.trim())) {
+        //     // RETOURNER LES DATA A LA DB
+        //     await updateUserProfile(auth.currentUser.email, editedData);
+        // } else {
+        //     // Handle empty fields error
+        //     console.log("Error: Fields cannot be empty!");
+        // }
+
+        await updateUserProfile(auth.currentUser.email, editedData);
         
     }
     
@@ -172,6 +175,43 @@ function ProfileEditable(props) {
                     onChange={handleInputChange}
                 />
             </div>
+            <div className="form-fields">
+                <label htmlFor="is-group-leader-input">Est chef de groupe :</label>
+                <input
+                    type="checkbox"
+                    id="is-group-leader-input"
+                    name="isGroupLeader"
+                    checked={editedData.isGroupLeader}
+                    onChange={handleInputChange}
+                />
+            </div>
+            {/*<div className="form-fields">*/}
+            {/*    <label htmlFor="is-group-leader-input">Est responsable de groupe :</label>*/}
+            {/*    <div className="radio-group">*/}
+            {/*        <label>*/}
+            {/*            <input*/}
+            {/*                type="radio"*/}
+            {/*                id="is-group-leader-yes"*/}
+            {/*                name="isGroupLeader"*/}
+            {/*                value="true"*/}
+            {/*                checked={editedData.isGroupLeader === 'true'}*/}
+            {/*                onChange={handleInputChange}*/}
+            {/*            />*/}
+            {/*            Oui*/}
+            {/*        </label>*/}
+            {/*        <label>*/}
+            {/*            <input*/}
+            {/*                type="radio"*/}
+            {/*                id="is-group-leader-no"*/}
+            {/*                name="isGroupLeader"*/}
+            {/*                value="false"*/}
+            {/*                checked={editedData.isGroupLeader === 'false'}*/}
+            {/*                onChange={handleInputChange}*/}
+            {/*            />*/}
+            {/*            Non*/}
+            {/*        </label>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
             <button className="primary-button" type="submit">Enregistrer</button>
         </form>
     );
@@ -179,7 +219,7 @@ function ProfileEditable(props) {
 
 
 function ProfileReadOnly(props) {
-    const { firstName, lastName, birthDate, email, isAdmin } = props;
+    const { firstName, lastName, birthDate, email, isAdmin, isGroupLeader } = props;
 
     //console.log("ProfileReadOnly props : " , props);
     return (
@@ -188,7 +228,8 @@ function ProfileReadOnly(props) {
             <p><strong>Nom :</strong>               {lastName }</p>
             <p><strong>Date de naissance :</strong> {birthDate}</p>
             <p><strong>E-mail :</strong>            {email}</p>
-            <p><strong>Est admin :</strong>         {isAdmin ? "Yes" : "No"}</p>
+            <p><strong>Est chef de groupe :</strong>{isGroupLeader ? "Oui" : "Non"}</p>
+            <p><strong>Est admin :</strong>         {isAdmin ? "Oui" : "Non"}</p>
         </div>
     );
 }
