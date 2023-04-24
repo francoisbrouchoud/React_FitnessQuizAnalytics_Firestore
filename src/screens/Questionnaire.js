@@ -37,9 +37,6 @@ export default function Questionnaire() {
         <>
             {displaySurveyA && <SurveyPartA setResults={setResultsA} onComplete={handleCompleteA} />}
             {displaySurveyB && <SurveyPartB setResults={setResultsB} />}
-            <p>
-                <Link to="/">Go To The Home Page</Link>
-            </p>
         </>
       );
 }
