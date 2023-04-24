@@ -5,14 +5,16 @@ import {Link} from "react-router-dom";
 import {AppHeader} from "./AppHeader";
 
 
-// TODO : Ajouter un boutton pour IsAdmin
-// TODO : Ajouter un boutton pour IsGroupLeader
+// TODO : CHANGER PHOTO USER
+// TODO : AJOUTER BTN ADD PICTURE (POUR CHANGER LA PHOTO DE PROFIL)
 export default function Profile() {
     
     const [isEditable,  setIsEditable]  = useState(false);
     const [userDatas,        setUserDatas]  = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
+
         // Récupérer les données de l'utilisateur dans la base de données ou l'API
         const fetchUserDataFromDB = async () => {
             const docRef = doc(db, 'users', auth.currentUser.email );
@@ -27,8 +29,20 @@ export default function Profile() {
         };
         
         // Call the function to fetch the data, use the .then() method to wait for the promise to resolve and then set the state with the result
-        fetchUserDataFromDB()
-
+        //fetchUserDataFromDB()
+        try
+        {
+            setIsLoading(true);
+            fetchUserDataFromDB();
+        }
+        catch (e) {
+            console.error(e);
+        }
+        finally
+        {
+            setIsLoading(false);
+        }
+        
     }, [isEditable]);
     
     // BTN EDIT PROFILE
@@ -42,38 +56,55 @@ export default function Profile() {
         setIsEditable(false);
     }
     
-    // BTN EDIT GROUP
-    function handleGroup() {
-    
+    const selectProfilePictureURL = () => {
+        if(auth.currentUser.photoURL === null) {
+            console.log("DEFAULT PICTURE !");
+            return require('../Pictures/avatarHomme.png');
+        }
+        else {
+            console.log("userDatas.photoURL : " , userDatas.photoURL);
+            return require(userDatas.photoURL);
+        }
     }
     
-    
-    
     return (
-        <div className="card profile-card">
-            <h1>Profil</h1>
-            <img className="profileIcon" src={require('../Pictures/avatarHomme.png')}/>
-            {/* Condition vérifiant si le profil est éditable ou non*/}
-            {/* Si on est pas en mode EDIT, on peut y passer */}
-            {!isEditable && (
-              <>
-                  <ProfileReadOnly {...userDatas} />
-                  <button className="primary-button" onClick={handleEdit}>Modifier</button>
-                  <button className="primary-button" onClick={handleGroup}>Gestion du groupe</button>
-                  {userDatas.isAdmin && (
-                      <Link to="/admin">
-                          <button className="primary-button">Administrateur</button>
-                      </Link>)}
-              </>
-            )}
-            {/* EDITING MODE */}
-            {isEditable && (
-              <>
-                  <ProfileEditable {...userDatas} />
-                  <button className="primary-button" onClick={BACK}>Retour</button>
-              </>
-            )}
-        </div>
+        <>
+            {isLoading ?
+                (<h1>Chargement...</h1>)
+                :
+                (
+                    <>
+                        <div className="card profile-card">
+                            <h1>Profil</h1>
+                            <img className="profileIcon" src={selectProfilePictureURL}/>
+                            {/* Condition vérifiant si le profil est éditable ou non*/}
+                            {/* Si on est pas en mode EDIT, on peut y passer */}
+                            {!isEditable && (
+                                <>
+                                    <ProfileReadOnly {...userDatas} />
+                                    <button className="primary-button" onClick={handleEdit}>Modifier</button>
+                                    {userDatas.isGroupLeader && (
+                                        <Link to="/groupe">
+                                            <button className="primary-button">Gestion du groupe</button>
+                                        </Link>)}
+                                    {userDatas.isAdmin && (
+                                        <Link to="/admin">
+                                            <button className="primary-button">Administrateur</button>
+                                        </Link>)}
+                                </>
+                            )}
+                            {/* EDITING MODE */}
+                            {isEditable && (
+                                <>
+                                    <ProfileEditable {...userDatas} />
+                                    <button className="primary-button" onClick={BACK}>Retour</button>
+                                </>
+                            )}
+                        </div>
+                    </>
+                )}
+        </>
+        
     );
 }
 
