@@ -91,35 +91,42 @@ export default function DisplayResults() {
         <div>
             {questionnaires.length > 0 ? (
                 <div>
-                <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
-                <option value={null}>Sélectionner un questionnaire</option>
-                {questionnaires.map((questionnaire, index) => (
-                    <option key={index}>{questionnaire.date}</option>
-                ))}
-            </select>
-                <div style={{ height: '400px' }}>
-                    <ResponsiveRadar
-                        data={data}
-                        keys={['score']}
-                        indexBy="category"
-                        maxValue={100}
-                        valueFormat=">-.2f"
-                        margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
-                        borderColor={{ from: 'color', modifiers: [] }}
-                        gridLabelOffset={20}
-                        dotSize={9}
-                        dotColor={{ theme: 'background' }}
-                        dotBorderWidth={2}
-                        colors={{ scheme: 'paired' }}
-                        fillOpacity={0.9}
-                        blendMode="multiply"
-                        motionConfig="wobbly"
-                    />
+                    <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
+                        <option disabled={selectedQuestionnaire !== null} value={null}>
+                            Sélectionner un questionnaire
+                        </option>
+                        {questionnaires.map((questionnaire, index) => (
+                            <option key={index}>{questionnaire.date}</option>
+                        ))}
+                    </select>
+                    {selectedQuestionnaire !== null && (
+                        <>
+                            <div style={{ height: '400px' }}>
+                                <ResponsiveRadar
+                                    data={data}
+                                    keys={['score']}
+                                    indexBy="category"
+                                    maxValue={100}
+                                    valueFormat=">-.2f"
+                                    margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+                                    borderColor={{ from: 'color', modifiers: [] }}
+                                    gridLabelOffset={20}
+                                    dotSize={9}
+                                    dotColor={{ theme: 'background' }}
+                                    dotBorderWidth={2}
+                                    colors={{ scheme: 'paired' }}
+                                    fillOpacity={0.9}
+                                    blendMode="multiply"
+                                    motionConfig="wobbly"
+                                />
+                            </div>
+                            <GetResults />
+                        </>
+                    )}
                 </div>
-                    <GetResults/>
-                </div>
-            ) : (<p>Aucun questionnaire disponible.</p>)
-            }
+            ) : (
+                <p>Aucun questionnaire disponible.</p>
+            )}
         </div>
     );
 }
