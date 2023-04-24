@@ -46,7 +46,6 @@ export default function Profile() {
     // Cette fonction recevra les données modifiées du formulaire en tant qu'argument et les mettra à jour dans l'état
     // du composant parent, puis enverra les données mises à jour à la base de données ou à l'API.
     
-    
     return (
         <div className="card profile-card">
             <h1>Profil</h1>
@@ -183,11 +182,11 @@ function ProfileEditable(props) {
 
 function ProfileReadOnly(props) {
     const { firstName, lastName, birthDate, email, isAdmin } = props;
-    const firebasename = getFirebaseAuthName();
+
     return (
         <div>
-            <p><strong>Prénom :</strong> {firstName || firebasename.firstName}</p>
-            <p><strong>Nom :</strong> {lastName || firebasename.lastName}</p>
+            <p><strong>Prénom :</strong> {firstName }</p>
+            <p><strong>Nom :</strong> {lastName }</p>
             <p><strong>Date de naissance :</strong> {birthDate}</p>
             <p><strong>E-mail :</strong> {email}</p>
             <p><strong>Est admin :</strong> {isAdmin ? "Yes" : "No"}</p>
@@ -195,15 +194,3 @@ function ProfileReadOnly(props) {
     );
 }
 
-function getFirebaseAuthName() {
-    const user = auth.currentUser;
-    let firstName, lastName;
-
-    if (user.displayName) {
-        const names = user.displayName.split(" ");
-        firstName = names[0];
-        lastName = names[names.length - 1];
-    }
-
-    return { firstName, lastName };
-}
