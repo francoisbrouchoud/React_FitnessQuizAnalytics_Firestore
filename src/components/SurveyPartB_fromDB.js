@@ -19,7 +19,6 @@ export default function SurveyPartB({setResults}) {
     
     return (
         <>
-            <h1>Questionnaire B</h1>
             {isLoading ? (
                 <p>Question en cours de chargement</p>
             ) : (

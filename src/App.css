@@ -267,6 +267,13 @@ a {
   color: green;
 }
 
+
+canvas { display: block; margin: 0 auto; }
+.arrow { position: absolute; width: 0; height: 0; border-style: solid; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #333; transform: rotate(-45deg); }
+.underweight, .normal, .overweight, .obese { font-weight: bold; font-size: 24px; margin: 10px; }
+
+
+
 /* RESPONSIVE PART */
 @media (max-width: 900px) {
   .container {

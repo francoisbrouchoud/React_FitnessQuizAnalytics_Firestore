@@ -17,6 +17,7 @@ import {AppHeader} from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
 import BMICalculator from "./screens/IMC-Calculator";
+import {NotFound} from "./screens/404NotFound";
 ;
 
 // Configure FirebaseUI.
@@ -238,6 +239,7 @@ export default function App()
                             <Route path="/information" 			element={<Information/>}/>
                             <Route path="/resultats" 		element={<Resultats/>}/>
                             <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </div>
                 </div>
