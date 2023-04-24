@@ -42,6 +42,12 @@ export default function Profile() {
         setIsEditable(false);
     }
     
+    // BTN EDIT GROUP
+    function handleGroup() {
+    
+    }
+    
+    
     
     return (
         <div className="card profile-card">
@@ -53,6 +59,11 @@ export default function Profile() {
               <>
                   <ProfileReadOnly {...userDatas} />
                   <button className="primary-button" onClick={handleEdit}>Modifier</button>
+                  <button className="primary-button" onClick={handleGroup}>Gestion du groupe</button>
+                  {userDatas.isAdmin && (
+                      <Link to="/admin">
+                          <button className="primary-button">Administrateur</button>
+                      </Link>)}
               </>
             )}
             {/* EDITING MODE */}

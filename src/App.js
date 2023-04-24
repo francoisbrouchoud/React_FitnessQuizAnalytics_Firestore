@@ -16,6 +16,7 @@ import Profile from "./screens/Profile";
 import {AppHeader} from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
+import Admin from "./screens/Admin";
 ;
 
 // Configure FirebaseUI.
@@ -228,6 +229,7 @@ export default function App({currentUserAuth, data})
                             <Route path="/profile" 			element={<Profile/>}/>
                             <Route path="/information" 		element={<Information/>}/>
                             <Route path="/resultats" 		element={<Resultats/>}/>
+                            <Route path="/admin" 		    element={<Admin/>}/>
                         </Routes>
                     </div>
                 </div>
