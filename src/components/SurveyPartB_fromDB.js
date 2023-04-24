@@ -33,6 +33,7 @@ function Survey ({ questionDataPartB, setResults})
 {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [lastQuestionIndex, setLastQuestionIndex] = useState(0);
     //const [errorMessage, setErrorMessage] = useState('');
     //voir lastQuestion
 
@@ -145,7 +146,8 @@ function Survey ({ questionDataPartB, setResults})
     //retour en arrière teste si on ne sort pa du tableau à gauche
     const back = () => {
         if (currentQuestionIndex > 0) {
-            setCurrentQuestionIndex(currentQuestionIndex - 1);
+            //setCurrentQuestionIndex(currentQuestionIndex - 1);
+            setCurrentQuestionIndex(lastQuestionIndex);
         }
     };
 
@@ -188,8 +190,10 @@ function Survey ({ questionDataPartB, setResults})
 
             if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
                 const nextQuestionIndex = questionDataPartB.findIndex((q) => q.questionId === nextQuestionMapping.nextQuestionId);
+                setLastQuestionIndex(currentQuestionIndex);
                 setCurrentQuestionIndex(nextQuestionIndex);
             } else {
+                setLastQuestionIndex(currentQuestionIndex);
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             }
         }
