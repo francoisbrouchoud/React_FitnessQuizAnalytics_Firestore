@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {GetQuestions} from "./GetQuestions";
 import {Link} from "react-router-dom";
+import {QuestionZoneB} from "./QuestionZoneB";
 
 export default function SurveyPartB({setResults}) {
 
@@ -32,8 +33,9 @@ function Survey ({ questionDataPartB, setResults})
 {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [lastQuestionIndex, setLastQuestionIndex] = useState(0);
     //const [errorMessage, setErrorMessage] = useState('');
-
+    //voir lastQuestion
 
     useEffect(() => {
         if (responses["BQst03"]?.points === "0") {
@@ -56,20 +58,20 @@ function Survey ({ questionDataPartB, setResults})
         }
 
         if (responses["BQst06"]?.points === "0") {
-            if (responses["BQst07"]?.points !== "0" || responses["BQst08"]?.points !== "0") {
+            if (responses["BQst07"]?.points !== "5" || responses["BQst08"]?.points !== "10") {
                 setResponses((prevResponses) => ({
                     ...prevResponses,
-                    BQst07: { id: "BQst07", value: "Infaisable", points: "0" },
-                    BQst08: { id: "BQst08", value: "Infaisable", points: "0" },
+                    BQst07: { id: "BQst07", value: "Infaisable", points: "5" },
+                    BQst08: { id: "BQst08", value: "Infaisable", points: "10" },
                 }));
             }
         }
 
-        if (responses["BQst08"]?.points === "0") {
-            if (responses["BQst09"]?.points !== "0") {
+        if (responses["BQst07"]?.points === "5") {
+            if (responses["BQst08"]?.points !== "10") {
                 setResponses((prevResponses) => ({
                     ...prevResponses,
-                    BQst09: { id: "BQst09", value: "Infaisable", points: "0" },
+                    BQst08: { id: "BQst08", value: "Infaisable", points: "10" },
                 }));
             }
         }
@@ -144,7 +146,8 @@ function Survey ({ questionDataPartB, setResults})
     //retour en arrière teste si on ne sort pa du tableau à gauche
     const back = () => {
         if (currentQuestionIndex > 0) {
-            setCurrentQuestionIndex(currentQuestionIndex - 1);
+            //setCurrentQuestionIndex(currentQuestionIndex - 1);
+            setCurrentQuestionIndex(lastQuestionIndex);
         }
     };
 
@@ -187,8 +190,10 @@ function Survey ({ questionDataPartB, setResults})
 
             if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
                 const nextQuestionIndex = questionDataPartB.findIndex((q) => q.questionId === nextQuestionMapping.nextQuestionId);
+                setLastQuestionIndex(currentQuestionIndex);
                 setCurrentQuestionIndex(nextQuestionIndex);
             } else {
+                setLastQuestionIndex(currentQuestionIndex);
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             }
         }
@@ -199,7 +204,7 @@ function Survey ({ questionDataPartB, setResults})
     
     return (
         <form onSubmit={handleSubmit}>
-            <QuestionZone
+            <QuestionZoneB
                 questionId={question.questionId}
                 questionText={question.questionText}
                 questionSecondaryText={question.questionSecondaryText}
@@ -228,31 +233,3 @@ function Survey ({ questionDataPartB, setResults})
     );
 };
 
-// Affichage de la question et des radioButtons
-export function QuestionZone ({questionId, questionText, questionSecondaryText, choices, onChange, value, points, multipleChoice }) {
-    return(
-        <div className="questionZone">
-            <div className="card card-title">
-                <h3>{questionText}</h3>
-            </div>
-            {/*texte secondaire si présent*/}
-            {questionSecondaryText && <p>{questionSecondaryText}</p>}
-            <div className="answers">
-                {choices.map((choice, index) => (
-                  <label key={index} className="card answer-card">
-                      <input
-                        type={multipleChoice ? "checkbox" : "radio"}
-                        name={questionId}
-                        value={choice}
-                        data-points={points[index]}
-                        data-multiplechoice={multipleChoice}
-                        onChange={onChange}
-                        checked={multipleChoice ? value?.includes(choice) : value === choice}
-                      />
-                      {choice}
-                  </label>
-                ))}
-            </div>
-        </div>
-    )
-} ;

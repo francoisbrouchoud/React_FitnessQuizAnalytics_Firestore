@@ -42,6 +42,7 @@ export default function SurveyPartA({setResults, onComplete}) {
     const Survey = ({ questions, setResults, onComplete }) => {
         const [responses, setResponses] = useState({});
         const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+        const [lastQuestionIndex, setLastQuestionIndex] = useState(0);
 
         const handleChange = (event) => {
             const questionId = event.target.name;
@@ -73,6 +74,7 @@ export default function SurveyPartA({setResults, onComplete}) {
 
 
                 } else {
+                    setLastQuestionIndex(currentQuestionIndex);
                     setCurrentQuestionIndex(
                         questions.findIndex((q) => q.questionId === nextQuestionOrPoints.questionId)
                     );
@@ -82,7 +84,7 @@ export default function SurveyPartA({setResults, onComplete}) {
 
         const back = () => {
             if (currentQuestionIndex > 0) {
-                setCurrentQuestionIndex(currentQuestionIndex - 1);
+                setCurrentQuestionIndex(lastQuestionIndex);
             }
         };
 
