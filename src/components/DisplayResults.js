@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { ResponsiveRadar } from '@nivo/radar';
 import {
     GetMarcherSansAidesPourcentage,
@@ -12,103 +12,132 @@ import {
     GetSansDouleursPourcentage,
     GetActivitePhysique
 } from './GetResults';
+import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
 
 export default function DisplayResults() {
 
-    //TODO - A gérer l'affichage de plusieurs questionnaires (fonction pour gérer s'il en existe plusieurs dans la collection du user
     const [data, setData] = useState([
         {
             category: 'Activité physique',
-            score1: GetActivitePhysique().valueOf(),
-            score2: 1/6*100
+            score: GetActivitePhysique().valueOf(),
         },
         {
             category: 'Marcher sans aides',
-            score1: GetMarcherSansAidesPourcentage().valueOf(),
-            score2: 3/5*100
+            score: GetMarcherSansAidesPourcentage().valueOf(),
         },
         {
             category: 'Vitesse marche',
-            score1: GetVitesseMarchePourcentage().valueOf(),
-            score2: 3/5*100
+            score: GetVitesseMarchePourcentage().valueOf(),
         },
         {
             category: 'Marche temps',
-            score1: GetMarcheTempsPourcentage().valueOf(),
-            score2: 9/60*100
+            score: GetMarcheTempsPourcentage().valueOf(),
         },
         {
             category: 'Capacité monter',
-            score1: GetCapaciteMonterPourcentage().valueOf(),
-            score2: 6/27*100
+            score: GetCapaciteMonterPourcentage().valueOf(),
         },
         {
             category: 'Insécurité marche',
-            score1: GetInsecuriteMarchePourcentage().valueOf(),
-            score2: 3/5*100
+            score: GetInsecuriteMarchePourcentage().valueOf(),
         },
         {
             category: 'Pas peur du vide',
-            score1: GetPasPeurVidePourcentage().valueOf(),
-            score2: 100-(1/1*100)
+            score: GetPasPeurVidePourcentage().valueOf(),
         },
         {
-            category: 'équilibre',
-            score1: GetEquilibrePourcentage().valueOf(),
-            score2: 2/2*100
+            category: 'Equilibre',
+            score: GetEquilibrePourcentage().valueOf(),
         },
         {
             category: 'Sans douleurs',
-            score1: GetSansDouleursPourcentage().valueOf(),
-            score2: 100-3/5*100
+            score: GetSansDouleursPourcentage().valueOf(),
         },
         {
-            category: 'mobilité',
-            score1: GetMobilitePourcentage().valueOf(),
-            score2: 100-(3/5*100)
+            category: 'Mobilité',
+            score: GetMobilitePourcentage().valueOf(),
         },
     ]);
+    const [questionnaires,setQuestionnaires] = useState([]);
+    const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
+    const [results,setResults] = useState([]);
+
+    const test = [
+        { id: "AQst", points : "0"},
+        { id: "BQst01", points: "0" },
+        { id: "BQst02", points: "0" },
+        { id: "BQst03", points: "0" },
+        { id: "BQst04", points: "0" },
+        { id: "BQst05", points: "0" },
+        { id: "BQst06", points: "0" },
+        { id: "BQst07", points: "0" },
+        { id: "BQst08", points: "0" },
+        { id: "BQst09", points: "0" },
+        { id: "BQst10", points: "0" },
+        { id: "BQst11", points: "0" },
+        { id: "BQst12", points: "0" },
+        { id: "BQst13", points: "0" },
+        { id: "BQst14", points: "0" },
+        { id: "BQst15", points: "0" },
+    ];
+
+    useEffect(() => {
+        async function fetchQuestionnaires(){
+            const listeQuestionnaires = await ManagesResults();
+            setQuestionnaires(listeQuestionnaires);
+        }
+        fetchQuestionnaires();
+    },[]);
+
+    useEffect(() =>{
+        async function fetchResults(){
+            if(selectedQuestionnaire){
+                const myResults = await GetResultsFromQuestionnaire(selectedQuestionnaire);
+                setResults(myResults);
+            }
+        }
+        fetchResults();
+    },[selectedQuestionnaire]);
+
+    const getText = () => {
+    if(selectedQuestionnaire === null || selectedQuestionnaire === "Sélectionner un questionnaire"){
+    } else {
+        return `Le questionnaire sélectionné est ${selectedQuestionnaire}`;
+    }
+    };
 
     return (
-        <div style={{ height: '400px' }}>
-            <ResponsiveRadar
-                data={data}
-                keys={['score1','score2']}
-                indexBy="category"
-                maxValue={100}
-                valueFormat=">-.2f"
-                margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
-                borderColor={{ from: 'color', modifiers: [] }}
-                gridLabelOffset={20}
-                dotSize={9}
-                dotColor={{ theme: 'background' }}
-                dotBorderWidth={2}
-                colors={{ scheme: 'paired' }}
-                fillOpacity={0.9}
-                blendMode="multiply"
-                motionConfig="wobbly"
-                legends={[
-                    {
-                        anchor: 'top-left',
-                        direction: 'column',
-                        translateX: -50,
-                        translateY: -40,
-                        itemWidth: 80,
-                        itemHeight: 20,
-                        itemTextColor: '#999',
-                        symbolSize: 12,
-                        symbolShape: 'circle',
-                        effects: [
-                            {
-                                on: 'hover',
-                                style: {
-                                    itemTextColor: '#000'
-                                }
-                            }
-                        ]
-                    }
-                ]}
-            />
+        <div>
+            <div>
+                <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
+                    <option value={null}>Sélectionner un questionnaire</option>
+                    {questionnaires.map((questionnaire, index) => (
+                        <option key={index}>{questionnaire.date}</option>
+                    ))}
+                </select>
+                <p>{getText()}</p>
+            </div>
+            <div style={{ height: '400px' }}>
+                <ResponsiveRadar
+                    data={data}
+                    keys={['score']}
+                    indexBy="category"
+                    maxValue={100}
+                    valueFormat=">-.2f"
+                    margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+                    borderColor={{ from: 'color', modifiers: [] }}
+                    gridLabelOffset={20}
+                    dotSize={9}
+                    dotColor={{ theme: 'background' }}
+                    dotBorderWidth={2}
+                    colors={{ scheme: 'paired' }}
+                    fillOpacity={0.9}
+                    blendMode="multiply"
+                    motionConfig="wobbly"
+                />
+            </div>
         </div>
     );
 }
+
+
