@@ -56,20 +56,20 @@ function Survey ({ questionDataPartB, setResults})
         }
 
         if (responses["BQst06"]?.points === "0") {
-            if (responses["BQst07"]?.points !== "0" || responses["BQst08"]?.points !== "0") {
+            if (responses["BQst07"]?.points !== "5" || responses["BQst08"]?.points !== "10") {
                 setResponses((prevResponses) => ({
                     ...prevResponses,
-                    BQst07: { id: "BQst07", value: "Infaisable", points: "0" },
-                    BQst08: { id: "BQst08", value: "Infaisable", points: "0" },
+                    BQst07: { id: "BQst07", value: "Infaisable", points: "5" },
+                    BQst08: { id: "BQst08", value: "Infaisable", points: "10" },
                 }));
             }
         }
 
-        if (responses["BQst08"]?.points === "0") {
-            if (responses["BQst09"]?.points !== "0") {
+        if (responses["BQst07"]?.points === "5") {
+            if (responses["BQst08"]?.points !== "10") {
                 setResponses((prevResponses) => ({
                     ...prevResponses,
-                    BQst09: { id: "BQst09", value: "Infaisable", points: "0" },
+                    BQst08: { id: "BQst08", value: "Infaisable", points: "10" },
                 }));
             }
         }
