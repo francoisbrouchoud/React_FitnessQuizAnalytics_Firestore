@@ -1,7 +1,7 @@
 import {auth, db} from "../initFirebase";
 import {setDoc, serverTimestamp, Timestamp, doc} from "firebase/firestore";
 
-export default async function SetResultsToFirebase(resultsA, resultsB){
+export default async function SetResultsToFirebase(resultsA, resultsB, resultsC){
     try {
         const timestamp = Timestamp.now();
         const date = timestamp.toDate();
@@ -21,6 +21,7 @@ export default async function SetResultsToFirebase(resultsA, resultsB){
         console.log(resultsB)
         const userResultRef = doc(db, "users", auth.currentUser.email, "results", formattedDate);
         await setDoc(userResultRef, {
+            groupLeader: resultsC,
             date: formattedDate,
             results: resultsB
         });

@@ -4,42 +4,42 @@ import SurveyPartA from "../components/SurveyPartA";
 import SurveyPartB from "../components/SurveyPartB_fromDB";
 import React, {useEffect, useState} from "react";
 import SetResultsToFirebase from "../components/SetResultsToFirebase";
-import SurveyGroupChef from "../components/SurveyPartA";
 import {AppHeader} from "./AppHeader";
+import SurveyPartC from "../components/SurveyPartC";
 
 export default function Questionnaire() {
     const [resultsA, setResultsA] = useState(null);
     const [resultsB, setResultsB] = useState(null);
-    const [resultGroupChef, setResultGroupChef] = useState(null);
+    const [resultsC, setResultsC] = useState(null);
     const [displaySurveyA, setDisplaySurveyA] = useState(true);
     const [displaySurveyB, setDisplaySurveyB] = useState(false);
-    const [displaySurveyGroupChef, setDisplaySurveyGroupChef] = useState(false);
+    const [displaySurveyC, setDisplaySurveyC] = useState(false);
 
     const navigate = useNavigate();
     useEffect(() => {
         console.log("resultat Provisoire A", resultsA);
-        if(resultsA != null && resultsB != null){
-            console.log("new Results A, B",  resultsA, resultsB)
+        if(resultsA != null && resultsB != null && resultsC != null){
+            console.log("new Results A, B",  resultsA, resultsB, resultsC)
             // 1 afficher le contenu de la variable
             // 2 concatener les resultats a et b
             // 3 push le resultats sur la firebase evt. avoir deux resultats
-            SetResultsToFirebase(resultsA, resultsB);
+            SetResultsToFirebase(resultsA, resultsB, resultsC);
             // 4 renitialiser les resultat
             // 5 Changer la page
             navigate('/');
         }
-    }, [resultsA, resultsB]);
+    }, [resultsA, resultsB, resultsC]);
 
     const handleCompleteA = () => {
         setDisplaySurveyA(false);
         setDisplaySurveyB(true);
-        setDisplaySurveyGroupChef(false);
+        setDisplaySurveyC(false);
     };
 
     const handleCompleteB = () => {
         setDisplaySurveyA(false);
         setDisplaySurveyB(false);
-        setDisplaySurveyGroupChef(true);
+        setDisplaySurveyC(true);
     };
 
     //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
@@ -47,7 +47,7 @@ export default function Questionnaire() {
         <>
             {displaySurveyA && <SurveyPartA setResults={setResultsA} onComplete={handleCompleteA} />}
             {displaySurveyB && <SurveyPartB setResults={setResultsB} onComplete={handleCompleteB} />}
-            {<SurveyGroupChef setResults={setResultGroupChef} />}
+            {displaySurveyC && <SurveyPartC setResults={setResultsC} />}
 
             <p>
                 <Link to="/">Go To The Home Page</Link>
