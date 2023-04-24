@@ -33,7 +33,7 @@ export default function Profile() {
         try
         {
             setIsLoading(true);
-            fetchUserDataFromDB();
+            fetchUserDataFromDB().then(r => console.log("Fetch done !"));
         }
         catch (e) {
             console.error(e);
@@ -63,7 +63,7 @@ export default function Profile() {
         }
         else {
             console.log("userDatas.photoURL : " , userDatas.photoURL);
-            return require(userDatas.photoURL);
+            return (userDatas.photoURL);
         }
     }
     
@@ -76,7 +76,7 @@ export default function Profile() {
                     <>
                         <div className="card profile-card">
                             <h1>Profil</h1>
-                            <img className="profileIcon" src={selectProfilePictureURL}/>
+                            <img className="profileIcon" src={selectProfilePictureURL()}/>
                             {/* Condition vérifiant si le profil est éditable ou non*/}
                             {/* Si on est pas en mode EDIT, on peut y passer */}
                             {!isEditable && (
