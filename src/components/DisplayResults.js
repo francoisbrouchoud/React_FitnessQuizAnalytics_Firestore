@@ -20,6 +20,7 @@ export default function DisplayResults() {
     const [questionnaires,setQuestionnaires] = useState([]);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
     const [results,setResults] = useState([]);
+    const [email, setEmail] = useState('');
 
     useEffect(() => {
         async function fetchQuestionnaires(){
@@ -87,6 +88,26 @@ export default function DisplayResults() {
         }
     }, [results]);
 
+    const sendEmail = () => {
+        const body = "Bonjour, \n\n"+"Voici vos résultats du questionnaire :\n\n" + "Activité physique: " + GetActivitePhysique(results) + "%"+ "\n"
+            + "Marcher sans aides: " + GetMarcherSansAidesPourcentage(results) + "%"+ "\n"
+            + "Vitesse marche: " + GetVitesseMarchePourcentage(results) + "%"+ "\n"
+            + "Marche temps: " + GetMarcheTempsPourcentage(results) + "%"+ "\n"
+            + "Capacité monter: " + GetCapaciteMonterPourcentage(results) + "%"+ "\n"
+            + "Insécurité marche: " + GetInsecuriteMarchePourcentage(results) + "%"+ "\n"
+            + "Pas peur du vide: " + GetPasPeurVidePourcentage(results) + "%"+ "\n"
+            + "Equilibre: " + GetEquilibrePourcentage(results) + "%"+ "\n"
+            + "Sans douleurs: " + GetSansDouleursPourcentage(results) + "%"+ "\n"
+            + "Mobilité: " + GetMobilitePourcentage(results) + "%"+ "\n\n"
+            + "Merci de nous avoir fait confiance.\n\n"
+            + "Votre team FitnessCheck"
+        ;
+        const subject = "Résultats du questionnaire";
+        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
+    }
+
+
     return (
         <div>
             {questionnaires.length > 0 ? (
@@ -121,6 +142,11 @@ export default function DisplayResults() {
                                 />
                             </div>
                             <GetResults />
+                            <div>
+                                <label htmlFor="email">Entrez votre adresse mail :</label>
+                                <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                                <button onClick={sendEmail}>Envoyer par email</button>
+                            </div>
                         </>
                     )}
                 </div>
