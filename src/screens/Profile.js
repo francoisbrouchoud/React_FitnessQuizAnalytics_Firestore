@@ -4,13 +4,17 @@ import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
 import {Link} from "react-router-dom";
 import {AppHeader} from "./AppHeader";
 
+
+// TODO : CHANGER PHOTO USER
+// TODO : AJOUTER BTN ADD PICTURE (POUR CHANGER LA PHOTO DE PROFIL)
 export default function Profile() {
     
     const [isEditable,  setIsEditable]  = useState(false);
-    const [isSaved,     setIsSaved]     = useState(false);  // TODO : A supprimer
     const [userDatas,        setUserDatas]  = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     
     useEffect(() => {
+
         // Récupérer les données de l'utilisateur dans la base de données ou l'API
         const fetchUserDataFromDB = async () => {
             const docRef = doc(db, 'users', auth.currentUser.email );
@@ -18,15 +22,26 @@ export default function Profile() {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 setUserDatas(data);
+                console.log('Users Data fetched for profile !', data);
             } else {
                 console.error('No such document!');
             }
         };
         
         // Call the function to fetch the data, use the .then() method to wait for the promise to resolve and then set the state with the result
-        fetchUserDataFromDB().then(() => {
-            console.log('Users Data fetched for profile !', userDatas);
-        });
+        //fetchUserDataFromDB()
+        try
+        {
+            setIsLoading(true);
+            fetchUserDataFromDB().then(r => console.log("Fetch done !"));
+        }
+        catch (e) {
+            console.error(e);
+        }
+        finally
+        {
+            setIsLoading(false);
+        }
         
     }, [isEditable]);
     
@@ -39,34 +54,57 @@ export default function Profile() {
     function BACK() {
         // Va changer l'affichage du composant & fetch les données de l'utilisateur depuis la DB
         setIsEditable(false);
-        setIsSaved(true);
     }
     
-    // CALLBACK FUNCTION POUR RECUPERER LES DONNEES DU FORM ENFANT
-    // Cette fonction recevra les données modifiées du formulaire en tant qu'argument et les mettra à jour dans l'état
-    // du composant parent, puis enverra les données mises à jour à la base de données ou à l'API.
-    
+    const selectProfilePictureURL = () => {
+        if(auth.currentUser.photoURL === null) {
+            console.log("DEFAULT PICTURE !");
+            return require('../Pictures/avatarHomme.png');
+        }
+        else {
+            console.log("userDatas.photoURL : " , userDatas.photoURL);
+            return (userDatas.photoURL);
+        }
+    }
     
     return (
-        <div className="card profile-card">
-            <h1>Profil</h1>
-            <img className="profileIcon" src={require('../Pictures/avatarHomme.png')}/>
-            {/* Condition vérifiant si le profil est éditable ou non*/}
-            {/* Si on est pas en mode EDIT, on peut y passer */}
-            {!isEditable && (
-              <>
-                  <ProfileReadOnly {...userDatas} />
-                  <button className="primary-button" onClick={handleEdit}>Modifier</button>
-              </>
-            )}
-            {/* EDITING MODE */}
-            {isEditable && (
-              <>
-                  <ProfileEditable {...userDatas} />
-                  <button className="primary-button" onClick={BACK}>Retour</button>
-              </>
-            )}
-        </div>
+        <>
+            {isLoading ?
+                (<h1>Chargement...</h1>)
+                :
+                (
+                    <>
+                        <div className="card profile-card">
+                            <h1>Profil</h1>
+                            <img className="profileIcon" src={selectProfilePictureURL()}/>
+                            {/* Condition vérifiant si le profil est éditable ou non*/}
+                            {/* Si on est pas en mode EDIT, on peut y passer */}
+                            {!isEditable && (
+                                <>
+                                    <ProfileReadOnly {...userDatas} />
+                                    <button className="primary-button" onClick={handleEdit}>Modifier</button>
+                                    {userDatas.isGroupLeader && (
+                                        <Link to="/groupe">
+                                            <button className="primary-button">Gestion du groupe</button>
+                                        </Link>)}
+                                    {userDatas.isAdmin && (
+                                        <Link to="/admin">
+                                            <button className="primary-button">Administrateur</button>
+                                        </Link>)}
+                                </>
+                            )}
+                            {/* EDITING MODE */}
+                            {isEditable && (
+                                <>
+                                    <ProfileEditable {...userDatas} />
+                                    <button className="primary-button" onClick={BACK}>Retour</button>
+                                </>
+                            )}
+                        </div>
+                    </>
+                )}
+        </>
+        
     );
 }
 
@@ -76,10 +114,13 @@ function ProfileEditable(props) {
 
     const [editedData, setEditedData] = useState(
         {
-                    firstName:  props.firstName,
-                    lastName:   props.lastName,
-                    birthDate:  props.birthDate
+                    firstName:     props.firstName,
+                    lastName:      props.lastName,
+                    birthDate:     props.birthDate,
+                    isGroupLeader: props.isGroupLeader
                  });
+    
+    //console.log("ProfileEditable props : " , props);
     
     // OLD VERSION --> REFACTOR IN 1 METHODE
     /*function handleFirstNameChange(event) {
@@ -98,7 +139,9 @@ function ProfileEditable(props) {
     function handleInputChange(event) {
         const target = event.target;
         const name = target.name;
-        const value = target.value;
+        //const value = target.type === 'radio' ? target.checked : target.value;
+        const value = target.type === "checkbox" ? target.checked : target.value;
+        
         
         setEditedData((prevState) => ({
             ...prevState,
@@ -111,16 +154,15 @@ function ProfileEditable(props) {
     {
         event.preventDefault();
         // Check if all fields are not empty
-        if (Object.values(editedData).every((val) => val.trim())) {
-            // RETOURNER DATA  LES DATA A LA DB
-            await updateUserProfile(auth.currentUser.email, editedData);
-        } else {
-            // Handle empty fields error
-            console.log("Error: Fields cannot be empty!");
-        }
-        
-        
-        //await updateUserProfile(auth.currentUser.email, editedData);
+        // if (Object.values(editedData).every((val) => val.trim())) {
+        //     // RETOURNER LES DATA A LA DB
+        //     await updateUserProfile(auth.currentUser.email, editedData);
+        // } else {
+        //     // Handle empty fields error
+        //     console.log("Error: Fields cannot be empty!");
+        // }
+
+        await updateUserProfile(auth.currentUser.email, editedData);
         
     }
     
@@ -175,6 +217,43 @@ function ProfileEditable(props) {
                     onChange={handleInputChange}
                 />
             </div>
+            <div className="form-fields">
+                <label htmlFor="is-group-leader-input">Est chef de groupe :</label>
+                <input
+                    type="checkbox"
+                    id="is-group-leader-input"
+                    name="isGroupLeader"
+                    checked={editedData.isGroupLeader}
+                    onChange={handleInputChange}
+                />
+            </div>
+            {/*<div className="form-fields">*/}
+            {/*    <label htmlFor="is-group-leader-input">Est responsable de groupe :</label>*/}
+            {/*    <div className="radio-group">*/}
+            {/*        <label>*/}
+            {/*            <input*/}
+            {/*                type="radio"*/}
+            {/*                id="is-group-leader-yes"*/}
+            {/*                name="isGroupLeader"*/}
+            {/*                value="true"*/}
+            {/*                checked={editedData.isGroupLeader === 'true'}*/}
+            {/*                onChange={handleInputChange}*/}
+            {/*            />*/}
+            {/*            Oui*/}
+            {/*        </label>*/}
+            {/*        <label>*/}
+            {/*            <input*/}
+            {/*                type="radio"*/}
+            {/*                id="is-group-leader-no"*/}
+            {/*                name="isGroupLeader"*/}
+            {/*                value="false"*/}
+            {/*                checked={editedData.isGroupLeader === 'false'}*/}
+            {/*                onChange={handleInputChange}*/}
+            {/*            />*/}
+            {/*            Non*/}
+            {/*        </label>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
             <button className="primary-button" type="submit">Enregistrer</button>
         </form>
     );
@@ -182,28 +261,18 @@ function ProfileEditable(props) {
 
 
 function ProfileReadOnly(props) {
-    const { firstName, lastName, birthDate, email, isAdmin } = props;
-    const firebasename = getFirebaseAuthName();
+    const { firstName, lastName, birthDate, email, isAdmin, isGroupLeader } = props;
+
+    //console.log("ProfileReadOnly props : " , props);
     return (
         <div>
-            <p><strong>Prénom :</strong> {firstName || firebasename.firstName}</p>
-            <p><strong>Nom :</strong> {lastName || firebasename.lastName}</p>
+            <p><strong>Prénom :</strong>            {firstName }</p>
+            <p><strong>Nom :</strong>               {lastName }</p>
             <p><strong>Date de naissance :</strong> {birthDate}</p>
-            <p><strong>E-mail :</strong> {email}</p>
-            <p><strong>Est admin :</strong> {isAdmin ? "Yes" : "No"}</p>
+            <p><strong>E-mail :</strong>            {email}</p>
+            <p><strong>Est chef de groupe :</strong>{isGroupLeader ? "Oui" : "Non"}</p>
+            <p><strong>Est admin :</strong>         {isAdmin ? "Oui" : "Non"}</p>
         </div>
     );
 }
 
-function getFirebaseAuthName() {
-    const user = auth.currentUser;
-    let firstName, lastName;
-
-    if (user.displayName) {
-        const names = user.displayName.split(" ");
-        firstName = names[0];
-        lastName = names[names.length - 1];
-    }
-
-    return { firstName, lastName };
-}

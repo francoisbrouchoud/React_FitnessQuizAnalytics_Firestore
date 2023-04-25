@@ -1,10 +1,10 @@
 import React from 'react';
-import { db } from '../initFirebase';
+import { db } from '../../initFirebase';
 import {doc, setDoc, collection, getDocs} from "firebase/firestore";
 import firebase from "firebase/compat/app";
-import {questionDataPartB} from "../data/survey.js";
+import {messageDataPartA, questionDataPartA} from "../../data/survey.js";
 
-export default function InitQuestionsPart2()
+export default function InitMessagesPartA()
 {
     // Upload data ordre random
     /*
@@ -73,14 +73,14 @@ export default function InitQuestionsPart2()
     async function uploadQuestions() {
         try {
             // Get a reference to the "questions" collection in Firestore
-            const questionsRef = collection(db, "questions_partB");
+            const questionsRef = collection(db, "messages_partA");
             
             // Check if the collection already exists in Firestore
             const snapshot = await getDocs(questionsRef);
             const existingData = snapshot.docs.map((doc) => doc.data());
             
             // Compare the existing data with the data you want to upload
-            const newData = questionDataPartB.filter((question) => {
+            const newData = messageDataPartA.filter((question) => {
                 return !existingData.some(
                     (existingQuestion) =>
                         existingQuestion.question === question.question &&
@@ -91,25 +91,25 @@ export default function InitQuestionsPart2()
             // If there is new data, push it to Firestore
             if (newData.length > 0) {
                 const batch = [];
-                questionDataPartB.forEach((question) => {
+                messageDataPartA.forEach((question) => {
                     if (newData.some((newQuestion) => newQuestion === question)) {
-                        const docRef = doc(questionsRef, question.questionId.toString() );
+                        const docRef = doc(questionsRef, question.messageId.toString() );
                         batch.push(setDoc(docRef, question));
                     }
                 });
                 await Promise.all(batch);
-                console.log("Questions successfully uploaded to Firestore!");
+                console.log("Messages successfully uploaded to Firestore!");
             } else {
-                console.log("No new questions to upload.");
+                console.log("No new messages to upload.");
             }
         } catch (error) {
-            console.error("Error uploading questions to Firestore: ", error);
+            console.error("Error uploading messages to Firestore: ", error);
         }
     }
     
     return (
         <>
-            <button onClick={uploadQuestions}>Initialize Questions Part 2 in DB</button>
+            <button onClick={uploadQuestions}>Initialize Messages Part A in DB</button>
         </>
     )
 }

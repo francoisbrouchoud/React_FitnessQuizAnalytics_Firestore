@@ -16,6 +16,10 @@ import Profile from "./screens/Profile";
 import {AppHeader} from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
+import BMICalculator from "./screens/IMC-Calculator";
+import Admin from "./screens/Admin";
+import GroupLeader from "./screens/GroupLeader";
+import NotFound from "./screens/NotFound";
 ;
 
 // Configure FirebaseUI.
@@ -90,11 +94,12 @@ export default function App()
         const data = {
             email: auth.currentUser.email,
             uid:   auth.currentUser.uid,
-            isAdmin: true,
-            //firstName:                 ON REMPLIT CES DONNE DEPUIS LE PROFIL
-            //lastName:
+            isAdmin: false,
+            isGroupLeader: false,
+            firstName: null,
+            lastName: "",
+            photoURL: auth.currentUser.photoURL,
             //birthDate:
-            xolo: "non"
         }
         
         // Get the user profile from the DB
@@ -106,32 +111,23 @@ export default function App()
         const snapshot = await docSnap();
         
         // If the user profile doesn't exist, create it
-        // If the user profile already exists, update it
+        // If the user profile already exists, update it --> UPDATE SE FAIT DEPUIS LA PAGE WEB MAINTENANT
         // TODO : Bon ben IF et ELSE font la même chose ici, car le ELSE utilise l'option MERGE qui met à jour les données existantes
-        if (snapshot.exists())
-        {
-            console.log("Document data already exist :", snapshot.data());
-            // Merge it with the new data from the auth provider (if it exists)
-            
-            // TODO : VOIR QUELLE VERSION EST INTERESSANTE
-            // VERSION 1
-            // await updateDoc(userRef, data)
-            
-            // VERSION 2
-            const oldUserData = snapshot.data();
-            const newUserData = data;
-            const mergedUserData = { ...oldUserData, ...newUserData };
-            
-            // Only update the user profile if the data has changed. This prevents an infinite loop of updates.
-            if (JSON.stringify(oldUserData) !== JSON.stringify(mergedUserData)) {
-                await setDoc(userRef, mergedUserData);
-            }
-        }
-        else // If the user profile doesn't exist, create it
+        if (!snapshot.exists())
         {
             console.log("Document doesn't exist, created default user");
+            /*console.log("TESTING GOOGLE DATA : ",   auth.currentUser.displayName,
+                        auth.currentUser.toJSON(),
+                        auth.currentUser.providerData,
+                        auth.currentUser.photoURL)*/
+            getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(auth.currentUser , data);
+            
             await setDoc(userRef, data, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
             console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
+        }
+        else
+        {
+            console.log("Document exists, no updating default user");
         }
     }
     
@@ -234,8 +230,12 @@ export default function App()
                             <Route path="/" 				element={<Home/>}/>
                             <Route path="/questionnaire" 	element={<Questionnaire/>}/>
                             <Route path="/profile" 			element={<Profile/>}/>
-                            <Route path="/information" 			element={<Information/>}/>
+                            <Route path="/information" 		element={<Information/>}/>
                             <Route path="/resultats" 		element={<Resultats/>}/>
+                            <Route path="/admin" 		    element={<Admin/>}/>
+                            <Route path="/groupe" 		    element={<GroupLeader/>}/>
+                            <Route path="*"                 element={<NotFound/>}/>
+                            <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
                         </Routes>
                     </div>
                 </div>
@@ -244,5 +244,28 @@ export default function App()
         );
     }
     
+}
+
+// Récuperer les informations depius son compte google (firebase)
+function getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(currentUserAuth, data)
+{
+    // Si il a déja un prénom & nom depuis google
+    if (currentUserAuth.displayName) {
+        const names = currentUserAuth.displayName.split(" "); // Ici on split le nom et le prénom, donc on a un tableau avec 2 éléments ou plus (si il y a plusieurs nom de famille)
+        
+        data.firstName = names[0];
+        //data.lastName = names[names.length - 1]; // Si il y a plusieurs nom de famille, prend le dernier // TODO : Concater les noms de famille
+        for (let i = 1 ; i < names.length; i++)
+        {
+            console.log("NAMES : " , names[i], " i : " , i)
+            if(i == 1) // Si c'est le premier nom de famille, le mettre dans le data
+                data.lastName = names[i];
+            else // Si il y a plusieurs nom de famille, concater les noms de famille
+                data.lastName = data.lastName + " " + names[i];
+        }
+        
+        console.log("GOOGLE DATA : " , data)
+    }
+  
 }
 

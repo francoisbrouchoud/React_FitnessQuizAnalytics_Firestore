@@ -2,76 +2,60 @@ import React, {useEffect, useState} from "react";
 import {collection, doc, getDocs, getDoc} from "firebase/firestore";
 import {db,auth} from "../initFirebase";
 
-const reponsesSondage = [
-    { id: "A01", points : "5"},
-    { id: "B01", points: "2" },
-    { id: "B02", points: "3" },
-    { id: "B03", points: "10" },
-    { id: "B04", points: "14" },
-    { id: "B05", points: "18" },
-    { id: "B06", points: "2" },
-    { id: "B07", points: "8" },
-    { id: "B08", points: "11" },
-    { id: "B09", points: "0" },
-    { id: "B10", points: "1" },
-    { id: "B11", points: "1" },
-    { id: "B12", points: "0" },
-    { id: "B13", points: "1" },
-    { id: "B14", points: "0" },
-    { id: "B15", points: "2" },
+//TODO - Récupérer le tableau de DisplayResults
+let reponsesSondage = [
+    { id: "AQst", points : "0"},
+    { id: "BQst01", points: "0" },
+    { id: "BQst02", points: "0" },
+    { id: "BQst03", points: "0" },
+    { id: "BQst04", points: "0" },
+    { id: "BQst05", points: "0" },
+    { id: "BQst06", points: "0" },
+    { id: "BQst07", points: "0" },
+    { id: "BQst08", points: "0" },
+    { id: "BQst09", points: "1" },
+    { id: "BQst10", points: "5" },
+    { id: "BQst11", points: "5" },
+    { id: "BQst12", points: "0" },
+    { id: "BQst13", points: "0" },
+    { id: "BQst14", points: "0" },
+    { id: "BQst15", points: "0" },
 ];
-let myResultsArray = [];
-let element;
-
-const getOneDocument = async () => {
-    const docRef = doc(db,"users",auth.currentUser.email,"results","18.04.2023-20-25-37");
-    const docSnap = await getDoc(docRef);
-    const data = docSnap.data();
-    myResultsArray = data.results;
-    element = myResultsArray[2].points;
-
-    console.log(myResultsArray)
-    console.log(element);
-}
-export function GetResults() {
-
-    //Récupérer tous les résultats des questionnaires effectués par un utilisateur
-    const getAllQuestionsResults = async () => {
+export function ManagesResults() {
+    const getListeQuestionnaires = async () => {
 
         const querySnapshot = await getDocs(collection(db, "users",auth.currentUser.email,"results"));
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
 
+        const tab = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return data;
         });
+        return tab;
     }
 
-//Récupérer un questionnaire effectué par l'utilisateur
-    /*
-    const getOneDocumentTest = async () => {
-        const docRef = doc(db,"users",auth.currentUser.email,"results","18.04.2023-20-25-37");
-        const docSnap = await getDoc(docRef);
-        const data = docSnap.data();
-        myResultsArray = data.results;
-        element = myResultsArray[2].points;
+    return getListeQuestionnaires();
+}
 
-        console.log(myResultsArray)
-        console.log(element);
-    }
+export async function GetResultsFromQuestionnaire(name){
+        try{
+            const docRef = doc(db,"users",auth.currentUser.email,"results",name);
+            const docSnap = await getDoc(docRef);
+            const data = docSnap.data();
+            const myResultsArray = data.results;
+            console.log(reponsesSondage)
+            reponsesSondage = myResultsArray.slice();
+            console.log(reponsesSondage);
 
-     */
+            console.log(myResultsArray)
 
-    const handleButtonClick = async () => {
-        try
-        {
-            await getAllQuestionsResults();
-            await getOneDocument();
+            return reponsesSondage;
+        } catch (e){
+            console.log("Error :" + e);
+            return null;
         }
-        catch (error)
-        {
-            console.log(error);
-        }
-    };
+}
+
+export function GetResults() {
 
     //RECOMMENDATIONS
 
@@ -172,39 +156,17 @@ export function GetResults() {
 
     //Dénivelé
     //TODO - A FAIRE CALCUL DENIVELE POUR RECOMMENDATION - A REVOIR SELON FICHIER EXCEL
-    var deniveleResultat;
-    var deniveleMessage = "";
 
-    //Monter 1 étage --> B06
-    var monter1EtageResultat = reponsesSondage[5].points;
-    var monter1EtageMessage="Seulement des dénivelés très faibles possibles";
+    var bqst06Resultat = reponsesSondage[6].points;
+    var bqst07Resultat = reponsesSondage[7].points;
+    var bqst08Resultat = reponsesSondage[8].points;
+    var monterEtageMessage = "";
 
-    if(monter1EtageResultat === 0)
-        monter1EtageMessage = "Pas de dénivelé possible"
+    if(bqst08Resultat === 10){
+        if(bqst07Resultat === 5){
 
-    //Monter 3 étages --> B07
-    var monter1EtageResultat = reponsesSondage[6].points;
-    var monter1EtageMessage="Erreur";
-
-    if(monter1EtageResultat !== 5)
-        monter1EtageMessage = "Seulement des dénivelés faibles à modérés possibles"
-
-    //Monter 5 étages --> B08
-    var monter1EtageResultat = reponsesSondage[7].points;
-    var monter1EtageMessage;
-
-   switch (reponsesSondage){
-       case 11:
-       case 12:
-           monter1EtageMessage = "Dénivelés modérés possibles"
-           break;
-       case 13:
-       case 14:
-           monter1EtageMessage = "Dénivelés importants possibles"
-           break;
-       default :
-           monter1EtageMessage = "Erreur"
-   }
+        }
+    }
 
 
     //Risques de chute
@@ -240,6 +202,8 @@ export function GetResults() {
             risqueChuteMessage = "Erreur";
     }
 
+    //TODO - Affichage des messages questionnaire A
+
     return (
         <div>
             <ul>
@@ -250,25 +214,21 @@ export function GetResults() {
                 <li>{risqueChuteMessage}</li>
                 <li>{activitePhysiqueMessage}</li>
             </ul>
-            <div>
-                <button onClick={handleButtonClick}>Get Data</button>
-            </div>
         </div>
     );
 }
 
 //POURCENTAGES pour affichage dans RadarPlot
-
 /*
  Activité physique :
  Résultat de l'onglet activité physique (questionnaire 1) --> 1 à 6 points
  resulat/6x100
   */
 export function GetActivitePhysique(){
-    //TODO - Array de toutes les questions A si plusieurs questionnaires dans collection User
     const qA01res = parseInt(reponsesSondage[0].points);
     const pourcentage = qA01res / 6 * 100;
     return pourcentage;
+
 }
 
 /*
