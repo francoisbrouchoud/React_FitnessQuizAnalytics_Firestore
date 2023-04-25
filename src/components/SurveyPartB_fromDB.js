@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {GetQuestions} from "./GetQuestions";
-import {Link} from "react-router-dom";
 import {QuestionZoneB} from "./QuestionZoneB";
 
 export default function SurveyPartB({setResults, onComplete}) {
@@ -16,12 +15,17 @@ export default function SurveyPartB({setResults, onComplete}) {
         }
         fetchData();
     }, []);
+
+    const surveyTitle = "Évalutation de votre mobilité";
+    useEffect(() => {
+        document.title = surveyTitle;
+    }, [surveyTitle]);
     
     return (
         <>
-            <h1>Questionnaire B</h1>
+            <h1>{surveyTitle}</h1>
             {isLoading ? (
-                <p>Question en cours de chargement</p>
+                <p>Questions en cours de chargement.</p>
             ) : (
                 <Survey questionDataPartB={questionsFromDB} setResults={setResults} onComplete={onComplete} />
             )}

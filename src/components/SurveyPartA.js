@@ -1,10 +1,9 @@
-//Provisoire questionnaire 1
-//TODO faire afficher les messages, enregister les points
 import React, {useEffect, useState} from "react";
 import {GetQuestionsPartA} from "./GetQuestions";
 
+
 export default function SurveyPartA({setResults, onComplete}) {
-    
+
     const [questionsFromDBPartA, setQuestionsFromDBPartA] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     
@@ -16,7 +15,12 @@ export default function SurveyPartA({setResults, onComplete}) {
         }
         fetchData();
     }, []);
-    
+
+    const surveyTitle = "Votre activité physique";
+    useEffect(() => {
+        document.title = surveyTitle;
+    }, [surveyTitle]);
+
     const QuestionZone = ({questionId, questionText, choices, onChange, value,}) => (
         <div className="questionZone">
             <div className="card card-title">
@@ -163,8 +167,9 @@ export default function SurveyPartA({setResults, onComplete}) {
 
     return (
         <>
+            <h1>{surveyTitle}</h1>
             {isLoading ? (
-                <p>Question en cours de chargement</p>
+                <p>Questions en cours de chargement.</p>
             ) : (
             <Survey questions={questionsFromDBPartA} setResults={setResults} onComplete={onComplete} />
             )}

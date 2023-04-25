@@ -7,6 +7,11 @@ export default function SurveyPartC({setResults, onComplete}) {
     const [emails, setEmails] = useState([]);
     const [showEmailInput, setShowEmailInput] = useState(false);
 
+    const surveyTitle = "Inscription auprès d'un chef de groupe";
+    useEffect(() => {
+        document.title = surveyTitle;
+    }, [surveyTitle]);
+
     const handleChange = (event) => {
         setEmailInput(event.target.value);
     };
@@ -42,7 +47,7 @@ export default function SurveyPartC({setResults, onComplete}) {
 
     return (
         <>
-            <h1>Ajouter un ou plusieurs chefs de groupe</h1>
+            <h1>{surveyTitle}</h1>
             <div className="questionZone">
                 <div className="card card-title">
                     <h3>Vous avez la possibilité de saisir l'adresse email de votre chef de groupe :</h3>
