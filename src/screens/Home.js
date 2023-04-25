@@ -22,10 +22,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* SEED DB */}
-      <InitQuestionsPartA/>
-      <InitQuestionsPart2/>
-      <InitMessagesPartA/>
+      
     </>
   );
 }

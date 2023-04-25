@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import firebaseApp, {auth, db} from "../initFirebase";
 import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
+import InitQuestionsPartA from "../components/InitQuestionsPartA";
+import InitQuestionsPart2 from "../components/InitQuestionsPart2";
+import InitMessagesPartA from "../components/InitMessagesPartA";
 
 // Page to display the questions of the DB, and to update them if needed.
 // The page is only accessible to admins.
@@ -13,25 +16,38 @@ export default function Admin() {
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     
-    // TODO : METTRE TOUS CES APPELS A LA DB DANS UN SEUL USE EFFECT, AINSI ON PEUT
-    // TODO : GERER COORECTEMENT LE LOADING ET LES ERREURS (TRY CATCH)
-    // TODO : ET ON AURA QU'UN SEUL APPEL A LA DB A CHAQUE FOIS QU'ON RECHARGE LA PAGE (AU LIEU DE 4)
-    // TODO : NE FAIRE CET APPELS A LA DB QUE SI ON EST ADMIN
-    
     useEffect(() => {
+        console.log('useEffect Admin');
+        
+        checkIfAdmin().then(r => console.log('checkIfAdmin done !'));
+        
         getDB().then(r => console.log('getDB done !'));
-    }, [isAdmin]);
+        
+    }, []);
+    
+    // Check if the user is an admin
+    const checkIfAdmin = async () => {
+        const user = firebaseApp.auth().currentUser;
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userData = userDoc.data();
+        const userIsAdmin = userData.isAdmin;
+        setIsAdmin(userIsAdmin);
+        console.log('User is admin ? ', userIsAdmin);
+    }
     
     const getDB = async () => {
-        
         if(isAdmin)
         {
             try
             {
                 setIsLoading(true);
-                fetchQuestionsA_FromDB();
-                fetchMessagesA_FromDB();
-                fetchQuestionsB_FromDB();
+                Promise.all([     fetchQuestionsA_FromDB(),
+                                        fetchMessagesA_FromDB(),
+                                        fetchQuestionsB_FromDB()
+                                   ]).then(r => console.log('All DB fetched !'));
+                // await fetchQuestionsA_FromDB();
+                // await fetchMessagesA_FromDB();
+                // await fetchQuestionsB_FromDB();
             }
             catch (e) {
                 console.error(e);
@@ -40,7 +56,6 @@ export default function Admin() {
             {
                 setIsLoading(false);
             }
-            
         }
     }
     
@@ -55,7 +70,7 @@ export default function Admin() {
                 console.log('Questions A fetched !', questions);
             };
             
-            fetchQuestionsFromDB()
+            await fetchQuestionsFromDB()
         }
         catch (e) {
             console.error(e);
@@ -73,7 +88,7 @@ export default function Admin() {
                 console.log('Messages A fetched !', messages);
             };
             
-            fetchMessagesFromDB()
+            await fetchMessagesFromDB()
         }
         catch (e) {
             console.error(e);
@@ -91,93 +106,13 @@ export default function Admin() {
                 console.log('Questions B fetched !', questions);
             };
             
-            fetchQuestionsFromDB()
+            await fetchQuestionsFromDB()
         }
         catch (e) {
             console.error(e);
         }
+      
     }
-    
-    
-    //
-    // useEffect(() => {
-    //     try
-    //     {
-    //         setIsLoading(true);
-    //         // Récupérer les données de l'utilisateur dans la base de données ou l'API
-    //         const fetchMessagesFromDB = async () => {
-    //             const querySnapshot = await getDocs(collection(db, 'messages_partA'));
-    //             const messages = querySnapshot.docs.map(doc => doc.data());
-    //             setMessages_A(messages);
-    //             console.log('Messages A fetched !', messages);
-    //         };
-    //
-    //         fetchMessagesFromDB()
-    //     }
-    //     catch (e) {
-    //         console.error(e);
-    //     }
-    //     finally
-    //     {
-    //         setIsLoading(false);
-    //     }
-    // }, [messages_A]);
-    //
-    // // Fetch the questions from the DB and store them in the state
-    // useEffect(() => {
-    //     try
-    //     {
-    //         setIsLoading(true);
-    //         // Récupérer les données de l'utilisateur dans la base de données ou l'API
-    //         const fetchQuestionsFromDB = async () => {
-    //             const querySnapshot = await getDocs(collection(db, 'questions_partB')); // TODO : CHANGER NOM
-    //             const questions = querySnapshot.docs.map(doc => doc.data());
-    //             setQuestionsDB_B(questions);
-    //             console.log('Questions B fetched !', questions);
-    //         };
-    //
-    //         fetchQuestionsFromDB()
-    //     }
-    //     catch (e) {
-    //         console.error(e);
-    //     }
-    //     finally
-    //     {
-    //         setIsLoading(false);
-    //     }
-    // }, [questionsDB_B]);
-    //
-    //
-    // // Fetch the current user's data from the DB and store them in the state
-    // useEffect(() => {
-    //     try
-    //     {
-    //         setIsLoading(true);
-    //         // Récupérer les données de l'utilisateur dans la base de données ou l'API
-    //         const fetchUserDataFromDB = async () => {
-    //             const docRef = doc(db, 'users', auth.currentUser.email );
-    //             const docSnap = await getDoc(docRef);
-    //             if (docSnap.exists()) {
-    //                 const data = docSnap.data();
-    //                 setIsAdmin(data.isAdmin);
-    //                 console.log('Users Data fetched , is admin ?', data);
-    //             } else {
-    //                 console.error('No such document!');
-    //             }
-    //         };
-    //
-    //         fetchUserDataFromDB()
-    //     }
-    //     catch (e) {
-    //         console.error(e);
-    //     }
-    //     finally
-    //     {
-    //         setIsLoading(false);
-    //     }
-    //
-    // }, [isAdmin]);
-    
     
     return (
         <>
@@ -187,8 +122,14 @@ export default function Admin() {
                 (<div>
                     {isAdmin ?
                         (
+                            <>
+                                <h1>ADMIN PORTAIL</h1>
+                                {/*// SEED DB*/}
+                                <InitQuestionsPartA/>
+                                <InitQuestionsPart2/>
+                                <InitMessagesPartA/>
+                            </>
                             
-                            <h1>ADMIN PORTAIL</h1>
                             // DANS UN FORM :
                             // Afficher liste messages A
                             // Afficher liste questions A
