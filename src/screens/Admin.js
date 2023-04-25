@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import firebaseApp, {auth, db} from "../initFirebase";
 import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
-import InitQuestionsPartA from "../components/InitQuestionsPartA";
-import InitQuestionsPart2 from "../components/InitQuestionsPart2";
-import InitMessagesPartA from "../components/InitMessagesPartA";
+import InitQuestionsPartA from "../components/Admin/InitQuestionsPartA";
+import InitQuestionsPartB from "../components/Admin/InitQuestionsPartB";
+import InitMessagesPartA from "../components/Admin/InitMessagesPartA";
 
 // Page to display the questions of the DB, and to update them if needed.
 // The page is only accessible to admins.
@@ -19,42 +19,44 @@ export default function Admin() {
     useEffect(() => {
         console.log('useEffect Admin');
         
-        checkIfAdmin().then(r => console.log('checkIfAdmin done !'));
+        checkIfAdmin().then(r => console.log('checkIfAdmin done !'))
         
-        getDB().then(r => console.log('getDB done !'));
+        getDB().then(r => console.log('getDB done !'))
+       
         
-    }, []);
+    }, [isAdmin]);
     
     // Check if the user is an admin
     const checkIfAdmin = async () => {
-        const user = firebaseApp.auth().currentUser;
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        const userData = userDoc.data();
+        const user = auth.currentUser;
+        const userDoc = await getDoc(doc(db, "users", user.email));
+        const userData = await userDoc.data();
+        console.log('User Data : ', userData);
         const userIsAdmin = userData.isAdmin;
+        console.log('User is Admin ? : ', userIsAdmin);
         setIsAdmin(userIsAdmin);
-        console.log('User is admin ? ', userIsAdmin);
+
     }
     
     const getDB = async () => {
         if(isAdmin)
         {
+            console.log('GetDB - isAdmin', isAdmin);
             try
             {
                 setIsLoading(true);
-                Promise.all([     fetchQuestionsA_FromDB(),
-                                        fetchMessagesA_FromDB(),
-                                        fetchQuestionsB_FromDB()
-                                   ]).then(r => console.log('All DB fetched !'));
-                // await fetchQuestionsA_FromDB();
-                // await fetchMessagesA_FromDB();
-                // await fetchQuestionsB_FromDB();
+                await fetchQuestionsA_FromDB()  .then(r => console.log('Questions A fetched !'));
+                await fetchMessagesA_FromDB()   .then(r => console.log('Messages A fetched !'));
+                await fetchQuestionsB_FromDB()  .then(r => console.log('Questions B fetched !'));
             }
             catch (e) {
                 console.error(e);
             }
             finally
             {
-                setIsLoading(false);
+                console.log('GetDB - isLoading - finally start', isLoading);
+                await setIsLoading(false);
+                console.log('GetDB - isLoading - finally end', isLoading);
             }
         }
     }
@@ -124,9 +126,28 @@ export default function Admin() {
                         (
                             <>
                                 <h1>ADMIN PORTAIL</h1>
-                                {/*// SEED DB*/}
+                                
+                                <h1>Update quizz</h1>
+                                <h2>Questions A</h2>
+                                <FormQuestions questionsInput={questionsDB_A}/>
+                                <hr/>
+                                <br/>
+                                
+                                <h2>Messages A</h2>
+                                <FormMessages messagesInput={messages_A}/>
+                                <hr/>
+                                <br/>
+                                
+                                <h2>Questions B</h2>
+                                <FormQuestions questionsInput={questionsDB_B}/>
+                                <hr/>
+                                <br/>
+                                
+                                
+                                
+                                <h1>Seed default data in DB</h1>
                                 <InitQuestionsPartA/>
-                                <InitQuestionsPart2/>
+                                <InitQuestionsPartB/>
                                 <InitMessagesPartA/>
                             </>
                             
@@ -150,6 +171,131 @@ export default function Admin() {
     );
 }
 
+function FormQuestions ({questionsInput}){
+    const [questions, setQuestions] = useState(questionsInput);
+    
+    useEffect(() => {
+        
+        //console.log(questionsInput, questions);
+        
+    }, [questionsInput]);
+    
+    const handleChange = (event, index) => {
+        const newQuestions = [...questions];
+        newQuestions[index].questionText = event.target.value;
+        setQuestions(newQuestions);
+    };
+    
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // do something with the updated questions
+    };
+    
+    return (
+        <form onSubmit={handleSubmit}>
+            {questions.map((question, index) => (
+                <div key={question.questionId}>
+                    {/*<label htmlFor={`question${index}`}>{question.questionText}</label>*/}
+                    <label htmlFor={`question${index}`}>{question.questionId} : </label>
+                    <input
+                        type="text"
+                        id={`question${index}`}
+                        value={question.questionText}
+                        onChange={(event) => handleChange(event, index)}
+                        style={{ width: 'fit-content' }}
+                    />
+                </div>
+            ))}
+            <button type="submit">Update Questions</button>
+        </form>
+    );
+}
+
+function FormMessages({ messagesInput }) {
+    const [messages, setMessages] = useState(messagesInput);
+    
+    useEffect(() => {
+         console.log(messagesInput, messages);
+    }, [messagesInput]);
+    
+    const handleChange = (event, index, key) => {
+        const newMessages = [...messages];
+        newMessages[index][key] = event.target.value;
+        setMessages(newMessages);
+    };
+    
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // do something with the updated messages
+    };
+    
+    return (
+        <form onSubmit={handleSubmit}>
+            {messages.map((message, index) => (
+                <div key={message.messageId}>
+                    <label htmlFor={`messageTitle${index}`}>Titre du message:</label>
+                    <input
+                        type="text"
+                        id={`messageTitle${index}`}
+                        value={message.messageTitle}
+                        onChange={(event) => handleChange(event, index, "messageTitle")}
+                    />
+                    
+                    <label htmlFor={`messageText${index}`}>Contenu du message:</label>
+                    <textarea
+                        id={`messageText${index}`}
+                        value={message.messageText}
+                        onChange={(event) => handleChange(event, index, "messageText")}
+                    ></textarea>
+                    
+                    {message.messageSecondaryText && (
+                        <div>
+                            <label htmlFor={`messageSecondaryText${index}`}>
+                                Message Secondary Text:
+                            </label>
+                            <textarea
+                                id={`messageSecondaryText${index}`}
+                                value={message.messageSecondaryText}
+                                onChange={(event) =>
+                                    handleChange(event, index, "messageSecondaryText")
+                                }
+                            ></textarea>
+                        </div>
+                    )}
+                    
+                    {message.advices && (
+                        <div>
+                            <label htmlFor={`advices${index}`}>Advices:</label>
+                            <ul>
+                                {message.advices.map((advice, adviceIndex) => (
+                                    <li key={adviceIndex}>
+                                        <input
+                                            type="text"
+                                            id={`advice${index}-${adviceIndex}`}
+                                            value={advice}
+                                            onChange={(event) =>
+                                                handleChange(
+                                                    event,
+                                                    index,
+                                                    `advices[${adviceIndex}]`
+                                                )
+                                            }
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    
+                    <br/>
+                    <hr/>
+                </div>
+                
+            ))}
+            <button type="submit">Update Messages</button>
+        </form>
+    );
+}
 
 
 

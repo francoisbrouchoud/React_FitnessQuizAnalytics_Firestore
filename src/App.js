@@ -18,6 +18,7 @@ import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
 import Admin from "./screens/Admin";
 import GroupLeader from "./screens/GroupLeader";
+import NotFound from "./screens/NotFound";
 ;
 
 // Configure FirebaseUI.
@@ -232,6 +233,7 @@ export default function App({currentUserAuth, data})
                             <Route path="/resultats" 		element={<Resultats/>}/>
                             <Route path="/admin" 		    element={<Admin/>}/>
                             <Route path="/groupe" 		    element={<GroupLeader/>}/>
+                            <Route path="*"                 element={<NotFound/>}/>
                         </Routes>
                     </div>
                 </div>
