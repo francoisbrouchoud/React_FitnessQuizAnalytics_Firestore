@@ -16,6 +16,7 @@ import Profile from "./screens/Profile";
 import {AppHeader} from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
+import BMICalculator from "./screens/IMC-Calculator";
 import Admin from "./screens/Admin";
 import GroupLeader from "./screens/GroupLeader";
 import NotFound from "./screens/NotFound";
@@ -42,7 +43,7 @@ const uiConfig = {
 };
 
 
-export default function App({currentUserAuth, data})
+export default function App()
 {
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
@@ -234,6 +235,7 @@ export default function App({currentUserAuth, data})
                             <Route path="/admin" 		    element={<Admin/>}/>
                             <Route path="/groupe" 		    element={<GroupLeader/>}/>
                             <Route path="*"                 element={<NotFound/>}/>
+                            <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
                         </Routes>
                     </div>
                 </div>
