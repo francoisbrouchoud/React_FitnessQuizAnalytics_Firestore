@@ -1,14 +1,9 @@
 import { Link } from "react-router-dom";
-import InitQuestionsPart2 from "../components/InitQuestionsPart2";
-import InitQuestionsPartA from "../components/InitQuestionsPartA";
+
 import React, {useEffect, useState} from "react";
-import InitQuestionsPartB from "../components/Admin/InitQuestionsPartB";
-import InitQuestionsPartA from "../components/Admin/InitQuestionsPartA";
-import React from "react";
 import "../App.css";
-import InitMessagesPartA from "../components/InitMessagesPartA";
 import {auth} from "../initFirebase";
-import InitMessagesPartA from "../components/Admin/InitMessagesPartA";
+
 
 
 export default function Home() {
