@@ -2,7 +2,6 @@ import React from "react";
 
 /**
  * Standard question zone for survey A and B.
- * It displays a question, possibly a secondary text and answer options
  * @param questionId
  * @param questionText
  * @param questionSecondaryText
@@ -11,7 +10,7 @@ import React from "react";
  * @param value
  * @param points
  * @param multipleChoice
- * @returns {JSX.Element}
+ * @returns {JSX.Element} - representing the question zone with display of question, possibly a secondary text and answer options
  * @constructor
  */
 export function QuestionZone({questionId, questionText, questionSecondaryText, choices, onChange, value, points, multipleChoice}) {

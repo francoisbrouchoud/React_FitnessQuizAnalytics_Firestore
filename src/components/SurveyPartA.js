@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {GetQuestionsPartA} from "./GetQuestions";
+import {GetQuestions} from "./GetQuestions";
 import {QuestionZone} from "./QuestionZone";
 
 export default function SurveyPartA({setResults, onComplete}) {
@@ -9,7 +9,7 @@ export default function SurveyPartA({setResults, onComplete}) {
     
     useEffect(() => {
         async function fetchData() {
-            const data = await GetQuestionsPartA();
+            const data = await GetQuestions("questions_partA");
             setQuestionsFromDBPartA(data);
             setIsLoading(false);
         }

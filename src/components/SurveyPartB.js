@@ -9,7 +9,7 @@ export default function SurveyPartB({setResults, onComplete}) {
 
     useEffect(() => {
         async function fetchData() {
-            const data = await GetQuestions();
+            const data = await GetQuestions("questions_partB");
             setQuestionsFromDB(data);
             setIsLoading(false);
         }
