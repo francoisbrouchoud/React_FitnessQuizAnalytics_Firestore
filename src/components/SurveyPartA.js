@@ -42,11 +42,16 @@ function Survey ({ questions, setResults, onComplete })  {
 
     const handleChange = (event) => {
         const questionId = event.target.name;
-        const { value } = event.target;
-        setResponses({ ...responses, [questionId]: { id: questionId, value } });
+        const value = event.target.value;
+        //format of a result
+        setResponses({ ...responses,
+                            [questionId]: {
+                                id: questionId,
+                                value: value }
+        });
     };
 
-    //Tentative d'affichage de message quand plus de question
+    //
     const next = () => {
         if (!responses[question.questionId]) {
             alert("Sélectionner une réponse svp.");
@@ -81,12 +86,14 @@ function Survey ({ questions, setResults, onComplete })  {
 
     const back = () => {
         if (questionHistory.length > 0) {
-            setCurrentQuestionIndex(questionHistory[questionHistory.length -1]);
-            setQuestionHistory(questionHistory.slice(0, -1));
+            const newQuestionHistory = [...questionHistory];
+            const lastQuestionIndex = newQuestionHistory.pop();
+            setQuestionHistory(newQuestionHistory);
+            setCurrentQuestionIndex(lastQuestionIndex);
         }
     };
 
-
+    // Conditional constesion order
     const getNextQuestion = (currentQuestionId, response, responses, questions) =>{
         switch (currentQuestionId) {
             case "AQst01":
@@ -129,8 +136,7 @@ function Survey ({ questions, setResults, onComplete })  {
         }
     };
 
-
-
+    //get current question
     const question = questions[currentQuestionIndex];
 
     return (
@@ -143,14 +149,15 @@ function Survey ({ questions, setResults, onComplete })  {
                 value={responses[question.questionId]?.value}
             />
             <div className="controls-btn">
+                {/*Button précédent, empty html tag if start of survey*/}
                 {currentQuestionIndex > 0 ? (
                     <button className="secondary-button" type="button" onClick={back} disabled={currentQuestionIndex === 0}>
                         Précédent
                     </button>
                 ) : (
                     <div style={{flex: 1}} />
-                )
-                }
+                )}
+
                 <button className="primary-button" type="button" onClick={next}>
                     Suivant
                 </button>

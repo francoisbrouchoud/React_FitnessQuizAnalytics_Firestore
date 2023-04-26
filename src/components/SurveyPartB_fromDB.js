@@ -33,13 +33,10 @@ export default function SurveyPartB({setResults, onComplete}) {
     );
 }
 
-function Survey ({ questionDataPartB, setResults, onComplete})
-{
+function Survey ({ questionDataPartB, setResults, onComplete}) {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionHistory, setQuestionHistory] = useState([]);
-    //const [errorMessage, setErrorMessage] = useState('');
-    //voir lastQuestion
 
     useEffect(() => {
         if (responses["BQst03"]?.points === "0") {
@@ -81,74 +78,110 @@ function Survey ({ questionDataPartB, setResults, onComplete})
         }
     }, [responses]);
 
-
     const handleChange = (event) => {
         const questionId = event.target.name;
-        const { value } = event.target;
+        const value = event.target.value;
         const points = event.target.dataset.points;
         const multipleChoice = event.target.dataset.multiplechoice === "true";
 
+        //handle multiple choice with checkbox
         if (multipleChoice) {
             if (event.target.checked) {
                 const previousResponses = responses[questionId]?.value || [];
                 const pointsForAlreadyCheckedBoxes = parseInt(responses[questionId]?.points) || 0;
 
+                // if we select the "no option" with other options that are positive already checked
                 if (points == 0 && pointsForAlreadyCheckedBoxes > 0) {
                     alert("Cette option n'est pas sélectionnable en combinaison des autres.");
                     event.target.checked = false;
                     return;
                 }
-
+                // if we select options that are positive with already a "no option" checked
                 if (points == 1 && pointsForAlreadyCheckedBoxes === 0 && previousResponses.length > 0) {
-                    alert("Cette option n'est pas sélectionnable en combinaison de la dernière réponse");
+                    alert("Cette option n'est pas sélectionnable en combinaison de la dernière option.");
                     event.target.checked = false;
                     return;
                 }
 
-                setResponses({...responses, [questionId]: {id: questionId, value: [...previousResponses, value], points: (parseInt(pointsForAlreadyCheckedBoxes) + parseInt(points)).toString()}});
+                //set response : for points: -> calculate the sum of points corresponding to all checked boxes
+                setResponses({...responses,
+                                    [questionId]: {
+                                        id: questionId,
+                                        value: [...previousResponses, value],
+                                        points: (parseInt(pointsForAlreadyCheckedBoxes) + parseInt(points)).toString()}
+                });
 
-            } else {
-                const updatedResponses = responses[questionId].value.filter(
-                    (choice) => choice !== value
-                );
-                setResponses({...responses, [questionId]: {id: questionId,  value: updatedResponses, points: (parseInt(responses[questionId].points) - parseInt(points)).toString()}});
             }
-        } else {
-                setResponses({ ...responses, [questionId]: { id: questionId, value, points }});
+            //if option unchecked
+            else {
+                const updatedResponses = responses[questionId].value.filter((choice) => choice !== value);
+                // set response : for points: -> recalculate the sum of points corresponding to all checked boxes
+                setResponses({...responses,
+                                    [questionId]: {
+                                        id: questionId,
+                                        value: updatedResponses,
+                                        points: (parseInt(responses[questionId].points) - parseInt(points)).toString()}
+                });
+            }
+        }
+        //normal case with only one choice per question
+        else {
+                setResponses({ ...responses,
+                                    [questionId]: {
+                                            id: questionId,
+                                            value: value,
+                                            points: points }
+                });
         }
     };
-/*
-    const handleSubmit = (event) => {
-        event.preventDefault();
 
-
-        // Plus utilisé permettait de vérifier que tout était bien répondu mais géré au niveau du next
-        /*
-        const userAnsweredAllQuestions = questionDataPartB.every((question) => responses.hasOwnProperty(question.questionId));
-        
-        if (!userAnsweredAllQuestions) {
-            setErrorMessage('Veuillez svp répondre à toutes les questions.');
-            return;
-        } else {
-            //supprime le message d'erreur
-            setErrorMessage('');
+    const next = () => {
+        //specific alert for multipe choice
+        if (questionDataPartB[currentQuestionIndex].multipleChoice) {
+            const checkBoxesSelected = responses[question.questionId]?.value;
+            if (!checkBoxesSelected || checkBoxesSelected.length === 0) {
+                alert("Sélectionner au minimum une case.");
+                return;
+            }
         }
-        */
 
+        if (!responses[question.questionId]) {
+            alert("Sélectionner une réponse svp.");
+            return;
+        }
 
-/*
+        // standard case to go to the next question if we are still in the array
+        if (currentQuestionIndex < questionDataPartB.length - 1) {
+            const nextQuestionMapping = nextQuestionMap[question.questionId];
 
-        const resultsTemp = Object.keys(responses).map((questionId) => {
-            const { id, points } = responses[questionId];
-            return { id, points };
-        });
+            // in case of conditional question we get the id of the next question
+            if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
+                const nextQuestionIndex = questionDataPartB.findIndex((q) => q.questionId === nextQuestionMapping.nextQuestionId);
+                // if we go back there is an order for the questions to set in memory
+                setQuestionHistory([...questionHistory, currentQuestionIndex]);
+                setCurrentQuestionIndex(nextQuestionIndex);
+            }
 
-        setResults(resultsTemp);
-*/
-    // };
+            // normal question
+            else {
+                setQuestionHistory([...questionHistory, currentQuestionIndex]);
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            }
+        }
 
-    
-    //retour en arrière teste si on ne sort pa du tableau à gauche
+        // handle the last question and rector result
+        if(currentQuestionIndex === questionDataPartB.length-1){
+            const resultsTemp = Object.keys(responses).map(questionId =>
+                ({
+                    id: responses[questionId].id,
+                    points: responses[questionId].points
+                }));
+
+            setResults(resultsTemp);
+            onComplete();
+        }
+    };
+
     const back = () => {
         if (questionHistory.length > 0) {
             const newQuestionHistory = [...questionHistory];
@@ -158,6 +191,7 @@ function Survey ({ questionDataPartB, setResults, onComplete})
         }
     };
 
+    // Conditional question map
     const nextQuestionMap = {
         "BQst03": {
             condition: (response) => response?.points === "0",
@@ -176,47 +210,8 @@ function Survey ({ questionDataPartB, setResults, onComplete})
             nextQuestionId: "BQst09",
         },
     };
-    
-    //aller en avant teste si on ne sort pa du tableau à droite
-    const next = () => {
-        if (!responses[question.questionId]) {
-            alert("Sélectionner une réponse svp.");
-            return;
-        }
 
-        if (questionDataPartB[currentQuestionIndex].multipleChoice) {
-            const checkBoxesSelected = responses[question.questionId]?.value;
-            if (!checkBoxesSelected || checkBoxesSelected.length === 0) {
-                alert("Sélectionner au minimum une case");
-                return;
-            }
-        }
-
-        if (currentQuestionIndex < questionDataPartB.length - 1) {
-            const nextQuestionMapping = nextQuestionMap[question.questionId];
-
-                if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
-                const nextQuestionIndex = questionDataPartB.findIndex((q) => q.questionId === nextQuestionMapping.nextQuestionId);
-                    setQuestionHistory([...questionHistory, currentQuestionIndex]);
-                setCurrentQuestionIndex(nextQuestionIndex);
-            } else {
-                    setQuestionHistory([...questionHistory, currentQuestionIndex]);
-                setCurrentQuestionIndex(currentQuestionIndex + 1);
-            }
-        }
-
-        if(currentQuestionIndex === questionDataPartB.length-1){
-            const resultsTemp = Object.keys(responses).map((questionId) => {
-                const { id, points } = responses[questionId];
-                return { id, points };
-            });
-
-            setResults(resultsTemp);
-            onComplete();
-        }
-    };
-    
-    //Question courrante à l'index donné
+    // get current question
     const question = questionDataPartB[currentQuestionIndex];
     
     return (
@@ -232,15 +227,18 @@ function Survey ({ questionDataPartB, setResults, onComplete})
                 multipleChoice={question.multipleChoice}
             />
             <div className="controls-btn">
-                {/*{errorMessage && <p className="error-message">{errorMessage}</p>}*/}
+                {/*Button précédent, empty html tag if start of survey*/}
                 {currentQuestionIndex > 0 ? (
-                  <button className="secondary-button" type="button" onClick={back}>Précédent</button>
+                    <button className="secondary-button" type="button" onClick={back}>
+                        Précédent
+                    </button>
                 ) : (
-                    <div style={{flex: 1}} />
-                    )}
+                    <div style={{ flex: 1 }} />
+                )}
 
-                  <button className="primary-button" type="button" onClick={next}>Suivant</button>
-
+                  <button className="primary-button" type="button" onClick={next}>
+                      Suivant
+                  </button>
             </div>
         </form>
     );
