@@ -32,8 +32,6 @@ export async function GetQuestionsPartA()
 		console.error("Error fetching questions:", error);
 		throw error;
 	}
-	
-	
 }
 
 
