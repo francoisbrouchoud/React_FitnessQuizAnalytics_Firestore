@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {collection, doc, getDocs, getDoc} from "firebase/firestore";
 import {db,auth} from "../initFirebase";
 
-//TODO - Récupérer le tableau de DisplayResults
 let reponsesSondage = [
     { id: "AQst", points : "0"},
     { id: "BQst01", points: "0" },
@@ -53,12 +52,36 @@ export async function GetResultsFromQuestionnaire(name){
         }
 }
 
+export function GetMessages() {
+    const getAllMessages = async () => {
+
+        const querySnapshot = await getDocs(collection(db, "messages_partA"));
+
+        const tab = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return data;
+        });
+        return tab;
+    }
+    return getAllMessages();
+}
+
 export function GetResults() {
+    const [messages,setMessages] = useState([]);
+
+    useEffect(() => {
+        async function fetchMessages() {
+            const messagesList = await GetMessages();
+            setMessages(messagesList);
+        }
+        fetchMessages();
+    }, []);
 
     //RECOMMENDATIONS
     //var reponsesSondage = GetResultsFromQuestionnaire(name);
 
     //Activité physique - questionnaire A
+    /*
     var activitePhysiqueResultat = reponsesSondage[0].points;
     var activitePhysiqueMessage =
         "Brochure encourager reprendre activité physique";
@@ -88,6 +111,8 @@ export function GetResults() {
             activitePhysiqueMessage = "Erreur";
     }
     console.log(activitePhysiqueResultat);
+    */
+
 
 // Durée de la route à proposer
     let propositionRouteMessage = "";
@@ -166,7 +191,10 @@ export function GetResults() {
 
         }
     }
-
+    switch(bqst06Resultat){
+        case "0":
+            monterEtageMessage=""
+    }
 
     //Risques de chute
     let risqueChuteResultat = 0;
@@ -201,16 +229,14 @@ export function GetResults() {
             risqueChuteMessage = "Erreur";
     }
 
-    //TODO - Affichage des messages questionnaire A
-
+//Messages PART A
 
     var messagesAResults = reponsesSondage[0].points;
     var messagesAMessage = "";
 
     switch(messagesAResults){
         case "1":
-            messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité\n" +
-                "Informer sur les bénéfices potentiels pour sa santé et son indépendance";
+            messagesAMessage = "";
             break;
         case "2":
             messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité";
@@ -246,7 +272,6 @@ export function GetResults() {
                 <li>{cheminMessage}</li>
                 <li>Dénivelé</li>
                 <li>{risqueChuteMessage}</li>
-                <li>{activitePhysiqueMessage}</li>
             </ul>
             <div>
                 <h1>Messages Part A</h1>
@@ -391,6 +416,10 @@ export function GetMobilitePourcentage(){
     const qB11res = parseInt(reponsesSondage[11].points);
     const pourcentage = 100-(qB11res/5*100);
     return pourcentage;
+}
+
+export function GetArrayResults() {
+return reponsesSondage;
 }
 
 

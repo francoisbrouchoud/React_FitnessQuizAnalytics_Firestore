@@ -10,7 +10,8 @@ import {
     GetMarcheTempsPourcentage,
     GetMobilitePourcentage,
     GetSansDouleursPourcentage,
-    GetActivitePhysique, GetResults
+    GetActivitePhysique,
+    GetResults
 } from './GetResults';
 import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
 
@@ -107,6 +108,17 @@ export default function DisplayResults() {
         window.location.href = mailtoLink;
     }
 
+    const downloadResults = () => {
+        const data = JSON.stringify(results, null, 2); // Convertit les résultats en chaîne JSON formatée
+        const blob = new Blob([data], { type: "text/plain;charset=utf-8" }); // Crée un blob avec les données
+        const url = URL.createObjectURL(blob); // Génère un objet URL pour le blob
+        const link = document.createElement("a"); // Crée un lien pour le téléchargement
+        link.href = url;
+        link.download = selectedQuestionnaire+".txt"; // Nom du fichier à télécharger
+        document.body.appendChild(link);
+        link.click(); // Déclenche le téléchargement
+        document.body.removeChild(link); // Supprime le lien après le téléchargement
+    }
 
     return (
         <div>
@@ -147,6 +159,9 @@ export default function DisplayResults() {
                                 <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                                 <button onClick={sendEmail}>Envoyer par email</button>
                             </div>
+                            <button onClick={downloadResults}>
+                                Télécharger les résultats
+                            </button>
                         </>
                     )}
                 </div>
