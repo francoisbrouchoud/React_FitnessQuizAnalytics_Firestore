@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {GetQuestionsPartA} from "./GetQuestions";
-
+import {QuestionZone} from "./QuestionZone";
 
 export default function SurveyPartA({setResults, onComplete}) {
 
@@ -51,7 +51,6 @@ function Survey ({ questions, setResults, onComplete })  {
         });
     };
 
-    //
     const next = () => {
         if (!responses[question.questionId]) {
             alert("Sélectionner une réponse svp.");
@@ -166,28 +165,6 @@ function Survey ({ questions, setResults, onComplete })  {
     );
 };
 
-function QuestionZone({questionId, questionText, choices, onChange, value}) {
-    return (
-        <div className="questionZone">
-            <div className="card card-title">
-                <h3>{questionText}</h3>
-            </div>
-            <div className="answers">
-                {choices.map((choice, index) => (
-                    <label key={index} className="card answer-card">
-                        <input
-                            type="radio"
-                            name={questionId}
-                            value={choice}
-                            onChange={onChange}
-                            checked={value === choice}
-                        />
-                        {choice}
-                    </label>
-                ))}
-            </div>
-        </div>
-    );
-}
+
 
 

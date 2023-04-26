@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {GetQuestions} from "./GetQuestions";
-import {QuestionZoneB} from "./QuestionZoneB";
+import {QuestionZone} from "./QuestionZone";
 
 export default function SurveyPartB({setResults, onComplete}) {
 
@@ -34,10 +34,10 @@ export default function SurveyPartB({setResults, onComplete}) {
 }
 
 function Survey ({ questionDataPartB, setResults, onComplete}) {
-    const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionHistory, setQuestionHistory] = useState([]);
 
+    const [responses, setResponses] = useState({});
     useEffect(() => {
         if (responses["BQst03"]?.points === "0") {
             if (responses["BQst04"]?.points !== "0" || responses["BQst05"]?.points !== "0") {
@@ -216,7 +216,7 @@ function Survey ({ questionDataPartB, setResults, onComplete}) {
     
     return (
         <form>
-            <QuestionZoneB
+            <QuestionZone
                 questionId={question.questionId}
                 questionText={question.questionText}
                 questionSecondaryText={question.questionSecondaryText}
