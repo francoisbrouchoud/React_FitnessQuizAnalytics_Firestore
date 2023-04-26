@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {collection, doc, getDocs, getDoc} from "firebase/firestore";
 import {db,auth} from "../initFirebase";
 
-//TODO - Récupérer le tableau de DisplayResults
 let reponsesSondage = [
     { id: "AQst", points : "0"},
     { id: "BQst01", points: "0" },
@@ -53,12 +52,36 @@ export async function GetResultsFromQuestionnaire(name){
         }
 }
 
+export function GetMessages() {
+    const getAllMessages = async () => {
+
+        const querySnapshot = await getDocs(collection(db, "messages_partA"));
+
+        const tab = querySnapshot.docs.map((doc) => {
+            const data = doc.data();
+            return data;
+        });
+        return tab;
+    }
+    return getAllMessages();
+}
+
 export function GetResults() {
+    const [messages,setMessages] = useState([]);
+
+    useEffect(() => {
+        async function fetchMessages() {
+            const messagesList = await GetMessages();
+            setMessages(messagesList);
+        }
+        fetchMessages();
+    }, []);
 
     //RECOMMENDATIONS
     //var reponsesSondage = GetResultsFromQuestionnaire(name);
 
     //Activité physique - questionnaire A
+    /*
     var activitePhysiqueResultat = reponsesSondage[0].points;
     var activitePhysiqueMessage =
         "Brochure encourager reprendre activité physique";
@@ -88,6 +111,8 @@ export function GetResults() {
             activitePhysiqueMessage = "Erreur";
     }
     console.log(activitePhysiqueResultat);
+    */
+
 
 // Durée de la route à proposer
     let propositionRouteMessage = "";
@@ -166,7 +191,10 @@ export function GetResults() {
 
         }
     }
-
+    switch(bqst06Resultat){
+        case "0":
+            monterEtageMessage=""
+    }
 
     //Risques de chute
     let risqueChuteResultat = 0;
@@ -201,7 +229,39 @@ export function GetResults() {
             risqueChuteMessage = "Erreur";
     }
 
-    //TODO - Affichage des messages questionnaire A
+//Messages PART A
+
+    var messagesAResults = reponsesSondage[0].points;
+    var messagesAMessage = "";
+
+    switch(messagesAResults){
+        case "1":
+            messagesAMessage = "";
+            break;
+        case "2":
+            messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité";
+            break;
+        case "3":
+            messagesAMessage="Entretien motivationnel\n" +
+                "Pouvoir répondre aux éventuelles objections\n" +
+                "Référer à une assocication de seniors ou proposant l'activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)";
+            break;
+        case "4":
+            break;
+        case "5":
+            messagesAMessage="Proposer brochures sur l'activité physique"
+            break;
+        case "6":
+            messagesAMessage="Périodiquement s’informer sur le niveau d’activité, les difficultés et...\n" +
+                "Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique\n" +
+                "Développer des stratégies pour gérer des nouvelles barrières qui se présentent\n" +
+                "ENCOURAGER!"
+            break;
+        default:
+            messagesAMessage = "Erreur"
+    }
+
+    const messageLines = messagesAMessage.split("\n");
 
     return (
         <div>
@@ -212,12 +272,15 @@ export function GetResults() {
                 <li>{cheminMessage}</li>
                 <li>Dénivelé</li>
                 <li>{risqueChuteMessage}</li>
-                <li>{activitePhysiqueMessage}</li>
             </ul>
-            <ul>
-                <h1>Messages For Part A</h1>
-                <li></li>
-            </ul>
+            <div>
+                <h1>Messages Part A</h1>
+                <ul>
+                    {messageLines.map((line, index) => (
+                        <li key={index}>{line}</li>
+                    ))}
+                </ul>
+            </div>
         </div>
 
     );
@@ -353,6 +416,10 @@ export function GetMobilitePourcentage(){
     const qB11res = parseInt(reponsesSondage[11].points);
     const pourcentage = 100-(qB11res/5*100);
     return pourcentage;
+}
+
+export function GetArrayResults() {
+return reponsesSondage;
 }
 
 
