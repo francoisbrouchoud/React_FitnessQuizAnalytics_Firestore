@@ -12,8 +12,15 @@ export default function Information() {
          <p>Notre application Fitness Check est conçue pour poser des questions générales sur la forme physique des utilisateurs, ainsi que des questions plus spécifiques, pour mieux comprendre leur état de santé et leur niveau de forme physique. Nous utilisons ces informations pour fournir à nos utilisateurs des conseils personnalisés et une vue d'ensemble de leur forme physique sur un radar Plot.</p>
         <p>Notre application est facile à utiliser et dispose d'une interface utilisateur conviviale. Nous avons mis l'accent sur la simplicité pour que les utilisateurs puissent répondre aux questions en toute facilité, et ainsi obtenir des conseils clairs et pertinents.</p>
         <p>Chez Fitness Check, nous sommes engagés à aider nos utilisateurs à atteindre leurs objectifs de santé et de bien-être. Nous croyons que chaque petit pas compte, et que des habitudes de vie saines peuvent faire une grande différence à long terme.</p>
-        <p>Nous sommes fiers de vous offrir une application sûre et sécurisée, avec une politique de confidentialité rigoureuse pour protéger vos données personnelles.</p>
         <p>Si vous avez des questions ou des commentaires sur notre application, n'hésitez pas à nous contacter. Nous sommes toujours ravis d'entendre les retours de nos utilisateurs et de travailler à l'amélioration de notre application.</p>
+          <h2>Contact</h2>
+          <ul>
+              <li><a href="mailto:julienne.betrisey@students.hevs.ch">Julienne Betrisey</a></li>
+              <li><a href="mailto:theo.clerc@students.hevs.ch">Théo Clerc</a></li>
+              <li><a href="mailto:arthur.avez@students.hevs.ch">Arthur Avez</a></li>
+              <li><a href="mailto:elias.borrajo@students.hevs.ch">Elias Borrajo</a></li>
+              <li><a href="mailto:francois.brouchoud@hevs.ch">François Brouchoud</a></li>
+          </ul>
           <Link to={"/"}>
           <button className="primary-button">Fermer</button>
         </Link>
