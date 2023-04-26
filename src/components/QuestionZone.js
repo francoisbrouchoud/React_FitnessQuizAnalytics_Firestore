@@ -1,13 +1,24 @@
 import React from "react";
 
-// Affichage de la question et des radioButtons
-export function QuestionZoneB({questionId, questionText, questionSecondaryText, choices, onChange, value, points, multipleChoice}) {
+/**
+ * Standard question zone for survey A and B.
+ * @param questionId
+ * @param questionText
+ * @param questionSecondaryText
+ * @param choices
+ * @param onChange
+ * @param value
+ * @param points
+ * @param multipleChoice
+ * @returns {JSX.Element} - representing the question zone with display of question, possibly a secondary text and answer options
+ * @constructor
+ */
+export function QuestionZone({questionId, questionText, questionSecondaryText, choices, onChange, value, points, multipleChoice}) {
     return(
         <div className="questionZone">
             <div className="card card-title">
                 <h3>{questionText}</h3>
             </div>
-            {/*texte secondaire si présent*/}
             {questionSecondaryText && <p>{questionSecondaryText}</p>}
             <div className="answers">
                 {choices.map((choice, index) => (
@@ -16,7 +27,7 @@ export function QuestionZoneB({questionId, questionText, questionSecondaryText, 
                             type={multipleChoice ? "checkbox" : "radio"}
                             name={questionId}
                             value={choice}
-                            data-points={points[index]}
+                            data-points={points && points[index]}
                             data-multiplechoice={multipleChoice}
                             onChange={onChange}
                             checked={multipleChoice ? value?.includes(choice) : value === choice}
