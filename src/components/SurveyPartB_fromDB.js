@@ -3,7 +3,7 @@ import {GetQuestions} from "./GetQuestions";
 import {Link} from "react-router-dom";
 import {QuestionZoneB} from "./QuestionZoneB";
 
-export default function SurveyPartB({setResults}) {
+export default function SurveyPartB({setResults, onComplete}) {
 
     const [questionsFromDB, setQuestionsFromDB] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -23,17 +23,17 @@ export default function SurveyPartB({setResults}) {
             {isLoading ? (
                 <p>Question en cours de chargement</p>
             ) : (
-                <Survey questionDataPartB={questionsFromDB} setResults={setResults} />
+                <Survey questionDataPartB={questionsFromDB} setResults={setResults} onComplete={onComplete} />
             )}
         </>
     );
 }
 
-function Survey ({ questionDataPartB, setResults})
+function Survey ({ questionDataPartB, setResults, onComplete})
 {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [lastQuestionIndex, setLastQuestionIndex] = useState(0);
+    const [questionHistory, setQuestionHistory] = useState([]);
     //const [errorMessage, setErrorMessage] = useState('');
     //voir lastQuestion
 
@@ -113,7 +113,7 @@ function Survey ({ questionDataPartB, setResults})
                 setResponses({ ...responses, [questionId]: { id: questionId, value, points }});
         }
     };
-
+/*
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -132,7 +132,7 @@ function Survey ({ questionDataPartB, setResults})
         */
 
 
-
+/*
 
         const resultsTemp = Object.keys(responses).map((questionId) => {
             const { id, points } = responses[questionId];
@@ -140,13 +140,16 @@ function Survey ({ questionDataPartB, setResults})
         });
 
         setResults(resultsTemp);
+*/
+    // };
 
-    };
     
     //retour en arrière teste si on ne sort pa du tableau à gauche
     const back = () => {
-        if (currentQuestionIndex > 0) {
-            //setCurrentQuestionIndex(currentQuestionIndex - 1);
+        if (questionHistory.length > 0) {
+            const newQuestionHistory = [...questionHistory];
+            const lastQuestionIndex = newQuestionHistory.pop();
+            setQuestionHistory(newQuestionHistory);
             setCurrentQuestionIndex(lastQuestionIndex);
         }
     };
@@ -188,14 +191,24 @@ function Survey ({ questionDataPartB, setResults})
         if (currentQuestionIndex < questionDataPartB.length - 1) {
             const nextQuestionMapping = nextQuestionMap[question.questionId];
 
-            if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
+                if (nextQuestionMapping && nextQuestionMapping.condition(responses[question.questionId])) {
                 const nextQuestionIndex = questionDataPartB.findIndex((q) => q.questionId === nextQuestionMapping.nextQuestionId);
-                setLastQuestionIndex(currentQuestionIndex);
+                    setQuestionHistory([...questionHistory, currentQuestionIndex]);
                 setCurrentQuestionIndex(nextQuestionIndex);
             } else {
-                setLastQuestionIndex(currentQuestionIndex);
+                    setQuestionHistory([...questionHistory, currentQuestionIndex]);
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             }
+        }
+
+        if(currentQuestionIndex === questionDataPartB.length-1){
+            const resultsTemp = Object.keys(responses).map((questionId) => {
+                const { id, points } = responses[questionId];
+                return { id, points };
+            });
+
+            setResults(resultsTemp);
+            onComplete();
         }
     };
     
@@ -203,7 +216,7 @@ function Survey ({ questionDataPartB, setResults})
     const question = questionDataPartB[currentQuestionIndex];
     
     return (
-        <form onSubmit={handleSubmit}>
+        <form>
             <QuestionZoneB
                 questionId={question.questionId}
                 questionText={question.questionText}
@@ -221,13 +234,9 @@ function Survey ({ questionDataPartB, setResults})
                 ) : (
                     <div style={{flex: 1}} />
                     )}
-                {/*si on arrive au bout on remplace le bouton suivant par submit*/}
-                {currentQuestionIndex < questionDataPartB.length - 1 && (
-                  <button className="primary-button" type="button" onClick={next}>Suivant</button>)
-                }
-                {currentQuestionIndex === questionDataPartB.length - 1 && (
-                  <button className="primary-button" type="submit">Valider mon questionnaire</button>
-                )}
+
+                  <button className="primary-button" type="button" onClick={next}>Suivant</button>
+
             </div>
         </form>
     );

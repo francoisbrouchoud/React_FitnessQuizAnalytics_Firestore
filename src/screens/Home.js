@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import InitQuestionsPart2 from "../components/InitQuestionsPart2";
-import InitQuestionsPartA from "../components/InitQuestionsPartA";
+
 import React, {useEffect, useState} from "react";
 import "../App.css";
-import InitMessagesPartA from "../components/InitMessagesPartA";
 import {auth} from "../initFirebase";
+
 
 
 export default function Home() {
@@ -55,10 +54,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* SEED DB */}
-      <InitQuestionsPartA/>
-      <InitQuestionsPart2/>
-      <InitMessagesPartA/>
+      
     </>
   );
 }

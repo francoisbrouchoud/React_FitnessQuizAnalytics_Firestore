@@ -1,8 +1,8 @@
 import React from 'react';
-import { db } from '../initFirebase';
+import { db } from '../../initFirebase';
 import {doc, setDoc, collection, getDocs} from "firebase/firestore";
 import firebase from "firebase/compat/app";
-import {questionDataPartA} from "../data/survey.js";
+import {questionDataPartA} from "../../data/survey.js";
 
 export default function InitQuestionsPart2()
 {
