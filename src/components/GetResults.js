@@ -203,6 +203,40 @@ export function GetResults() {
 
     //TODO - Affichage des messages questionnaire A
 
+
+    var messagesAResults = reponsesSondage[0].points;
+    var messagesAMessage = "";
+
+    switch(messagesAResults){
+        case "1":
+            messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité\n" +
+                "Informer sur les bénéfices potentiels pour sa santé et son indépendance";
+            break;
+        case "2":
+            messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité";
+            break;
+        case "3":
+            messagesAMessage="Entretien motivationnel\n" +
+                "Pouvoir répondre aux éventuelles objections\n" +
+                "Référer à une assocication de seniors ou proposant l'activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)";
+            break;
+        case "4":
+            break;
+        case "5":
+            messagesAMessage="Proposer brochures sur l'activité physique"
+            break;
+        case "6":
+            messagesAMessage="Périodiquement s’informer sur le niveau d’activité, les difficultés et...\n" +
+                "Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique\n" +
+                "Développer des stratégies pour gérer des nouvelles barrières qui se présentent\n" +
+                "ENCOURAGER!"
+            break;
+        default:
+            messagesAMessage = "Erreur"
+    }
+
+    const messageLines = messagesAMessage.split("\n");
+
     return (
         <div>
             <ul>
@@ -214,10 +248,14 @@ export function GetResults() {
                 <li>{risqueChuteMessage}</li>
                 <li>{activitePhysiqueMessage}</li>
             </ul>
-            <ul>
-                <h1>Messages For Part A</h1>
-                <li></li>
-            </ul>
+            <div>
+                <h1>Messages Part A</h1>
+                <ul>
+                    {messageLines.map((line, index) => (
+                        <li key={index}>{line}</li>
+                    ))}
+                </ul>
+            </div>
         </div>
 
     );
