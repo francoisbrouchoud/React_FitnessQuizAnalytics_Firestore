@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 /**
- * Component to give the choice to type the email of the groupLeader
+ * Component to give the choice to register the email of the groupLeader
  * There is also the button to submit all the responses included the previous survey
  * @param setResults
  * @returns {JSX.Element}
@@ -60,7 +60,7 @@ export default function SurveyPartC({setResults}) {
             <h1>{surveyTitle}</h1>
             <div className="questionZone">
                 <div className="card card-title">
-                    <h3>Vous avez la possibilité de saisir l'adresse email de votre chef de groupe :</h3>
+                    <h3>Vous avez la possibilité de saisir l'adresse email de votre ou vos chef(s) de groupe :</h3>
                 </div>
                 <div className="answers">
                     <label>
