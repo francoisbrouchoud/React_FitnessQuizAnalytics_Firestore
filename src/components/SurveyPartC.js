@@ -1,8 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {GetQuestions} from "./GetQuestions";
-import {Link} from "react-router-dom";
 
-export default function SurveyPartC({setResults, onComplete}) {
+//regex : https://www.w3resource.com/javascript/form/email-validation.php
+const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+/**
+ * Component to give the choice to type the email of the groupLeader
+ * There is also the button to submit all the responses included the previous survey
+ * @param setResults
+ * @returns {JSX.Element}
+ */
+export default function SurveyPartC({setResults}) {
     const [emailInput, setEmailInput] = useState("");
     const [emails, setEmails] = useState([]);
     const [showEmailInput, setShowEmailInput] = useState(false);
@@ -25,7 +32,6 @@ export default function SurveyPartC({setResults, onComplete}) {
         }
     };
 
-
     const handleSubmit = (event) => {
         event.preventDefault();
         const result = emails;
@@ -35,9 +41,13 @@ export default function SurveyPartC({setResults, onComplete}) {
 
     };
 
+    /**
+     * Test if the email has a correct format
+     * @param email address
+     * @returns {boolean} - true if email has a correct format
+     */
     const testRegexEmail = (email) => {
-        const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return regexEmail.test(String(email).toLowerCase());
+        return EMAIL_REGEX.test(String(email).toLowerCase());
     };
 
     const handleCheckboxChange = (event) => {
@@ -54,12 +64,13 @@ export default function SurveyPartC({setResults, onComplete}) {
                 </div>
                 <div className="answers">
                     <label>
+                        Saisir un ou plusieurs chef(s) de groupe ?
                         <input
                             type="checkbox"
                             name="showEmailInput"
                             onChange={handleCheckboxChange}
                         />
-                        Saisir "mon chef de groupe"
+
                     </label>
                     {showEmailInput && (
                         <>
@@ -68,21 +79,22 @@ export default function SurveyPartC({setResults, onComplete}) {
                                 name="email"
                                 value={emailInput}
                                 onChange={handleChange}
-                                placeholder="saisir une adresse mail"
+                                placeholder="email"
                             />
                             <button type="button" onClick={handleAddEmail}>
                                 Ajouter
                             </button>
-                            {emails.map((email, index) => (
-                                <p key={index}>{email}</p>
-                            ))}
+                            <ul>
+                                {emails.map((email, index) => (
+                                    <li key={index}>{email}</li>
+                                ))}
+                            </ul>
                         </>
                     )}
                 </div>
             </div>
             <div className="controls-btn">
                 <div>
-
                 </div>
                 <button className="primary-button" type="button" onClick={handleSubmit}>
                     Envoyer mon questionnaire

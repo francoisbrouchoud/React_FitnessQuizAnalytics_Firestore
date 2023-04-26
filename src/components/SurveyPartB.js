@@ -2,7 +2,14 @@ import React, {useEffect, useState} from "react";
 import {GetQuestions} from "./GetQuestions";
 import {QuestionZone} from "./QuestionZone";
 
-export default function SurveyPartB({setResults, onComplete}) {
+/**
+ * Component that handle the survey for the mobility evaluation
+ * Recover questionData with to GetQuestions
+ * @param setResults - results of this survey
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function SurveyPartB({setResults}) {
 
     const [questionsFromDB, setQuestionsFromDB] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -27,13 +34,20 @@ export default function SurveyPartB({setResults, onComplete}) {
             {isLoading ? (
                 <p>Questions en cours de chargement.</p>
             ) : (
-                <Survey questionDataPartB={questionsFromDB} setResults={setResults} onComplete={onComplete} />
+                <Survey questionDataPartB={questionsFromDB} setResults={setResults} />
             )}
         </>
     );
 }
 
-function Survey ({ questionDataPartB, setResults, onComplete}) {
+/**
+ * Handle the navigation, responses saving of the questions of SurveyB (mobility evaluation)
+ * @param questions - the questions data
+ * @param setResults - results when completed
+ * @returns {JSX.Element}
+ * @constructor
+ */
+function Survey ({ questionDataPartB, setResults}) {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionHistory, setQuestionHistory] = useState([]);
 
@@ -178,7 +192,6 @@ function Survey ({ questionDataPartB, setResults, onComplete}) {
                 }));
 
             setResults(resultsTemp);
-            onComplete();
         }
     };
 

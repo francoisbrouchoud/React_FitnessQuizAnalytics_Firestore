@@ -2,7 +2,14 @@ import React, {useEffect, useState} from "react";
 import {GetQuestions} from "./GetQuestions";
 import {QuestionZone} from "./QuestionZone";
 
-export default function SurveyPartA({setResults, onComplete}) {
+/**
+ * Component that handle the survey for the physical acitvity
+ * Recover questionData with to GetQuestions
+ * @param setResults - results of this survey
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function SurveyPartA({setResults}) {
 
     const [questionsFromDBPartA, setQuestionsFromDBPartA] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -28,14 +35,21 @@ export default function SurveyPartA({setResults, onComplete}) {
             {isLoading ? (
                 <p>Questions en cours de chargement.</p>
             ) : (
-            <Survey questions={questionsFromDBPartA} setResults={setResults} onComplete={onComplete} />
+            <Survey questions={questionsFromDBPartA} setResults={setResults} />
             )}
         </>
     );
 
 }
 
-function Survey ({ questions, setResults, onComplete })  {
+/**
+ * Handle the navigation, responses saving of the questions of SurveyA (physical acitvity)
+ * @param questions - the questions data
+ * @param setResults - results when completed
+ * @returns {JSX.Element}
+ * @constructor
+ */
+function Survey ({ questions, setResults})  {
     const [responses, setResponses] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [questionHistory, setQuestionHistory] = useState([]);
@@ -71,8 +85,6 @@ function Survey ({ questions, setResults, onComplete })  {
                     points: nextQuestionOrPoints.toString(),
                 };
                 setResults(pointsA);
-                onComplete();
-
 
             } else {
                 setQuestionHistory([...questionHistory, currentQuestionIndex])
