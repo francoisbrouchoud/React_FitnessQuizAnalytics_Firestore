@@ -265,24 +265,21 @@ export function GetResults() {
 
     return (
         <div>
+            <h2>Recommandations</h2>
             <ul>
-                <h1>Recommendations</h1>
                 <li>{propositionRouteMessage}</li>
                 <li>{vitesseMarcheMessage}</li>
                 <li>{cheminMessage}</li>
                 <li>Dénivelé</li>
                 <li>{risqueChuteMessage}</li>
             </ul>
-            <div>
-                <h1>Messages Part A</h1>
-                <ul>
-                    {messageLines.map((line, index) => (
-                        <li key={index}>{line}</li>
-                    ))}
-                </ul>
-            </div>
+            <h2>Messages Part A</h2>
+            <ul>
+                {messageLines.map((line, index) => (
+                    <li key={index}>{line}</li>
+                ))}
+            </ul>
         </div>
-
     );
 }
 

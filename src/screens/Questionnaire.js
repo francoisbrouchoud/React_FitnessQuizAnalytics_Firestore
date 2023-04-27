@@ -42,7 +42,7 @@ export default function Questionnaire() {
         if (resultsC !== null) {
             console.log("Results to set in Firebase", resultsA, resultsB, resultsC);
             SetResultsToFirebase(resultsA, resultsB, resultsC);
-            navigate('/');
+            navigate('/resultats');
         }
     }, [resultsC]);
 

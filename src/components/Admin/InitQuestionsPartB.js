@@ -108,6 +108,6 @@ export default function InitQuestionsPartB()
     }
     
     return (
-        <button onClick={uploadQuestions}>Initialize Questions Part 2 in DB</button>
+        <button className="primary-button" onClick={uploadQuestions}>Initialize Questions Part 2 in DB</button>
     )
 }

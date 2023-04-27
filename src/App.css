@@ -1,18 +1,54 @@
+:root {
+  --bgColor: #51E59E;
+  --secondaryColor: #e5e5e5;
+  --secondaryHover: #d0d0d0;
+  --text-color: #000;
+  --bgInput: #fff;
+}
+[data-theme='dark'] {
+  --bgColor: #343541;
+  --secondaryColor: #40414f;
+  --secondaryHover: #454656;
+  --text-color: #a5a5a5;
+  --bgInput: #a5a5a5;
+}
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./assets/fonts/Montserrat-Regular.ttf') format('truetype');
+}
 html{
-  background-color: #51E59E;
+  background-color: var(--bgColor);
 }
 .App {
   text-align: center;
   min-height: 100vh;
-  background-color: #51E59E;
+  background-color: var(--bgColor);
 }
+/*.App.dark {*/
+/*  background-color: darkslategray;*/
+/*}*/
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-  sans-serif;
+  /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",*/
+  /*"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",*/
+  /*sans-serif;*/
+  font-family: 'Montserrat', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+input, select {
+  background-color: var(--bgInput);
+  border: none;
+  padding: 7px;
+}
+p, button, h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif;
+}
+input[type="number"] {
+  margin-left: 7px;
+}
+.card {
+  color: var(--text-color);
 }
 h3 {
   margin: 10px 0;
@@ -62,7 +98,7 @@ a {
   margin: auto;
 }
 .card {
-  background-color: #e5e5e5;
+  background-color: var(--secondaryColor);
   border-radius: 15px;
   display: flex;
   flex-direction: column;
@@ -72,6 +108,9 @@ a {
 }
 .card-title {
   margin-bottom: 20px;
+}
+.card-title h1 {
+  margin: 0;
 }
 .card img {
   margin: 5vw 0;
@@ -87,10 +126,15 @@ a {
   padding: 25px;
 }
 .cards .card:hover {
-  background-color: #d0d0d0;
+  background-color: var(--secondaryHover);
 }
 .info-card {
   padding: 25px;
+}
+.info-card button {
+  width: fit-content;
+  align-self: center;
+  min-width: 50%;
 }
 .answer-card {
   border-radius: 0;
@@ -103,7 +147,7 @@ a {
 }
 .answer-card:hover {
   cursor: pointer;
-  background-color: #d0d0d0;
+  background-color: var(--secondaryHover);
 }
 .answer-card input {
   margin-right: 10px;
@@ -124,7 +168,7 @@ a {
   background-color: black;
   color: white;
   border-radius: 50px;
-  padding: 5px;
+  padding: 5px 10px;
   transition: all .5s ease;
   border: 2px solid black;
 }
@@ -137,7 +181,7 @@ a {
   background-color: transparent;
   color: black;
   border-radius: 50px;
-  padding: 5px;
+  padding: 5px 10px;
   transition: all .5s ease;
   border: 2px solid black;
 }
@@ -194,7 +238,6 @@ a {
   text-align: -webkit-left;
 }
 .card-advice {
-  border-radius: unset;
   text-align: left;
   text-align: -webkit-left;
 }
@@ -203,6 +246,7 @@ a {
   height: 50px;
   align-self: center;
   margin: 0 !important;
+  border-radius: 100px;
 }
 .profile-card {
   width: fit-content;
@@ -235,9 +279,6 @@ a {
 .login-form button {
   margin: 10px 0;
 }
-.infoContent h1 {
-  margin: 0;
-}
 .login-header {
   text-align: -webkit-center;
   text-align: center;
@@ -259,9 +300,15 @@ a {
 .bmi-result {
   padding: 10px;
   margin-top: 10px;
-  color: white;
-  font-size: 18px;
   border-radius: 5px;
+}
+.bmi-result span{
+  font-weight: bolder;
+  font-size: larger;
+}
+.bmi button {
+  width: fit-content;
+  align-self: center;
 }
 .underweight, .overweight, .obese {
   color: red;
@@ -269,18 +316,86 @@ a {
 .normal {
   color: green;
 }
-
-
-canvas { display: block; margin: 0 auto; }
-.arrow { position: absolute; width: 0; height: 0; border-style: solid; border-width: 10px 0 10px 20px; border-color: transparent transparent transparent #333; transform: rotate(-45deg); }
-.underweight, .normal, .overweight, .obese { font-weight: bold; font-size: 24px; margin: 10px; }
-
-
+.questionZone input[type="email"] {
+  width: 90%;
+  margin: 10px 0;
+  padding: 7px;
+}
+.questionZone input[type="checkbox"] {
+  margin-right: 10px;
+}
+.questionZone .card {
+  align-items: center;
+}
+.questionZone ul {
+  list-style-type: none;
+  padding: 0;
+  color: var(--bgColor);
+  margin-bottom: 0;
+}
+.questionZone ul li {
+  padding: 5px 0;
+}
+.error404 .card {
+  align-items: center;
+}
+.contact-list {
+  list-style-type: none;
+  padding-left: 0;
+  transition: all .5s ease;
+}
+.contact-list li a {
+  color: #328d61;
+  transition: all .5s ease;
+}
+.contact-list li a:hover {
+  color: black;
+}
+.contact-list li {
+  transition: all .5s ease;
+}
+.contact-list li:hover {
+  text-decoration: underline;
+}
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.adminPage .buttons {
+  width: fit-content;
+  margin-top: 20px;
+}
+.adminPage .card {
+  align-items: center;
+}
+.adminPage ul {
+  text-align: center;
+  text-align: -webkit-center;
+}
+.adminPage ul li {
+  width: fit-content;
+}
+.selectResult {
+  text-align: center;
+  text-align: -webkit-center;
+}
+svg text {
+  fill: var(--text-color) !important;
+}
+.card-result {
+  background-color: var(--secondaryHover);
+  text-align: center;
+  text-align: -webkit-center;
+}
+.results .info-card {
+  gap: 50px;
+}
 
 /* RESPONSIVE PART */
 @media (max-width: 900px) {
   .container {
-    padding: 80px 20px;
+    padding: 40px 20px;
   }
 }
 

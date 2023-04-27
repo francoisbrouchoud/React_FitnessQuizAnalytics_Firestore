@@ -7,7 +7,7 @@ import {doc, getDoc, setDoc} from "firebase/firestore";
 import {StyledFirebaseAuth} from "react-firebaseui";
 import 'firebaseui/dist/firebaseui.css'
 
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Routes, Route} from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
 import Home from "./screens/Home";
@@ -19,6 +19,7 @@ import BMICalculator from "./screens/IMC-Calculator";
 import Admin from "./screens/Admin";
 import GroupLeader from "./screens/GroupLeader";
 import NotFound from "./screens/NotFound";
+import {ThemeContext, ThemeProvider} from "./ThemeContext";
 ;
 
 // Configure FirebaseUI.
@@ -46,6 +47,7 @@ export default function App()
 {
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
+    const { theme } = useContext(ThemeContext);
 
     // Listen to the Firebase Auth state and set the local state.
     useEffect(() =>
@@ -195,48 +197,51 @@ export default function App()
 
     // Not signed in - Render auth screen
     if (!isSignedIn)
+    {
         return (
-            <div className="App">
-                <header className="login-header">
-                    <img src={require('./Pictures/fonctionnement.png')}/>
-                    <h1>Fitness Check</h1>
-                </header>
-                <div className="container loginContent">
-                    <div className="card">
-                        <h2>Connexion</h2>
-                        <img className="headerIcons login-icon" src={require('./Pictures/avatarHomme.png')}/>
-                        <div className="login-form">
-                            <StyledFirebaseAuth
-                              uiConfig={uiConfig}
-                              firebaseAuth={firebaseApp.auth()}
-                            />
-                        </div>
-                        <button className="primary-button" onClick={handleResetPasswordClick}>Forgot Password</button>
-                    </div>
-                </div>
-            </div>
+          <div className="App">
+              <header className="login-header">
+                  <img src={require('./assets/images/logo.png')}/>
+                  <h1>Fitness Check</h1>
+              </header>
+              <div className="container loginContent">
+                  <div className="card">
+                      <h2>Connexion</h2>
+                      <img className="headerIcons login-icon" src={require('./assets/images/user.png')}/>
+                      <div className="login-form">
+                          <StyledFirebaseAuth
+                            uiConfig={uiConfig}
+                            firebaseAuth={firebaseApp.auth()}
+                          />
+                      </div>
+                      <button className="primary-button" onClick={handleResetPasswordClick}>Forgot Password</button>
+                  </div>
+              </div>
+          </div>
         );
-    
+    }
+
+
     // Signed in - Render app
     if(isSignedIn)
     {
         return (
-            <div className="App">
-                <AppHeader/>
-                <div className="container">
-                    <Routes>
-                        <Route path="/" 				element={<Home/>}/>
-                        <Route path="/questionnaire" 	element={<Questionnaire/>}/>
-                        <Route path="/profile" 			element={<Profile/>}/>
-                        <Route path="/information" 		element={<Information/>}/>
-                        <Route path="/resultats" 		element={<Resultats/>}/>
-                        <Route path="/admin" 		    element={<Admin/>}/>
-                        <Route path="/groupe" 		    element={<GroupLeader/>}/>
-                        <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
-                        <Route path="*"     element={<NotFound />} />
-                    </Routes>
-                </div>
-            </div>
+              <div className="App" data-theme={theme === 'light' ? 'light' : 'dark'} >
+                  <AppHeader/>
+                  <div className="container">
+                      <Routes>
+                          <Route path="/" element={<Home/>}/>
+                          <Route path="/questionnaire" element={<Questionnaire/>}/>
+                          <Route path="/profile" element={<Profile/>}/>
+                          <Route path="/information" element={<Information/>}/>
+                          <Route path="/resultats" element={<Resultats/>}/>
+                          <Route path="/admin" element={<Admin/>}/>
+                          <Route path="/groupe" element={<GroupLeader/>}/>
+                          <Route path="/calculateur-imc" element={<BMICalculator/>}/>
+                          <Route path="*" element={<NotFound />} />
+                      </Routes>
+                  </div>
+              </div>
         );
     }
     

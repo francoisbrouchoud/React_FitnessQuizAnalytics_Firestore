@@ -124,32 +124,36 @@ export default function Admin() {
                 (<div>
                     {isAdmin ?
                         (
-                            <>
-                                <h1>ADMIN PORTAIL</h1>
-                                
-                                <h1>Update quizz</h1>
-                                <h2>Questions A</h2>
-                                <FormQuestions questionsInput={questionsDB_A}/>
-                                <hr/>
-                                <br/>
-                                
-                                <h2>Messages A</h2>
-                                <FormMessages messagesInput={messages_A}/>
-                                <hr/>
-                                <br/>
-                                
-                                <h2>Questions B</h2>
-                                <FormQuestions questionsInput={questionsDB_B}/>
-                                <hr/>
-                                <br/>
-                                
-                                
-                                
-                                <h1>Seed default data in DB</h1>
-                                <InitQuestionsPartA/>
-                                <InitQuestionsPartB/>
-                                <InitMessagesPartA/>
-                            </>
+                            <div className="adminPage">
+                                <div className="card card-title">
+                                    <h1>Portail administrateur</h1>
+                                </div>
+                                <div className="card">
+                                    <h2>Update quizz</h2>
+                                    <h3>Questions A</h3>
+                                    <FormQuestions questionsInput={questionsDB_A}/>
+                                    <hr/>
+                                    <br/>
+
+                                    <h3>Messages A</h3>
+                                    <FormMessages messagesInput={messages_A}/>
+                                    <hr/>
+                                    <br/>
+
+                                    <h3>Questions B</h3>
+                                    <FormQuestions questionsInput={questionsDB_B}/>
+                                    <hr/>
+                                    <br/>
+                                </div>
+                                <div className="card">
+                                    <h2>Seed default data in DB</h2>
+                                    <div className="buttons">
+                                        <InitQuestionsPartA/>
+                                        <InitQuestionsPartB/>
+                                        <InitMessagesPartA/>
+                                    </div>
+                                </div>
+                            </div>
                             
                             // DANS UN FORM :
                             // Afficher liste messages A
@@ -205,7 +209,7 @@ function FormQuestions ({questionsInput}){
                     />
                 </div>
             ))}
-            <button type="submit">Update Questions</button>
+            <button className="primary-button" type="submit">Update Questions</button>
         </form>
     );
 }
@@ -291,7 +295,7 @@ function FormMessages({ messagesInput }) {
                 </div>
                 
             ))}
-            <button type="submit">Update Messages</button>
+            <button className="primary-button" type="submit">Update Messages</button>
         </form>
     );
 }

@@ -4,9 +4,7 @@ import DisplayResults from "../components/DisplayResults";
 export default function Resultats(){
 
     return(
-        <>
-            <DisplayResults/>
-        </>
+        <DisplayResults/>
     );
 
 }

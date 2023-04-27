@@ -59,7 +59,7 @@ export default function Profile() {
     const selectProfilePictureURL = () => {
         if(auth.currentUser.photoURL === null) {
             console.log("DEFAULT PICTURE !");
-            return require('../Pictures/avatarHomme.png');
+            return require('../assets/images/user.png');
         }
         else {
             console.log("userDatas.photoURL : " , userDatas.photoURL);
@@ -79,7 +79,7 @@ export default function Profile() {
                         {/* Condition vérifiant si le profil est éditable ou non*/}
                         {/* Si on est pas en mode EDIT, on peut y passer */}
                         {!isEditable && (
-                            <>
+                            <div className="buttons">
                                 <ProfileReadOnly {...userDatas} />
                                 <button className="primary-button" onClick={handleEdit}>Modifier</button>
                                 {userDatas.isGroupLeader && (
@@ -90,7 +90,7 @@ export default function Profile() {
                                     <Link to="/admin">
                                         <button className="primary-button">Administrateur</button>
                                     </Link>)}
-                            </>
+                            </div>
                         )}
                         {/* EDITING MODE */}
                         {isEditable && (
@@ -269,7 +269,7 @@ function ProfileReadOnly(props) {
             <p><strong>Nom :</strong>               {lastName }</p>
             <p><strong>Date de naissance :</strong> {birthDate}</p>
             <p><strong>E-mail :</strong>            {email}</p>
-            <p><strong>Est chef de groupe :</strong>{isGroupLeader ? "Oui" : "Non"}</p>
+            <p><strong>Est chef de groupe :</strong> {isGroupLeader ? "Oui" : "Non"}</p>
             <p><strong>Est admin :</strong>         {isAdmin ? "Oui" : "Non"}</p>
         </div>
     );

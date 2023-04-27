@@ -14,6 +14,7 @@ import {
     GetResults
 } from './GetResults';
 import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
+import {Link} from "react-router-dom";
 
 export default function DisplayResults() {
 
@@ -121,17 +122,23 @@ export default function DisplayResults() {
     }
 
     return (
-        <div>
+        <div className="results">
+            <div className="card card-title">
+                <h1>Résultats et recommandations</h1>
+            </div>
             {questionnaires.length > 0 ? (
-                <div>
-                    <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
-                        <option disabled={selectedQuestionnaire !== null} value={null}>
-                            Sélectionner un questionnaire
-                        </option>
-                        {questionnaires.map((questionnaire, index) => (
+              <div className="card card-advice info-card">
+                  <div className="selectResult">
+                      <span>Sélectionner un questionnaire : </span>
+                      <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
+                          <option disabled={selectedQuestionnaire !== null} value={null}>
+                              Sélectionner un questionnaire
+                          </option>
+                          {questionnaires.map((questionnaire, index) => (
                             <option key={index}>{questionnaire.date}</option>
-                        ))}
-                    </select>
+                          ))}
+                      </select>
+                  </div>
                     {selectedQuestionnaire !== null && (
                         <>
                             <div style={{ height: '400px' }}>
@@ -154,19 +161,25 @@ export default function DisplayResults() {
                                 />
                             </div>
                             <GetResults />
-                            <div>
-                                <label htmlFor="email">Entrez votre adresse mail :</label>
+                            <div className="buttons card card-result">
+                                <h2>Partager mes résultats</h2>
+                                <label htmlFor="email">Entrez votre adresse mail : </label>
                                 <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                                <button onClick={sendEmail}>Envoyer par email</button>
+                                <button className="primary-button" onClick={sendEmail}>Envoyer par email</button>
+                                <button className="primary-button" onClick={downloadResults}>
+                                    Télécharger les résultats
+                                </button>
                             </div>
-                            <button onClick={downloadResults}>
-                                Télécharger les résultats
-                            </button>
                         </>
                     )}
                 </div>
             ) : (
-                <p>Aucun questionnaire disponible.</p>
+                <div className="card info-card">
+                    <p>Aucun résultat n'est disponible pour le moment.</p>
+                    <Link to="/questionnaire">
+                        <button className="primary-button">Faire le quiz</button>
+                    </Link>
+                </div>
             )}
         </div>
     );
