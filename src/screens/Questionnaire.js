@@ -1,42 +1,57 @@
 import {Link, useNavigate} from "react-router-dom";
-import SurveyPartA from "../components/SurveyPartA";
-//import SurveyPartB from "../components/SurveyPartB";
-import SurveyPartB from "../components/SurveyPartB_fromDB";
 import React, {useEffect, useState} from "react";
+import SurveyPartA from "../components/SurveyPartA";
+import SurveyPartB from "../components/SurveyPartB";
+import SurveyPartC from "../components/SurveyPartC";
 import SetResultsToFirebase from "../components/SetResultsToFirebase";
-import {AppHeader} from "./AppHeader";
 
+/**
+ * Component that handles the three parts of the survey
+ * A : physical activity evaluation
+ * B : mobility evaluation
+ * C : optional entry of a group leader and send of responses
+ * As soon as the result of a part is completed, move on to the next questionnaire
+ * @returns {JSX.Element} - current survey A then B then C
+ * @constructor
+ */
 export default function Questionnaire() {
     const [resultsA, setResultsA] = useState(null);
     const [resultsB, setResultsB] = useState(null);
+    const [resultsC, setResultsC] = useState(null);
     const [displaySurveyA, setDisplaySurveyA] = useState(true);
     const [displaySurveyB, setDisplaySurveyB] = useState(false);
+    const [displaySurveyC, setDisplaySurveyC] = useState(false);
 
     const navigate = useNavigate();
+
     useEffect(() => {
-        console.log("resultat Provisoire A", resultsA);
-        if(resultsA != null && resultsB != null){
-            console.log("new Results A, B",  resultsA, resultsB)
-            // 1 afficher le contenu de la variable
-            // 2 concatener les resultats a et b
-            // 3 push le resultats sur la firebase evt. avoir deux resultats
-            SetResultsToFirebase(resultsA, resultsB);
-            // 4 renitialiser les resultat
-            // 5 Changer la page
+        if (resultsA !== null) {
+            setDisplaySurveyA(false);
+            setDisplaySurveyB(true);
+        }
+    }, [resultsA]);
+
+    useEffect(() => {
+        if (resultsB !== null) {
+            setDisplaySurveyB(false);
+            setDisplaySurveyC(true);
+        }
+    }, [resultsB]);
+
+    useEffect(() => {
+        if (resultsC !== null) {
+            console.log("Results to set in Firebase", resultsA, resultsB, resultsC);
+            SetResultsToFirebase(resultsA, resultsB, resultsC);
             navigate('/');
         }
-    }, [resultsA, resultsB]);
+    }, [resultsC]);
 
-    const handleCompleteA = () => {
-        setDisplaySurveyA(false);
-        setDisplaySurveyB(true);
-    };
 
-    //TODO Afficher dabord questionnaire, si questionnaire A ok, afficher questionnaire B
       return (
         <>
-            {displaySurveyA && <SurveyPartA setResults={setResultsA} onComplete={handleCompleteA} />}
+            {displaySurveyA && <SurveyPartA setResults={setResultsA} />}
             {displaySurveyB && <SurveyPartB setResults={setResultsB} />}
+            {displaySurveyC && <SurveyPartC setResults={setResultsC} />}
         </>
       );
 }

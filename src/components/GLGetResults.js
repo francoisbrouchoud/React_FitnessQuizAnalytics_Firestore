@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {collection, doc, getDocs, getDoc} from "firebase/firestore";
+import {collection, doc, getDocs, getDoc, query, where} from "firebase/firestore";
 import {db,auth} from "../initFirebase";
 
+//TODO - Récupérer le tableau de DisplayResults
 let reponsesSondage = [
     { id: "AQst", points : "0"},
     { id: "BQst01", points: "0" },
@@ -23,13 +24,35 @@ let reponsesSondage = [
 export function ManagesResults() {
     const getListeQuestionnaires = async () => {
 
-        const querySnapshot = await getDocs(collection(db, "users",auth.currentUser.email,"results"));
+        // Récupérer tous les documents de la collection 'users'
+        const usersSnapshot = await getDocs(collection(db, "users"));
 
-        const tab = querySnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return data;
+        // Utilisez Promise.all pour effectuer plusieurs requêtes en parallèle
+        const resultsPromises = usersSnapshot.docs.map(async (userDoc) => {
+            // Créez une requête pour obtenir tous les documents avec l'e-mail actuel dans le tableau groupLeader
+            const q = query(
+                collection(userDoc.ref, "results"),
+                where("groupLeader", "array-contains", auth.currentUser.email)
+            );
+
+            // Récupérer les documents correspondants
+            const resultsSnapshot = await getDocs(q);
+
+            // Transformer les documents en un tableau d'objets contenant les données et l'ID de l'utilisateur
+            return resultsSnapshot.docs.map((resultDoc) => ({
+                ...resultDoc.data(),
+                userId: userDoc.id,
+                userEmail: userDoc.data().email,
+            }));
         });
-        return tab;
+
+        // Attendez que toutes les requêtes soient terminées
+        const resultsArrays = await Promise.all(resultsPromises);
+
+        // Aplatir le tableau 2D en un tableau 1D
+        const results = resultsArrays.flat();
+
+        return results;
     }
 
     return getListeQuestionnaires();
@@ -52,36 +75,39 @@ export async function GetResultsFromQuestionnaire(name){
         }
 }
 
-export function GetMessages() {
-    const getAllMessages = async () => {
+export async function GetResultsFromUserAndDate(email, resultDate) {
+    try {
+        console.log("Email :", email);
+        console.log("Result Date :", resultDate);
 
-        const querySnapshot = await getDocs(collection(db, "messages_partA"));
+        // Modifier cette partie pour récupérer les résultats en fonction de l'adresse e-mail et de la date du résultat
+        const docRef = doc(db, "users", email, "results", resultDate);
+        const docSnap = await getDoc(docRef);
 
-        const tab = querySnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return data;
-        });
-        return tab;
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const myResultsArray = data.results;
+            console.log("Initial array: ", reponsesSondage);
+            reponsesSondage = myResultsArray.slice();
+            console.log("Replace array: ", reponsesSondage);
+
+            return reponsesSondage;
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (e) {
+        console.log("Error :" + e);
+        return null;
     }
-    return getAllMessages();
 }
 
 export function GetResults() {
-    const [messages,setMessages] = useState([]);
-
-    useEffect(() => {
-        async function fetchMessages() {
-            const messagesList = await GetMessages();
-            setMessages(messagesList);
-        }
-        fetchMessages();
-    }, []);
 
     //RECOMMENDATIONS
     //var reponsesSondage = GetResultsFromQuestionnaire(name);
 
     //Activité physique - questionnaire A
-    /*
     var activitePhysiqueResultat = reponsesSondage[0].points;
     var activitePhysiqueMessage =
         "Brochure encourager reprendre activité physique";
@@ -111,8 +137,6 @@ export function GetResults() {
             activitePhysiqueMessage = "Erreur";
     }
     console.log(activitePhysiqueResultat);
-    */
-
 
 // Durée de la route à proposer
     let propositionRouteMessage = "";
@@ -191,10 +215,7 @@ export function GetResults() {
 
         }
     }
-    switch(bqst06Resultat){
-        case "0":
-            monterEtageMessage=""
-    }
+
 
     //Risques de chute
     let risqueChuteResultat = 0;
@@ -229,39 +250,7 @@ export function GetResults() {
             risqueChuteMessage = "Erreur";
     }
 
-//Messages PART A
-
-    var messagesAResults = reponsesSondage[0].points;
-    var messagesAMessage = "";
-
-    switch(messagesAResults){
-        case "1":
-            messagesAMessage = "";
-            break;
-        case "2":
-            messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité";
-            break;
-        case "3":
-            messagesAMessage="Entretien motivationnel\n" +
-                "Pouvoir répondre aux éventuelles objections\n" +
-                "Référer à une assocication de seniors ou proposant l'activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)";
-            break;
-        case "4":
-            break;
-        case "5":
-            messagesAMessage="Proposer brochures sur l'activité physique"
-            break;
-        case "6":
-            messagesAMessage="Périodiquement s’informer sur le niveau d’activité, les difficultés et...\n" +
-                "Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique\n" +
-                "Développer des stratégies pour gérer des nouvelles barrières qui se présentent\n" +
-                "ENCOURAGER!"
-            break;
-        default:
-            messagesAMessage = "Erreur"
-    }
-
-    const messageLines = messagesAMessage.split("\n");
+    //TODO - Affichage des messages questionnaire A
 
     return (
         <div>
@@ -272,15 +261,12 @@ export function GetResults() {
                 <li>{cheminMessage}</li>
                 <li>Dénivelé</li>
                 <li>{risqueChuteMessage}</li>
+                <li>{activitePhysiqueMessage}</li>
             </ul>
-            <div>
-                <h1>Messages Part A</h1>
-                <ul>
-                    {messageLines.map((line, index) => (
-                        <li key={index}>{line}</li>
-                    ))}
-                </ul>
-            </div>
+            <ul>
+                <h1>Messages For Part A</h1>
+                <li></li>
+            </ul>
         </div>
 
     );
@@ -416,10 +402,6 @@ export function GetMobilitePourcentage(){
     const qB11res = parseInt(reponsesSondage[11].points);
     const pourcentage = 100-(qB11res/5*100);
     return pourcentage;
-}
-
-export function GetArrayResults() {
-return reponsesSondage;
 }
 
 

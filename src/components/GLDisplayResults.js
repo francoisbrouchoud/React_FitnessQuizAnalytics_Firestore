@@ -10,10 +10,9 @@ import {
     GetMarcheTempsPourcentage,
     GetMobilitePourcentage,
     GetSansDouleursPourcentage,
-    GetActivitePhysique,
-    GetResults
-} from './GetResults';
-import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
+    GetActivitePhysique, GetResults, GetResultsFromUserAndDate
+} from './GLGetResults';
+import {ManagesResults,GetResultsFromQuestionnaire} from "./GLGetResults";
 
 export default function DisplayResults() {
 
@@ -23,6 +22,8 @@ export default function DisplayResults() {
     const [results,setResults] = useState([]);
     const [email, setEmail] = useState('');
 
+
+
     useEffect(() => {
         async function fetchQuestionnaires(){
             const listeQuestionnaires = await ManagesResults();
@@ -31,15 +32,29 @@ export default function DisplayResults() {
         fetchQuestionnaires();
     },[]);
 
-    useEffect(() =>{
-        async function fetchResults(){
-            if(selectedQuestionnaire){
-                const myResults = await GetResultsFromQuestionnaire(selectedQuestionnaire);
-                setResults(myResults);
+    useEffect(() => {
+        async function fetchResults() {
+            if (selectedQuestionnaire) {
+                console.log("test2" + selectedQuestionnaire);
+
+                // Etape 1: Extraire l'adresse e-mail et la date du résultat
+                const [email, resultDate] = selectedQuestionnaire.split(' : ');
+                console.log("Email:", email);
+                console.log("Result Date:", resultDate);
+
+                // Etape 2: Utiliser ces informations pour accéder aux données de l'utilisateur et lire le résultat correspondant
+                const myResults = await GetResultsFromUserAndDate(email, resultDate);
+
+                console.log("test " + myResults);
+                if (myResults) {
+                    setResults(myResults);
+                } else {
+                    setResults([]);
+                }
             }
         }
         fetchResults();
-    },[selectedQuestionnaire]);
+    }, [selectedQuestionnaire]);
 
     useEffect(() => {
         if (results.length > 0) {
@@ -108,17 +123,6 @@ export default function DisplayResults() {
         window.location.href = mailtoLink;
     }
 
-    const downloadResults = () => {
-        const data = JSON.stringify(results, null, 2); // Convertit les résultats en chaîne JSON formatée
-        const blob = new Blob([data], { type: "text/plain;charset=utf-8" }); // Crée un blob avec les données
-        const url = URL.createObjectURL(blob); // Génère un objet URL pour le blob
-        const link = document.createElement("a"); // Crée un lien pour le téléchargement
-        link.href = url;
-        link.download = selectedQuestionnaire+".txt"; // Nom du fichier à télécharger
-        document.body.appendChild(link);
-        link.click(); // Déclenche le téléchargement
-        document.body.removeChild(link); // Supprime le lien après le téléchargement
-    }
 
     return (
         <div>
@@ -129,7 +133,7 @@ export default function DisplayResults() {
                             Sélectionner un questionnaire
                         </option>
                         {questionnaires.map((questionnaire, index) => (
-                            <option key={index}>{questionnaire.date}</option>
+                            <option key={index}> {questionnaire.userEmail} : {questionnaire.date}</option>
                         ))}
                     </select>
                     {selectedQuestionnaire !== null && (
@@ -159,9 +163,6 @@ export default function DisplayResults() {
                                 <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                                 <button onClick={sendEmail}>Envoyer par email</button>
                             </div>
-                            <button onClick={downloadResults}>
-                                Télécharger les résultats
-                            </button>
                         </>
                     )}
                 </div>

@@ -1,11 +1,14 @@
 import React from "react";
 import "../App.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import firebaseApp from "../initFirebase";
 
 export function AppHeader() {
+  const navigate = useNavigate();
   const handleSignOutClick = async () => {
     await firebaseApp.auth().signOut();
+
+    navigate("/");
   };
 
   return (
