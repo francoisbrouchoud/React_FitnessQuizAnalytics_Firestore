@@ -5,8 +5,6 @@
     // puis un autre instantané chaque fois que le document change.
 // 3. Chargez des blocs de données de snapshot depuis une source externe (ex: un fichier JSON) -- Voir BUNDLES
 
-import firebase from "firebase/compat/app";
-
 import {collection, doc, getDocs, getDoc, setDoc, getDocFromCache, query, where, addDoc, Timestamp} from "firebase/firestore";
 import {db} from "../initFirebase";
 

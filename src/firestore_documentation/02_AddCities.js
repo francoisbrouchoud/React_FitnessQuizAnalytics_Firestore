@@ -1,7 +1,6 @@
 // Tutorial from : https://firebase.google.com/docs/firestore/manage-data/add-data?hl=fr
 
-import firebase from "firebase/compat/app";
-import {collection, doc, getDocs, setDoc, addDoc, Timestamp} from "firebase/firestore";
+import {collection, doc, setDoc, addDoc, Timestamp} from "firebase/firestore";
 import {db} from "../initFirebase";
 
 

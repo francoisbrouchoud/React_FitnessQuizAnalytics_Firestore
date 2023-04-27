@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import firebaseApp, {auth, db} from "../initFirebase";
+import {auth, db} from "../initFirebase";
 import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
 import InitQuestionsPartA from "../components/Admin/InitQuestionsPartA";
 import InitQuestionsPartB from "../components/Admin/InitQuestionsPartB";
@@ -166,7 +166,6 @@ export default function Admin() {
                     }
                 </div>)
             }
-            
         </>
     );
 }

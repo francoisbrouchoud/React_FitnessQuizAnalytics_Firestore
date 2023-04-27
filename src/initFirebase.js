@@ -1,10 +1,7 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-// import "firebase/compat/database" // Real-time database
-// import "firebase/compat/firestore" // Firestore
 import {getAuth} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
-import {collection, getDocs} from 'firebase/firestore';
 
 // Configure Firebase.
 const config = {

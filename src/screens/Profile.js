@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import firebaseApp, {auth, db} from "../initFirebase";
-import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
+import {auth, db} from "../initFirebase";
+import {doc, getDoc, setDoc} from "firebase/firestore";
 import {Link} from "react-router-dom";
 import {AppHeader} from "./AppHeader";
 
@@ -73,36 +73,35 @@ export default function Profile() {
                 (<h1>Chargement...</h1>)
                 :
                 (
-                    <>
-                        <div className="card profile-card">
-                            <h1>Profil</h1>
-                            <img className="profileIcon" src={selectProfilePictureURL()}/>
-                            {/* Condition vérifiant si le profil est éditable ou non*/}
-                            {/* Si on est pas en mode EDIT, on peut y passer */}
-                            {!isEditable && (
-                                <>
-                                    <ProfileReadOnly {...userDatas} />
-                                    <button className="primary-button" onClick={handleEdit}>Modifier</button>
-                                    {userDatas.isGroupLeader && (
-                                        <Link to="/groupe">
-                                            <button className="primary-button">Gestion du groupe</button>
-                                        </Link>)}
-                                    {userDatas.isAdmin && (
-                                        <Link to="/admin">
-                                            <button className="primary-button">Administrateur</button>
-                                        </Link>)}
-                                </>
-                            )}
-                            {/* EDITING MODE */}
-                            {isEditable && (
-                                <>
-                                    <ProfileEditable {...userDatas} />
-                                    <button className="primary-button" onClick={BACK}>Retour</button>
-                                </>
-                            )}
-                        </div>
-                    </>
-                )}
+                    <div className="card profile-card">
+                        <h1>Profil</h1>
+                        <img className="profileIcon" src={selectProfilePictureURL()}/>
+                        {/* Condition vérifiant si le profil est éditable ou non*/}
+                        {/* Si on est pas en mode EDIT, on peut y passer */}
+                        {!isEditable && (
+                            <>
+                                <ProfileReadOnly {...userDatas} />
+                                <button className="primary-button" onClick={handleEdit}>Modifier</button>
+                                {userDatas.isGroupLeader && (
+                                    <Link to="/groupe">
+                                        <button className="primary-button">Gestion du groupe</button>
+                                    </Link>)}
+                                {userDatas.isAdmin && (
+                                    <Link to="/admin">
+                                        <button className="primary-button">Administrateur</button>
+                                    </Link>)}
+                            </>
+                        )}
+                        {/* EDITING MODE */}
+                        {isEditable && (
+                            <>
+                                <ProfileEditable {...userDatas} />
+                                <button className="primary-button" onClick={BACK}>Retour</button>
+                            </>
+                        )}
+                    </div>
+                )
+            }
         </>
         
     );

@@ -108,8 +108,6 @@ export default function InitMessagesPartA()
     }
     
     return (
-        <>
-            <button onClick={uploadQuestions}>Initialize Messages Part A in DB</button>
-        </>
+        <button onClick={uploadQuestions}>Initialize Messages Part A in DB</button>
     )
 }

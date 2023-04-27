@@ -3,8 +3,7 @@ import "./App.css";
 import firebase from "firebase/compat/app";
 import firebaseApp from "./initFirebase";
 import {db, auth} from "./initFirebase";
-import {addDoc, collection, doc, getDoc, setDoc, Timestamp, updateDoc} from "firebase/firestore";
-import {getAdditionalUserInfo, User, } from "firebase/auth"
+import {doc, getDoc, setDoc} from "firebase/firestore";
 import {StyledFirebaseAuth} from "react-firebaseui";
 import 'firebaseui/dist/firebaseui.css'
 
@@ -13,11 +12,10 @@ import {Routes, Route} from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
-import {AppHeader} from "./screens/AppHeader";
+import AppHeader from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
 import BMICalculator from "./screens/IMC-Calculator";
-import {NotFound} from "./screens/404NotFound";
 import Admin from "./screens/Admin";
 import GroupLeader from "./screens/GroupLeader";
 import NotFound from "./screens/NotFound";
@@ -223,25 +221,22 @@ export default function App()
     if(isSignedIn)
     {
         return (
-            <>
-                <div className="App">
-                    <AppHeader/>
-                    <div className="container">
-                        <Routes>
-                            <Route path="/" 				element={<Home/>}/>
-                            <Route path="/questionnaire" 	element={<Questionnaire/>}/>
-                            <Route path="/profile" 			element={<Profile/>}/>
-                            <Route path="/information" 		element={<Information/>}/>
-                            <Route path="/resultats" 		element={<Resultats/>}/>
-                            <Route path="/admin" 		    element={<Admin/>}/>
-                            <Route path="/groupe" 		    element={<GroupLeader/>}/>
-                            <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
-                            <Route path="*"     element={<NotFound />} />
-                        </Routes>
-                    </div>
+            <div className="App">
+                <AppHeader/>
+                <div className="container">
+                    <Routes>
+                        <Route path="/" 				element={<Home/>}/>
+                        <Route path="/questionnaire" 	element={<Questionnaire/>}/>
+                        <Route path="/profile" 			element={<Profile/>}/>
+                        <Route path="/information" 		element={<Information/>}/>
+                        <Route path="/resultats" 		element={<Resultats/>}/>
+                        <Route path="/admin" 		    element={<Admin/>}/>
+                        <Route path="/groupe" 		    element={<GroupLeader/>}/>
+                        <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
+                        <Route path="*"     element={<NotFound />} />
+                    </Routes>
                 </div>
-            </>
-        
+            </div>
         );
     }
     

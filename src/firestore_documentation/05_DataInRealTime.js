@@ -4,7 +4,7 @@
 // Ensuite, chaque fois que le contenu change, un autre appel met à jour l'instantané du document.
 //https://firebase.google.com/docs/firestore/query-data/listen?hl=fr
 
-import {collection, doc,getDocs, getDoc, setDoc, getDocFromCache, query, where, onSnapshot,addDoc, Timestamp} from "firebase/firestore";
+import {collection, doc, query, where, onSnapshot} from "firebase/firestore";
 import {db} from "../initFirebase";
 
 // Objet Personalisée à transformer en Objet City
