@@ -128,7 +128,7 @@ export default function Admin() {
                                 <div className="card card-title">
                                     <h1>Portail administrateur</h1>
                                 </div>
-                                <div className="card">
+                                <div className="card info-card">
                                     <h2>Update quizz</h2>
                                     <h3>Questions A</h3>
                                     <FormQuestions questionsInput={questionsDB_A}/>
@@ -195,7 +195,7 @@ function FormQuestions ({questionsInput}){
     };
     
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="card card-result" onSubmit={handleSubmit}>
             {questions.map((question, index) => (
                 <div key={question.questionId}>
                     {/*<label htmlFor={`question${index}`}>{question.questionText}</label>*/}
@@ -205,7 +205,6 @@ function FormQuestions ({questionsInput}){
                         id={`question${index}`}
                         value={question.questionText}
                         onChange={(event) => handleChange(event, index)}
-                        style={{ width: 'fit-content' }}
                     />
                 </div>
             ))}
@@ -233,7 +232,7 @@ function FormMessages({ messagesInput }) {
     };
     
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="card card-result" onSubmit={handleSubmit}>
             {messages.map((message, index) => (
                 <div key={message.messageId}>
                     <label htmlFor={`messageTitle${index}`}>Titre du message:</label>
