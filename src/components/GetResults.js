@@ -70,12 +70,16 @@ export function GetResults() {
     const [messages,setMessages] = useState([]);
 
     useEffect(() => {
+
         async function fetchMessages() {
             const messagesList = await GetMessages();
-            setMessages(messagesList);
+                setMessages(messagesList);
         }
         fetchMessages();
-    }, []);
+
+        console.log("XOLO ::::::::: ",messages.toString())
+    },[]);
+    //TODO - Boucle infinie
 
     //RECOMMENDATIONS
     //var reponsesSondage = GetResultsFromQuestionnaire(name);
@@ -179,22 +183,52 @@ export function GetResults() {
     }
 
     //Dénivelé
-    //TODO - A FAIRE CALCUL DENIVELE POUR RECOMMENDATION - A REVOIR SELON FICHIER EXCEL
 
     var bqst06Resultat = reponsesSondage[6].points;
     var bqst07Resultat = reponsesSondage[7].points;
     var bqst08Resultat = reponsesSondage[8].points;
     var monterEtageMessage = "";
 
-    if(bqst08Resultat === 10){
-        if(bqst07Resultat === 5){
+    switch(bqst08Resultat){
+        case "10":
+            switch(bqst07Resultat){
+                case "5":
+                    switch(bqst06Resultat){
+                        case "0":
+                            monterEtageMessage="Pas de dénivelé possible"
+                            break;
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                            monterEtageMessage="Seulement des dénivelés très faibles possibles"
+                            break;
+                        default:
+                            monterEtageMessage="Erreur"
+                    }
+                    break;
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                    monterEtageMessage="Seulement des dénivelés faibles à modérés possibles"
+                    break;
+                default:
+                    monterEtageMessage="Erreur"
+            }
+            break;
+        case "11":
+        case "12":
+            monterEtageMessage="Des dénivelés modérés possibles"
+            break;
+        case "13":
+        case "14":
+            monterEtageMessage="Des dénivelés importants possibles"
+            break;
+        default:
+            monterEtageMessage="Erreur"
+    }
 
-        }
-    }
-    switch(bqst06Resultat){
-        case "0":
-            monterEtageMessage=""
-    }
 
     //Risques de chute
     let risqueChuteResultat = 0;
@@ -236,26 +270,22 @@ export function GetResults() {
 
     switch(messagesAResults){
         case "1":
-            messagesAMessage = "";
+            messagesAMessage=messages[0].messageTitle+"\n"+messages[0].messageText+"\n"+messages[0].advices;
             break;
         case "2":
-            messagesAMessage="Brochure : Encourager à envisager de reprendre l'activité";
+            messagesAMessage=messages[1].messageTitle+"\n"+messages[1].messageText+"\n"+messages[1].advices;
             break;
         case "3":
-            messagesAMessage="Entretien motivationnel\n" +
-                "Pouvoir répondre aux éventuelles objections\n" +
-                "Référer à une assocication de seniors ou proposant l'activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)";
+            messagesAMessage=messages[2].messageTitle+"\n"+messages[2].messageText+"\n"+messages[2].advices;
             break;
         case "4":
+            messagesAMessage=messages[3].messageTitle+"\n"+messages[3].messageText;
             break;
         case "5":
-            messagesAMessage="Proposer brochures sur l'activité physique"
+            messagesAMessage=messages[4].messageTitle+"\n"+messages[4].messageText+"\n"+messages[4].advices;
             break;
         case "6":
-            messagesAMessage="Périodiquement s’informer sur le niveau d’activité, les difficultés et...\n" +
-                "Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique\n" +
-                "Développer des stratégies pour gérer des nouvelles barrières qui se présentent\n" +
-                "ENCOURAGER!"
+            messagesAMessage=messages[5].messageTitle+"\n"+messages[5].messageText+"\n"+messages[5].messageSecondaryText;
             break;
         default:
             messagesAMessage = "Erreur"
@@ -270,7 +300,7 @@ export function GetResults() {
                 <li>{propositionRouteMessage}</li>
                 <li>{vitesseMarcheMessage}</li>
                 <li>{cheminMessage}</li>
-                <li>Dénivelé</li>
+                <li>{monterEtageMessage}</li>
                 <li>{risqueChuteMessage}</li>
             </ul>
             <h2>Messages Part A</h2>
@@ -413,10 +443,6 @@ export function GetMobilitePourcentage(){
     const qB11res = parseInt(reponsesSondage[11].points);
     const pourcentage = 100-(qB11res/5*100);
     return pourcentage;
-}
-
-export function GetArrayResults() {
-return reponsesSondage;
 }
 
 
