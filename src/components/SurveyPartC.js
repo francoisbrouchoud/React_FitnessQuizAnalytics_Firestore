@@ -62,26 +62,25 @@ export default function SurveyPartC({setResults}) {
                 <div className="card card-title">
                     <h3>Vous avez la possibilité de saisir l'adresse email de votre ou vos chef(s) de groupe :</h3>
                 </div>
-                <div className="answers">
+                <div className="card">
                     <label>
-                        Saisir un ou plusieurs chef(s) de groupe ?
                         <input
-                            type="checkbox"
-                            name="showEmailInput"
-                            onChange={handleCheckboxChange}
+                          type="checkbox"
+                          name="showEmailInput"
+                          onChange={handleCheckboxChange}
                         />
-
+                        Saisir un ou plusieurs chef(s) de groupe ?
                     </label>
                     {showEmailInput && (
                         <>
                             <input
-                                type="text"
+                                type="email"
                                 name="email"
                                 value={emailInput}
                                 onChange={handleChange}
                                 placeholder="email"
                             />
-                            <button type="button" onClick={handleAddEmail}>
+                            <button className="secondary-button" type="button" onClick={handleAddEmail}>
                                 Ajouter
                             </button>
                             <ul>
@@ -93,13 +92,9 @@ export default function SurveyPartC({setResults}) {
                     )}
                 </div>
             </div>
-            <div className="controls-btn">
-                <div>
-                </div>
-                <button className="primary-button" type="button" onClick={handleSubmit}>
-                    Envoyer mon questionnaire
-                </button>
-            </div>
+            <button className="primary-button" type="button" onClick={handleSubmit}>
+                Envoyer mon questionnaire
+            </button>
         </>
     );
 }

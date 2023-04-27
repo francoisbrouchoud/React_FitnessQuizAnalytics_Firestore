@@ -28,25 +28,29 @@ function BMICalculator() {
   }
 
   return (
-    <div>
-      <h1>Calculateur d'IMC</h1>
-      <label>
-        Taille (en cm):
-        <input type="number" value={height} onChange={(e) => setHeight(e.target.value)} />
-      </label>
-      <br />
-      <label>
-        Poids (en kg):
-        <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
-      </label>
-      <br />
-      <button onClick={calculateBMI}>Calculer l'IMC</button>
-      {bmi && (
-        <div className="bmi-result">
-          <p>Votre IMC est : <span className={bmiClass}>{bmi}</span></p>
-          <p>{bmiComment}</p>
-        </div>
-      )}
+    <div className="bmi">
+      <div className="card card-title">
+        <h1>Calculateur d'IMC</h1>
+      </div>
+      <div className="card info-card">
+        <label>
+          Taille (en cm):
+          <input type="number" value={height} onChange={(e) => setHeight(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          Poids (en kg):
+          <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} />
+        </label>
+        <br />
+        <button className="primary-button" onClick={calculateBMI}>Calculer l'IMC</button>
+        {bmi && (
+          <div className="bmi-result">
+            <p><strong>Votre IMC est :</strong> <span className={bmiClass}>{bmi}</span></p>
+            <p>{bmiComment}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export default function SurveyPartB({setResults}) {
     useEffect(() => {
         document.title = surveyTitle;
     }, [surveyTitle]);
-    
+
     return (
         <>
             <h1>{surveyTitle}</h1>

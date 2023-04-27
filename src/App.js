@@ -3,23 +3,23 @@ import "./App.css";
 import firebase from "firebase/compat/app";
 import firebaseApp from "./initFirebase";
 import {db, auth} from "./initFirebase";
-import {addDoc, collection, doc, getDoc, setDoc, Timestamp, updateDoc} from "firebase/firestore";
-import {getAdditionalUserInfo, User, } from "firebase/auth"
+import {doc, getDoc, setDoc} from "firebase/firestore";
 import {StyledFirebaseAuth} from "react-firebaseui";
 import 'firebaseui/dist/firebaseui.css'
 
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Routes, Route} from "react-router-dom";
 import Questionnaire from "./screens/Questionnaire";
 import Home from "./screens/Home";
 import Profile from "./screens/Profile";
-import {AppHeader} from "./screens/AppHeader";
+import AppHeader from "./screens/AppHeader";
 import Information from "./screens/Information";
 import Resultats from "./screens/Resultats";
 import BMICalculator from "./screens/IMC-Calculator";
 import Admin from "./screens/Admin";
 import GroupLeader from "./screens/GroupLeader";
 import NotFound from "./screens/NotFound";
+import {ThemeContext, ThemeProvider} from "./ThemeContext";
 ;
 
 // Configure FirebaseUI.
@@ -47,6 +47,7 @@ export default function App()
 {
     // Local signed-in state.
     const [isSignedIn, setIsSignedIn] = useState(null);
+    const { theme } = useContext(ThemeContext);
 
     // Listen to the Firebase Auth state and set the local state.
     useEffect(() =>
@@ -121,7 +122,7 @@ export default function App()
                         auth.currentUser.providerData,
                         auth.currentUser.photoURL)*/
             getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(auth.currentUser , data);
-            
+
             await setDoc(userRef, data, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
             console.log("user created in DB : " + auth.currentUser.email + "\nUID : " + auth.currentUser.uid);
         }
@@ -196,51 +197,51 @@ export default function App()
 
     // Not signed in - Render auth screen
     if (!isSignedIn)
+    {
         return (
-            <div className="App">
-                <header className="login-header">
-                    <img src={require('./Pictures/fonctionnement.png')}/>
-                    <h1>Fitness Check</h1>
-                </header>
-                <div className="container loginContent">
-                    <div className="card">
-                        <h2>Connexion</h2>
-                        <img className="headerIcons login-icon" src={require('./Pictures/avatarHomme.png')}/>
-                        <div className="login-form">
-                            <StyledFirebaseAuth
-                              uiConfig={uiConfig}
-                              firebaseAuth={firebaseApp.auth()}
-                            />
-                        </div>
-                        <button className="primary-button" onClick={handleResetPasswordClick}>Forgot Password</button>
-                    </div>
-                </div>
-            </div>
+          <div className="App">
+              <header className="login-header">
+                  <img src={require('./assets/images/logo.png')}/>
+                  <h1>Fitness Check</h1>
+              </header>
+              <div className="container loginContent">
+                  <div className="card">
+                      <h2>Connexion</h2>
+                      <img className="headerIcons login-icon" src={require('./assets/images/user.png')}/>
+                      <div className="login-form">
+                          <StyledFirebaseAuth
+                            uiConfig={uiConfig}
+                            firebaseAuth={firebaseApp.auth()}
+                          />
+                      </div>
+                      <button className="primary-button" onClick={handleResetPasswordClick}>Forgot Password</button>
+                  </div>
+              </div>
+          </div>
         );
-    
+    }
+
+
     // Signed in - Render app
     if(isSignedIn)
     {
         return (
-            <>
-                <div className="App">
-                    <AppHeader/>
-                    <div className="container">
-                        <Routes>
-                            <Route path="/" 				element={<Home/>}/>
-                            <Route path="/questionnaire" 	element={<Questionnaire/>}/>
-                            <Route path="/profile" 			element={<Profile/>}/>
-                            <Route path="/information" 		element={<Information/>}/>
-                            <Route path="/resultats" 		element={<Resultats/>}/>
-                            <Route path="/admin" 		    element={<Admin/>}/>
-                            <Route path="/groupe" 		    element={<GroupLeader/>}/>
-                            <Route path="*"                 element={<NotFound/>}/>
-                            <Route path="/calculateur-imc" 		element={<BMICalculator/>}/>
-                        </Routes>
-                    </div>
-                </div>
-            </>
-        
+              <div className="App" data-theme={theme === 'light' ? 'light' : 'dark'} >
+                  <AppHeader/>
+                  <div className="container">
+                      <Routes>
+                          <Route path="/" element={<Home/>}/>
+                          <Route path="/questionnaire" element={<Questionnaire/>}/>
+                          <Route path="/profile" element={<Profile/>}/>
+                          <Route path="/information" element={<Information/>}/>
+                          <Route path="/resultats" element={<Resultats/>}/>
+                          <Route path="/admin" element={<Admin/>}/>
+                          <Route path="/groupe" element={<GroupLeader/>}/>
+                          <Route path="/calculateur-imc" element={<BMICalculator/>}/>
+                          <Route path="*" element={<NotFound />} />
+                      </Routes>
+                  </div>
+              </div>
         );
     }
     
@@ -252,7 +253,7 @@ function getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(currentUserAuth, dat
     // Si il a déja un prénom & nom depuis google
     if (currentUserAuth.displayName) {
         const names = currentUserAuth.displayName.split(" "); // Ici on split le nom et le prénom, donc on a un tableau avec 2 éléments ou plus (si il y a plusieurs nom de famille)
-        
+
         data.firstName = names[0];
         //data.lastName = names[names.length - 1]; // Si il y a plusieurs nom de famille, prend le dernier // TODO : Concater les noms de famille
         for (let i = 1 ; i < names.length; i++)
@@ -263,9 +264,9 @@ function getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(currentUserAuth, dat
             else // Si il y a plusieurs nom de famille, concater les noms de famille
                 data.lastName = data.lastName + " " + names[i];
         }
-        
+
         console.log("GOOGLE DATA : " , data)
     }
-  
+
 }
 

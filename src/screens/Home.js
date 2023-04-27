@@ -35,26 +35,24 @@ export default function Home() {
       <h1>{timeOfDay} !</h1>
       <div className="cards">
         <div className="card">
-          <img className="headerIcons" src={require('../Pictures/ideas.png')} alt="Quiz icon"/>
+          <img className="headerIcons" src={require('../assets/images/quiz.png')} alt="Quiz icon"/>
           <Link to="/questionnaire">
             <button className="primary-button">Faire le quiz</button>
           </Link>
         </div>
         <div className="card">
-          <img className="headerIcons" src={require('../Pictures/research.png')} alt="Result icon"/>
+          <img className="headerIcons" src={require('../assets/images/results.png')} alt="Result icon"/>
           <Link to="/resultats">
             <button className="primary-button">Voir mes résultats</button>
           </Link>
         </div>
         <div className="card">
-          <img className="headerIcons" src={require('../Pictures/calculatrice.png')} alt="calculator icon"/>
+          <img className="headerIcons" src={require('../assets/images/calculator.png')} alt="calculator icon"/>
           <Link to="/calculateur-imc">
             <button className="primary-button">Calculer mon IMC</button>
           </Link>
         </div>
       </div>
-
-      
     </>
   );
 }

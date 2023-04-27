@@ -1,4 +1,4 @@
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import SurveyPartA from "../components/SurveyPartA";
 import SurveyPartB from "../components/SurveyPartB";
@@ -42,7 +42,7 @@ export default function Questionnaire() {
         if (resultsC !== null) {
             console.log("Results to set in Firebase", resultsA, resultsB, resultsC);
             SetResultsToFirebase(resultsA, resultsB, resultsC);
-            navigate('/');
+            navigate('/resultats');
         }
     }, [resultsC]);
 
