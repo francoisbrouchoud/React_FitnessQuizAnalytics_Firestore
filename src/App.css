@@ -231,6 +231,12 @@ a {
   text-align: left;
   text-align: -webkit-left;
 }
+.inline-field {
+  display: flex;
+}
+.inline-field input {
+  width: auto !important;
+}
 .card-advice {
   text-align: left;
   text-align: -webkit-left;

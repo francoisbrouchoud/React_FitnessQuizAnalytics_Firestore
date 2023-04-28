@@ -216,15 +216,15 @@ function ProfileEditable(props) {
                     onChange={handleInputChange}
                 />
             </div>
-            <div className="form-fields">
-                <label htmlFor="is-group-leader-input">Est chef de groupe :</label>
+            <div className="form-fields inline-field">
                 <input
-                    type="checkbox"
-                    id="is-group-leader-input"
-                    name="isGroupLeader"
-                    checked={editedData.isGroupLeader}
-                    onChange={handleInputChange}
+                  type="checkbox"
+                  id="is-group-leader-input"
+                  name="isGroupLeader"
+                  checked={editedData.isGroupLeader}
+                  onChange={handleInputChange}
                 />
+                <label htmlFor="is-group-leader-input">Est chef de groupe</label>
             </div>
             {/*<div className="form-fields">*/}
             {/*    <label htmlFor="is-group-leader-input">Est responsable de groupe :</label>*/}
