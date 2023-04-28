@@ -1,21 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import { ResponsiveRadar } from '@nivo/radar';
 import {
-    GetMarcherSansAidesPourcentage,
-    GetVitesseMarchePourcentage,
-    GetPasPeurVidePourcentage,
-    GetEquilibrePourcentage,
-    GetInsecuriteMarchePourcentage,
-    GetCapaciteMonterPourcentage,
-    GetMarcheTempsPourcentage,
-    GetMobilitePourcentage,
-    GetSansDouleursPourcentage,
-    GetActivitePhysique,
+    GetWalkingWithoutAidsPercentage,
+    GetSpeedWalkingPercentage,
+    GetNotFearHeightsPercentage,
+    GetBalancePercentage,
+    GetWalkingInsecurityPercentage,
+    GetAbilityClimbPercentage,
+    GetWalkingTimePercentage,
+    GetMobilityPourcentage,
+    GetPainlessPercentage,
+    GetPhysicalActivity,
     GetResults
 } from './GetResults';
 import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
 import {Link} from "react-router-dom";
 
+/**
+ * Function that determines the items to be displayed as results
+ * @returns {JSX.Element} - items to display
+ * @constructor
+ */
 export default function DisplayResults() {
 
     const [data, setData] = useState([]);
@@ -44,63 +49,65 @@ export default function DisplayResults() {
 
     useEffect(() => {
         if (results.length > 0) {
+            //data for the radarplot
             const newScores = [
                 {
                     category: 'Activité physique',
-                    score: GetActivitePhysique(results).valueOf(),
+                    score: GetPhysicalActivity().valueOf(),
                 },
                 {
                     category: 'Marcher sans aides',
-                    score: GetMarcherSansAidesPourcentage(results).valueOf(),
+                    score: GetWalkingWithoutAidsPercentage().valueOf(),
                 },
                 {
                     category: 'Vitesse marche',
-                    score: GetVitesseMarchePourcentage(results).valueOf(),
+                    score: GetSpeedWalkingPercentage().valueOf(),
                 },
                 {
                     category: 'Marche temps',
-                    score: GetMarcheTempsPourcentage(results).valueOf(),
+                    score: GetWalkingTimePercentage().valueOf(),
                 },
                 {
                     category: 'Capacité monter',
-                    score: GetCapaciteMonterPourcentage(results).valueOf(),
+                    score: GetAbilityClimbPercentage().valueOf(),
                 },
                 {
                     category: 'Insécurité marche',
-                    score: GetInsecuriteMarchePourcentage(results).valueOf(),
+                    score: GetWalkingInsecurityPercentage().valueOf(),
                 },
                 {
                     category: 'Pas peur du vide',
-                    score: GetPasPeurVidePourcentage(results).valueOf(),
+                    score: GetNotFearHeightsPercentage().valueOf(),
                 },
                 {
                     category: 'Equilibre',
-                    score: GetEquilibrePourcentage(results).valueOf(),
+                    score: GetBalancePercentage().valueOf(),
                 },
                 {
                     category: 'Sans douleurs',
-                    score: GetSansDouleursPourcentage(results).valueOf(),
+                    score: GetPainlessPercentage().valueOf(),
                 },
                 {
                     category: 'Mobilité',
-                    score: GetMobilitePourcentage(results).valueOf(),
+                    score: GetMobilityPourcentage().valueOf(),
                 },
             ];
             setData(newScores);
         }
     }, [results]);
 
+    //constant to allow part of the results to sent by mail
     const sendEmail = () => {
-        const body = "Bonjour, \n\n"+"Voici vos résultats du questionnaire :\n\n" + "Activité physique: " + GetActivitePhysique(results) + "%"+ "\n"
-            + "Marcher sans aides: " + GetMarcherSansAidesPourcentage(results) + "%"+ "\n"
-            + "Vitesse marche: " + GetVitesseMarchePourcentage(results) + "%"+ "\n"
-            + "Marche temps: " + GetMarcheTempsPourcentage(results) + "%"+ "\n"
-            + "Capacité monter: " + GetCapaciteMonterPourcentage(results) + "%"+ "\n"
-            + "Insécurité marche: " + GetInsecuriteMarchePourcentage(results) + "%"+ "\n"
-            + "Pas peur du vide: " + GetPasPeurVidePourcentage(results) + "%"+ "\n"
-            + "Equilibre: " + GetEquilibrePourcentage(results) + "%"+ "\n"
-            + "Sans douleurs: " + GetSansDouleursPourcentage(results) + "%"+ "\n"
-            + "Mobilité: " + GetMobilitePourcentage(results) + "%"+ "\n\n"
+        const body = "Bonjour, \n\n"+"Voici vos résultats du questionnaire :\n\n" + "Activité physique: " + GetPhysicalActivity() + "%"+ "\n"
+            + "Marcher sans aides: " + GetWalkingWithoutAidsPercentage() + "%"+ "\n"
+            + "Vitesse marche: " + GetSpeedWalkingPercentage() + "%"+ "\n"
+            + "Marche temps: " + GetWalkingTimePercentage() + "%"+ "\n"
+            + "Capacité monter: " + GetAbilityClimbPercentage() + "%"+ "\n"
+            + "Insécurité marche: " + GetWalkingInsecurityPercentage() + "%"+ "\n"
+            + "Pas peur du vide: " + GetNotFearHeightsPercentage() + "%"+ "\n"
+            + "Equilibre: " + GetBalancePercentage() + "%"+ "\n"
+            + "Sans douleurs: " + GetPainlessPercentage() + "%"+ "\n"
+            + "Mobilité: " + GetMobilityPourcentage() + "%"+ "\n\n"
             + "Merci de nous avoir fait confiance.\n\n"
             + "Votre team FitnessCheck"
         ;
@@ -109,16 +116,18 @@ export default function DisplayResults() {
         window.location.href = mailtoLink;
     }
 
+    //constant to allow downloading of raw results
     const downloadResults = () => {
-        const data = JSON.stringify(results, null, 2); // Convertit les résultats en chaîne JSON formatée
-        const blob = new Blob([data], { type: "text/plain;charset=utf-8" }); // Crée un blob avec les données
-        const url = URL.createObjectURL(blob); // Génère un objet URL pour le blob
-        const link = document.createElement("a"); // Crée un lien pour le téléchargement
+        const data = JSON.stringify(results, null, 2);
+        const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
         link.href = url;
-        link.download = selectedQuestionnaire+".txt"; // Nom du fichier à télécharger
+        //downloaded text name
+        link.download = selectedQuestionnaire+".txt";
         document.body.appendChild(link);
-        link.click(); // Déclenche le téléchargement
-        document.body.removeChild(link); // Supprime le lien après le téléchargement
+        link.click();
+        document.body.removeChild(link);
     }
 
     return (
@@ -126,6 +135,7 @@ export default function DisplayResults() {
             <div className="card card-title">
                 <h1>Résultats et recommandations</h1>
             </div>
+            {/*control to display the following when there is at least one completed questionnaire */}
             {questionnaires.length > 0 ? (
               <div className="card card-advice info-card">
                   <div className="selectResult">
@@ -174,6 +184,7 @@ export default function DisplayResults() {
                     )}
                 </div>
             ) : (
+                //items to be displayed when there is no completed questionnaire
                 <div className="card info-card">
                     <p>Aucun résultat n'est disponible pour le moment.</p>
                     <Link to="/questionnaire">
