@@ -185,6 +185,11 @@ export function GetResults() {
         console.log("Messages : ",messages.toString())
     },[]);
 
+    if (messages.length === 0) {
+        console.log("loading")
+        return <div>Loading...</div>;
+    }
+
     //Recommendation for the duration of the road
     let propositionRoadMessage = "Définir une route de ";
     let propositionRoadResult = responseSurvey[3].points;
