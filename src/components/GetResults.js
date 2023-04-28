@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import {collection, doc, getDocs, getDoc} from "firebase/firestore";
 import {db,auth} from "../initFirebase";
 
-let reponsesSondage = [
+//initial table containing the points of questions
+let responseSurvey = [
     { id: "AQst", points : "0"},
     { id: "BQst01", points: "0" },
     { id: "BQst02", points: "0" },
@@ -20,9 +21,17 @@ let reponsesSondage = [
     { id: "BQst14", points: "0" },
     { id: "BQst15", points: "0" },
 ];
-export function ManagesResults() {
-    const getListeQuestionnaires = async () => {
 
+/**
+ * Get a list of questionnaires for a user
+ * @returns {Promise<DocumentData[]>}
+ * @constructor
+ */
+export function ManagesResults() {
+
+    const getListQuestionnaires = async () => {
+
+        //get Docs from Firestore
         const querySnapshot = await getDocs(collection(db, "users",auth.currentUser.email,"results"));
 
         const tab = querySnapshot.docs.map((doc) => {
@@ -32,26 +41,39 @@ export function ManagesResults() {
         return tab;
     }
 
-    return getListeQuestionnaires();
+    return getListQuestionnaires();
 }
+
+/**
+ * Get all results for a specified questionnaire
+ * @param name - name of the questionnaire
+ * @returns {Promise<null|*|[{id: string, points: string},...>}
+ * @constructor
+ */
 export async function GetResultsFromQuestionnaire(name){
         try{
             console.log("name :",name)
             const docRef = doc(db,"users",auth.currentUser.email,"results",name);
             const docSnap = await getDoc(docRef);
             const data = docSnap.data();
+            //collect the data saved in the result doc
             const myResultsArray = data.results;
-            console.log("initial array : ",reponsesSondage)
-            reponsesSondage = myResultsArray.slice();
-            console.log("replace array : ",reponsesSondage);
 
-            return reponsesSondage;
+            //copy of myResultsArray inside reponseSurvey
+            responseSurvey = myResultsArray.slice();
+
+            return responseSurvey;
         } catch (e){
             console.log("Error :" + e);
             return null;
         }
 }
 
+/**
+ * Get all messages saved inside a collection
+ * @returns {Promise<DocumentData[]>}
+ * @constructor
+ */
 export function GetMessages() {
     const getAllMessages = async () => {
 
@@ -66,244 +88,209 @@ export function GetMessages() {
     return getAllMessages();
 }
 
+/**
+ * Function for determining the recommendations and messages to be displayed based on the questionnaire results
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export function GetResults() {
     const [messages,setMessages] = useState([]);
 
     useEffect(() => {
-
         async function fetchMessages() {
             const messagesList = await GetMessages();
                 setMessages(messagesList);
         }
         fetchMessages();
 
-        console.log("XOLO ::::::::: ",messages.toString())
+        console.log("Messages : ",messages.toString())
     },[]);
-    //TODO - Boucle infinie
 
-    //RECOMMENDATIONS
-    //var reponsesSondage = GetResultsFromQuestionnaire(name);
+    //Recommendation for the duration of the road
+    let propositionRoadMessage = "Définir une route de ";
+    let propositionRoadResult = responseSurvey[3].points;
 
-    //Activité physique - questionnaire A
-    /*
-    var activitePhysiqueResultat = reponsesSondage[0].points;
-    var activitePhysiqueMessage =
-        "Brochure encourager reprendre activité physique";
-
-    switch (activitePhysiqueResultat) {
-        case "1":
-            activitePhysiqueMessage +=
-                " et brochure bénéfices activité physique";
-            break;
-        case "2":
-            break;
-        case "3":
-            activitePhysiqueMessage = "Brochure surmonter barrière";
-            break;
-        case "4":
-            activitePhysiqueMessage =
-                "Brochure activité physique ou conseils individuels";
-            break;
-        case "5":
-            activitePhysiqueMessage =
-                "Brochure activité physique ou conseils individuels";
-            break;
-        case "6":
-            activitePhysiqueMessage = "Encourager";
-            break;
-        default:
-            activitePhysiqueMessage = "Erreur";
-    }
-    console.log(activitePhysiqueResultat);
-    */
-
-
-// Durée de la route à proposer
-    let propositionRouteMessage = "";
-    let propositionRouteResultat = reponsesSondage[3].points;
-
-    switch (propositionRouteResultat) {
+    switch (propositionRoadResult) {
         case "0":
         case "1":
-            propositionRouteMessage = "Pas de marche";
+            propositionRoadMessage = "Pas de marche";
             break;
         case "4":
-            propositionRouteMessage = "5 min de marche";
+            propositionRoadMessage += "5 min de marche";
             break;
         case "7":
-            propositionRouteMessage = "15 min de marche";
+            propositionRoadMessage += "15 min de marche";
             break;
         case "10":
-            propositionRouteMessage = "30 min de marche";
+            propositionRoadMessage += "30 min de marche";
             break;
         case "13":
-            propositionRouteMessage = "1h de marche";
+            propositionRoadMessage += "1h de marche";
             break;
         case "16":
-            propositionRouteMessage = "2h de marche";
+            propositionRoadMessage += "2h de marche";
             break;
         case "19":
-            propositionRouteMessage = "3h de marche";
+            propositionRoadMessage += "3h de marche";
             break;
         default:
-            propositionRouteMessage = "Résultat inconnu";
+            propositionRoadMessage = "Résultat inconnu";
     }
 
-// Vitesse de la marche
-// question 2
-    let vitesseMarcheResultat = reponsesSondage[2].points;
-    let vitesseMarcheMessage = "";
+    //Recommendation for the walking speed
+    let walkingSpeedMessage = "";
+    let walkingSpeedResult = responseSurvey[2].points;
 
-    switch(vitesseMarcheResultat) {
+    switch(walkingSpeedResult) {
         case "1":
-            vitesseMarcheMessage = "Augmenter le temps indiqué de 30%";
+            walkingSpeedMessage = "Augmenter le temps indiqué de 30%";
             break;
         case "2":
-            vitesseMarcheMessage = "Augmenter le temps indiqué de 10%";
+            walkingSpeedMessage = "Augmenter le temps indiqué de 10%";
             break;
         case "3":
-            vitesseMarcheMessage = "Garder le temps indiqué";
+            walkingSpeedMessage = "Garder le temps indiqué";
             break;
         case "4":
-            vitesseMarcheMessage = "Réduire le temps indiqué de 10%";
+            walkingSpeedMessage = "Réduire le temps indiqué de 10%";
             break;
         case "5":
-            vitesseMarcheMessage = "Réduire le temps indiqué de 30%";
+            walkingSpeedMessage = "Réduire le temps indiqué de 30%";
             break;
         default:
-            vitesseMarcheMessage = "Résultat inconnu";
+            walkingSpeedMessage = "Résultat inconnu";
     }
-    //Chemins
-    var cheminMessage = "";
 
-    if (reponsesSondage[10].points === 1) {
-        cheminMessage = "Pas de chemin exposés";
+    //Recommendation for the path
+    let pathMessage = "";
+
+    if (responseSurvey[10].points === 1) {
+        pathMessage = "Pas de chemin exposés";
     } else {
-        cheminMessage = "Chemins exposés possibles";
+        pathMessage = "Chemins exposés possibles";
     }
 
-    //Dénivelé
+    //Recommendation for the altitude difference
+    let bqst06Result = responseSurvey[6].points;
+    let bqst07Result = responseSurvey[7].points;
+    let bqst08Result = responseSurvey[8].points;
+    let climbUpstairsMessage = "";
 
-    var bqst06Resultat = reponsesSondage[6].points;
-    var bqst07Resultat = reponsesSondage[7].points;
-    var bqst08Resultat = reponsesSondage[8].points;
-    var monterEtageMessage = "";
-
-    switch(bqst08Resultat){
+    switch(bqst08Result){
         case "10":
-            switch(bqst07Resultat){
+            switch(bqst07Result){
                 case "5":
-                    switch(bqst06Resultat){
+                    switch(bqst06Result){
                         case "0":
-                            monterEtageMessage="Pas de dénivelé possible"
+                            climbUpstairsMessage="Pas de dénivelé possible"
                             break;
                         case "1":
                         case "2":
                         case "3":
                         case "4":
-                            monterEtageMessage="Seulement des dénivelés très faibles possibles"
+                            climbUpstairsMessage="Seulement des dénivelés très faibles possibles"
                             break;
                         default:
-                            monterEtageMessage="Erreur"
+                            climbUpstairsMessage="Erreur"
                     }
                     break;
                 case "6":
                 case "7":
                 case "8":
                 case "9":
-                    monterEtageMessage="Seulement des dénivelés faibles à modérés possibles"
+                    climbUpstairsMessage="Seulement des dénivelés faibles à modérés possibles"
                     break;
                 default:
-                    monterEtageMessage="Erreur"
+                    climbUpstairsMessage="Erreur"
             }
             break;
         case "11":
         case "12":
-            monterEtageMessage="Des dénivelés modérés possibles"
+            climbUpstairsMessage="Dénivelés modérés possibles"
             break;
         case "13":
         case "14":
-            monterEtageMessage="Des dénivelés importants possibles"
+            climbUpstairsMessage="Dénivelés importants possibles"
             break;
         default:
-            monterEtageMessage="Erreur"
+            climbUpstairsMessage="Erreur"
     }
 
-
-    //Risques de chute
-    let risqueChuteResultat = 0;
-    var risqueChuteMessage = "";
+    //Recommendation for the falls risks
+    let fallsRiskResult = 0;
+    let fallsRiskMessage = "";
 
     for (let i = 12; i <= 14; i++) {
-        const reponse = reponsesSondage[i];
+        const reponse = responseSurvey[i];
         const points = parseInt(reponse.points);
         if (!isNaN(points)) {
-            risqueChuteResultat += points;
+            fallsRiskResult += points;
         }
     }
 
-    switch (risqueChuteResultat) {
+    switch (fallsRiskResult) {
         case 0:
-            risqueChuteMessage =
+            fallsRiskMessage =
                 "Pas de problème avec l'équilibre ou des risque de chute; pas de propositions nécessaires";
             break;
         case 1:
-            risqueChuteMessage =
-                "Proposer des chemins sans trop de difficultés (risque de chute) et randonées accompagnées";
+            fallsRiskMessage =
+                "Chemins sans trop de difficultés (risque de chute) et randonées accompagnées";
             break;
         case 2:
         case 3:
         case 4:
         case 5:
         case 6:
-            risqueChuteMessage =
-                "Proposer des randonées accompagnées ou des chemins simples";
+            fallsRiskMessage =
+                "Randonées accompagnées ou des chemins simples";
             break;
         default:
-            risqueChuteMessage = "Erreur";
+            fallsRiskMessage = "Erreur";
     }
 
-//Messages PART A
 
-    var messagesAResults = reponsesSondage[0].points;
-    var messagesAMessage = "";
+    //Determining the messages for the physical activity section
+    let messagesAResults = responseSurvey[0].points;
+    let messagesAMessage = "";
 
     switch(messagesAResults){
         case "1":
-            messagesAMessage=messages[0].messageTitle+"\n"+messages[0].messageText+"\n"+messages[0].advices;
+            messagesAMessage=+messages[0].messageText+"\n"+messages[0].advices[0]+"\n"+messages[0].advices[1];
             break;
         case "2":
-            messagesAMessage=messages[1].messageTitle+"\n"+messages[1].messageText+"\n"+messages[1].advices;
+            messagesAMessage=messages[1].messageText+"\n"+messages[1].advices[0];
             break;
         case "3":
-            messagesAMessage=messages[2].messageTitle+"\n"+messages[2].messageText+"\n"+messages[2].advices;
+            messagesAMessage=messages[2].messageText+"\n"+messages[2].advices[0]+"\n"+messages[2].advices[1]+"\n"+messages[2].advices[2];
             break;
         case "4":
-            messagesAMessage=messages[3].messageTitle+"\n"+messages[3].messageText;
+            messagesAMessage=messages[3].messageText;
             break;
         case "5":
-            messagesAMessage=messages[4].messageTitle+"\n"+messages[4].messageText+"\n"+messages[4].advices;
+            messagesAMessage=messages[4].messageText+"\n"+messages[4].advices[0];
             break;
         case "6":
-            messagesAMessage=messages[5].messageTitle+"\n"+messages[5].messageText+"\n"+messages[5].messageSecondaryText;
+            messagesAMessage=messages[5].messageText+"\n"+messages[5].messageSecondaryText[0]+"\n"+messages[5].messageSecondaryText[1]+"\n"+messages[5].messageSecondaryText[2]+"\n"+messages[5].messageSecondaryText[3];
             break;
         default:
             messagesAMessage = "Erreur"
     }
 
+    //list of substrings for bulleted list display
     const messageLines = messagesAMessage.split("\n");
 
     return (
         <div>
             <h2>Recommandations</h2>
             <ul>
-                <li>{propositionRouteMessage}</li>
-                <li>{vitesseMarcheMessage}</li>
-                <li>{cheminMessage}</li>
-                <li>{monterEtageMessage}</li>
-                <li>{risqueChuteMessage}</li>
+                <li>{propositionRoadMessage}</li>
+                <li>{walkingSpeedMessage}</li>
+                <li>{pathMessage}</li>
+                <li>{climbUpstairsMessage}</li>
+                <li>{fallsRiskMessage}</li>
             </ul>
-            <h2>Messages Part A</h2>
+            <h2>Activité physique</h2>
             <ul>
                 {messageLines.map((line, index) => (
                     <li key={index}>{line}</li>
@@ -313,136 +300,121 @@ export function GetResults() {
     );
 }
 
-//POURCENTAGES pour affichage dans RadarPlot
-/*
- Activité physique :
- Résultat de l'onglet activité physique (questionnaire 1) --> 1 à 6 points
- resulat/6x100
-  */
-export function GetActivitePhysique(){
-    const qA01res = parseInt(reponsesSondage[0].points);
-    const pourcentage = qA01res / 6 * 100;
-    return pourcentage;
+/**
+ * Calculation of the percentage according ot the results of the physical activity questions
+ * @returns {number} - percentage
+ * @constructor
+ */
+export function GetPhysicalActivity(){
+    const qA01res = parseInt(responseSurvey[0].points);
+    const percentage = qA01res / 6 * 100;
+    return percentage;
 
 }
 
-/*
-Marcher sans aides :
-Résultat de l'onglet autre questions (question B01) --> 1 à 5 points
-resulat/5x100
+/**
+ * Calculation of the percentage according ot the results of walking without aids question
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetMarcherSansAidesPourcentage(){
-    const qB01res = parseInt(reponsesSondage[1].points);
-    const pourcentage = qB01res / 5 * 100;
-    return pourcentage;
+export function GetWalkingWithoutAidsPercentage(){
+    const qB01res = parseInt(responseSurvey[1].points);
+    const percentage = qB01res / 5 * 100;
+    return percentage;
 }
 
-/*
-Vitesse marche :
-Résultat de l'onglet autre questions (question B02) --> 1 à 5 points
-resulat/5x100
+/**
+ * Calculation of the percentage according ot the results of speed walking question
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetVitesseMarchePourcentage(){
-    const qB02res = parseInt(reponsesSondage[2].points);
-    const pourcentage = qB02res / 5 * 100;
-    return pourcentage;
+export function GetSpeedWalkingPercentage(){
+    const qB02res = parseInt(responseSurvey[2].points);
+    const percentage = qB02res / 5 * 100;
+    return percentage;
 }
 
-/*
-Marche temps :
-Résultat de l'onglet autre questions (question B03+B04+B05) -->
-B03 --> 0,1,4,7,10,13,16,19
-B04 --> 0,2,5,8,11,14,17,20
-B05 --> 0,3,6,9,12,15,18,21
-resulat/60x100
+/**
+ * Calculation of the percentage according ot the results of walking time questions
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetMarcheTempsPourcentage(){
-    const qB03res = parseInt(reponsesSondage[3].points);
-    const qB04res = parseInt(reponsesSondage[4].points);
-    const qB05res = parseInt(reponsesSondage[5].points);
-    const pourcentage = (qB03res+qB04res+qB05res)/60*100;
-    return pourcentage;
+export function GetWalkingTimePercentage(){
+    const qB03res = parseInt(responseSurvey[3].points);
+    const qB04res = parseInt(responseSurvey[4].points);
+    const qB05res = parseInt(responseSurvey[5].points);
+    const percentage = (qB03res+qB04res+qB05res)/60*100;
+    return percentage;
 }
 
-
-/*
-Capacité monter :
-Résultat de l'onglet autre questions (question B06+B07+B08) -->
-B06 --> 0,1,2,3,4
-B07 --> 5,6,7,8,9
-B08 --> 10,11,12,13,14
-resulat/27x100
+/**
+ * Calculation of the percentage according ot the results of climb abilities questions
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetCapaciteMonterPourcentage(){
-    const qB06res = parseInt(reponsesSondage[6].points);
-    const qB07res = parseInt(reponsesSondage[7].points);
-    const qB08res = parseInt(reponsesSondage[8].points);
-    const pourcentage = (qB06res+qB07res+qB08res)/27*100;
-    return pourcentage;
+export function GetAbilityClimbPercentage(){
+    const qB06res = parseInt(responseSurvey[6].points);
+    const qB07res = parseInt(responseSurvey[7].points);
+    const qB08res = parseInt(responseSurvey[8].points);
+    const percentage = (qB06res+qB07res+qB08res)/27*100;
+    return percentage;
 }
 
-
-/*
-Insécurité marche :
-Résultat de l'onglet autre questions (question B13+B14+B12) -->
-B13 --> 0,1,2,3
-B14 --> 0 ou 1
-B12 --> 0 ou 1
-resulat/5x100
+/**
+ * Calculation of the percentage according ot the results of walking insecurities questions
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetInsecuriteMarchePourcentage(){
-    const qB13res = parseInt(reponsesSondage[13].points);
-    const qB14res = parseInt(reponsesSondage[14].points);
-    const qB12res = parseInt(reponsesSondage[12].points);
-    const pourcentage = (qB13res+qB14res+qB12res)/5*100;
-    return pourcentage;
+export function GetWalkingInsecurityPercentage(){
+    const qB13res = parseInt(responseSurvey[13].points);
+    const qB14res = parseInt(responseSurvey[14].points);
+    const qB12res = parseInt(responseSurvey[12].points);
+    const percentage = (qB13res+qB14res+qB12res)/5*100;
+    return percentage;
 }
 
-/*
-Pas peur du vide :
-Résultat de l'onglet autre questions (question B09) --> 0 ou 1 point
-100-(resulat/1x100)
+/**
+ * Calculation of the percentage according ot the results of not fear hights question
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetPasPeurVidePourcentage(){
-    const qB09res = parseInt(reponsesSondage[9].points);
-    const pourcentage = 100-(qB09res/1*100);
-    return pourcentage;
+export function GetNotFearHeightsPercentage(){
+    const qB09res = parseInt(responseSurvey[9].points);
+    const percentage = 100-(qB09res/1*100);
+    return percentage;
 }
 
-/*
-Equilibre:
-Résultat de l'onglet autre questions (question B15) --> 0 à 2 points
-resulat/2x100
+/**
+ * Calculation of the percentage according ot the results of balance question
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetEquilibrePourcentage(){
-    const qB15res = parseInt(reponsesSondage[15].points);
-    const pourcentage = qB15res/2* 100;
-    return pourcentage;
+export function GetBalancePercentage(){
+    const qB15res = parseInt(responseSurvey[15].points);
+    const percentage = qB15res/2* 100;
+    return percentage;
 }
 
-
-/*
-Sans douleurs :
-Résultat de l'onglet autre questions (question B10) -->
-5 choix de réponses --> 1 = oui
-100-resulat/5x100
+/**
+ * Calculation of the percentage according ot the results of painless question
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetSansDouleursPourcentage(){
-    const qB10res = parseInt(reponsesSondage[10].points);
-    const pourcentage = 100-qB10res/5*100;
-    return pourcentage;
+export function GetPainlessPercentage(){
+    const qB10res = parseInt(responseSurvey[10].points);
+    const percentage = 100-qB10res/5*100;
+    return percentage;
 }
 
-/*
-Mobilité :
-Résultat de l'onglet autre questions (question B11) -->
-5 choix de réponses --> 1 = oui
-100-(resulat/5x100)
+/**
+ * Calculation of the percentage according ot the results of mobility question
+ * @returns {number} - percentage
+ * @constructor
  */
-export function GetMobilitePourcentage(){
-    const qB11res = parseInt(reponsesSondage[11].points);
-    const pourcentage = 100-(qB11res/5*100);
-    return pourcentage;
+export function GetMobilityPourcentage(){
+    const qB11res = parseInt(responseSurvey[11].points);
+    const percentage = 100-(qB11res/5*100);
+    return percentage;
 }
 
 

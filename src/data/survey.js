@@ -37,37 +37,37 @@ export const messageDataPartA = [
     {
         messageId: "AMsg01",
         messageTitle: "BOX: Précontemplation 1 (indétermination)",
-        messageText: "Le patient n’envisage pas de reprendre une activité physique et il n'est pas consient de risque de l'inactivité ou des benefices de l'activité physique.",
-        advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité", "– Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
+        messageText: "Vous n'envisagez pas de reprendre une activité physique et n'êtes pas conscient des risques de l'inactivité ou des benefices de l'activité physique.",
+        advices: ["Brochure: Encourager à envisager de reprendre de l’activité", "Informer sur les bénéfices potentiels pour sa santé et son indépendance"],
     },
     {
         messageId: "AMsg02",
         messageTitle: "BOX: Précontemplation 2 (indétermination)",
-        messageText: "Le patient n’envisage pas de reprendre une activité physique mais il connais les avantes de l'activité physique. ",
-        advices: ["brochure pour: – Encourager à envisager de reprendre de l’activité"],
+        messageText: "Vous n’envisagez pas de reprendre une activité physique mais connaissez les avantages de l'activité physique. ",
+        advices: ["Brochure: Encourager à envisager de reprendre de l’activité"],
     },
     {
         messageId: "AMsg03",
         messageTitle: "Contemplation (intention)",
-        messageText: "Le patient est intéressé ou réfléchit à modifier son activité",
-        advices: ["– Entretien motivationnel (tab. 3)", "– Pouvoir répondre aux éventuelles objections (cf. tab. 4)", "– Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
+        messageText: "Vous êtes intéressé ou réfléchissez à modifier votre activité",
+        advices: ["Entretien motivationnel", "Pouvoir répondre aux éventuelles objections", "Référer à une association de seniors ou proposant de l’activité physique adaptée et supervisée (par ex. Pro Senectute, programme «pas de retraite pour ma santé»)"],
     },
     {
         messageId: "AMsg04",
         messageTitle: "Préparation 1",
-        messageText: "Le patient est actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
+        messageText: "Vous êtes actif mais moins de 30 minutes/j, 5 j/semaine ou avec une intensité trop basse",
     },
     {
         messageId: "AMsg05",
         messageTitle: "Préparation 2",
-        messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
-        advices: ["- proposer brochures sur l'activité physique"],
+        messageText: "Vous êtes actif au moins 30 minutes/j, 5 j/semaine, mais avec une intensité trop basse",
+        advices: ["Brochures sur l'activité physique"],
     },
     {
         messageId: "AMsg06",
         messageTitle: "Action et maintien",
-        messageText: "Le patient est actif au moins 30 minutes/j, 5 j/semaine",
-        messageSecondaryText: ["- proposer brochures sur l'activité physique", "– Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "– Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "– ENCOURAGER!"],
+        messageText: "Vous êtes actif au moins 30 minutes/j, 5 j/semaine",
+        messageSecondaryText: ["Brochures sur l'activité physique", "Traiter les problèmes de santé qui pourraient provoquer un manque d’activité physique", "Développer des stratégies pour gérer des nouvelles barrières qui se présentent", "ENCOURAGER!"],
     },
 ];
 export const questionDataPartB = [
