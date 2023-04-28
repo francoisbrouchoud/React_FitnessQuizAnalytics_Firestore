@@ -13,11 +13,14 @@ import {
     GetPhysicalActivity,
     GetResults
 } from './GetResults';
-import {ManagesResults,GetResultsFromQuestionnaire} from "./GetResults";
 import {Link} from "react-router-dom";
+
 
 /**
  * Function that determines the items to be displayed as results
+ * @param query1 - function to call to define the results to be displayed
+ * @param query2 - function to call to define the results to be displayed
+ * @param sourceElem - element that defines the place (the page) where the results are displayed
  * @returns {JSX.Element} - items to display
  * @constructor
  */
@@ -28,37 +31,32 @@ export default function DisplayResults({query1,query2, sourceElem}) {
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
     const [results,setResults] = useState([]);
     const [email, setEmail] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        console.log("USEEFFECT 1");
-
-
         async function fetchQuestionnaires(){
-            const listeQuestionnaires = await query1(); //ManagesResults(); // props.Query
-            setQuestionnaires(listeQuestionnaires);
-
+            const listQuestionnaires = await query1(); //ManagesResults();
+            setQuestionnaires(listQuestionnaires);
         }
-
         fetchQuestionnaires();
     },[selectedQuestionnaire]);
 
     useEffect(() =>{
-        console.log("USEEFFECT 2");
-        setResults([]); // Re-initialiser Results
+        //Reset Results
+        setResults([]);
         async function fetchResults(){
             if(selectedQuestionnaire){
 
                 const [email, resultDate] = selectedQuestionnaire.split(' : ');
                 let myResults = null;
 
+                //Call different methods depending on where you want to display the result (Resultats or GroupLeader)
                 if (sourceElem === "RESULTATS")
                 {
                     myResults = await query2(selectedQuestionnaire); //GetResultsFromQuestionnaire(selectedQuestionnaire);
                 }
                 else if(sourceElem === "GROUPLEADER")
                 {
-                    myResults = await query2(email,resultDate); //GetResultsFromQuestionnaire(selectedQuestionnaire);
+                    myResults = await query2(email,resultDate); //GetResultsFromUserAndDate(email,resultDate);
                 }
                 else
                 {
@@ -71,7 +69,6 @@ export default function DisplayResults({query1,query2, sourceElem}) {
     },[selectedQuestionnaire]);
 
     useEffect(() => {
-        console.log("USEEFFECT 3");
         if (results.length > 0) {
             //data for the radarplot
             const newScores = [
@@ -159,11 +156,12 @@ export default function DisplayResults({query1,query2, sourceElem}) {
             <div className="card card-title">
                 <h1>Résultats et recommandations</h1>
             </div>
-            {/*control to display the following when there is at least one completed questionnaire */}
+            {/*Control to display the following when there is at least one completed questionnaire */}
             {questionnaires.length > 0 ? (
               <div className="card card-advice info-card">
                   <div className="selectResult">
                       <span>Sélectionner un questionnaire : </span>
+                      {/*Control of the element to determine what to display in the desired location */}
                       {sourceElem === "RESULTATS" ?
                           (
                               <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
