@@ -1,16 +1,22 @@
 import React, {useEffect, useState} from "react";
 import {auth, db} from "../initFirebase";
-import {collection, doc, getDoc, getDocs, setDoc} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, orderBy, setDoc} from "firebase/firestore";
 import InitQuestionsPartA from "../components/Admin/InitQuestionsPartA";
 import InitQuestionsPartB from "../components/Admin/InitQuestionsPartB";
 import InitMessagesPartA from "../components/Admin/InitMessagesPartA";
+import {updateQuestionsInDB} from "../components/Admin/UpdateFirestore";
 
-// Page to display the questions of the DB, and to update them if needed.
-// The page is only accessible to admins.
-// All the questions are displayed in a form, and the admin can update them by clicking on the "Update" button.
+
+/**
+ * Page to display the questions of the DB, and to update them if needed.
+ * The page is only accessible to admins.
+ * All the questions are displayed in a form, and the admin can update them by clicking on the "Update" button.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Admin() {
 
-    const [messages_A, setMessages_A] = useState([]);
+    const [messagesDB_A, setMessagesDB_A] = useState([]);
     const [questionsDB_A, setQuestionsDB_A] = useState([]);
     const [questionsDB_B, setQuestionsDB_B] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +41,6 @@ export default function Admin() {
         const userIsAdmin = userData.isAdmin;
         console.log('User is Admin ? : ', userIsAdmin);
         setIsAdmin(userIsAdmin);
-
     }
     
     const getDB = async () => {
@@ -66,7 +71,7 @@ export default function Admin() {
         {
             // Récupérer les données de l'utilisateur dans la base de données ou l'API
             const fetchQuestionsFromDB = async () => {
-                const querySnapshot = await getDocs(collection(db, 'questions_partA'));
+                const querySnapshot = await getDocs(collection(db, 'questions_partA'),orderBy("questionId", "asc") );
                 const questions = querySnapshot.docs.map(doc => doc.data());
                 setQuestionsDB_A(questions);
                 console.log('Questions A fetched !', questions);
@@ -84,9 +89,9 @@ export default function Admin() {
         {
             // Récupérer les données de l'utilisateur dans la base de données ou l'API
             const fetchMessagesFromDB = async () => {
-                const querySnapshot = await getDocs(collection(db, 'messages_partA'));
+                const querySnapshot = await getDocs(collection(db, 'messages_partA'),orderBy("questionId", "asc"));
                 const messages = querySnapshot.docs.map(doc => doc.data());
-                setMessages_A(messages);
+                setMessagesDB_A(messages);
                 console.log('Messages A fetched !', messages);
             };
             
@@ -102,7 +107,7 @@ export default function Admin() {
         {
             // Récupérer les données de l'utilisateur dans la base de données ou l'API
             const fetchQuestionsFromDB = async () => {
-                const querySnapshot = await getDocs(collection(db, 'questions_partB')); // TODO : CHANGER NOM
+                const querySnapshot = await getDocs(collection(db, 'questions_partB'),orderBy("questionId", "asc"));
                 const questions = querySnapshot.docs.map(doc => doc.data());
                 setQuestionsDB_B(questions);
                 console.log('Questions B fetched !', questions);
@@ -135,10 +140,12 @@ export default function Admin() {
                                     <hr/>
                                     <br/>
 
-                                    <h3>Messages A</h3>
-                                    <FormMessages messagesInput={messages_A}/>
-                                    <hr/>
-                                    <br/>
+                                    {/* This is commented out because the feature is not yet complete.
+                                        The inputs need to be pushed to the database. The button currently does nothing. */}
+                                    {/*<h3>Messages A</h3>*/}
+                                    {/*<FormMessages messagesInput={messagesDB_A}/>*/}
+                                    {/*<hr/>*/}
+                                    {/*<br/>*/}
 
                                     <h3>Questions B</h3>
                                     <FormQuestions questionsInput={questionsDB_B}/>
@@ -149,18 +156,11 @@ export default function Admin() {
                                     <h2>Seed default data in DB</h2>
                                     <div className="buttons">
                                         <InitQuestionsPartA/>
-                                        <InitQuestionsPartB/>
                                         <InitMessagesPartA/>
+                                        <InitQuestionsPartB/>
                                     </div>
                                 </div>
                             </div>
-                            
-                            // DANS UN FORM :
-                            // Afficher liste messages A
-                            // Afficher liste questions A
-                            // Afficher liste questions B
-                            
-                            
                         )
                         :
                         (
@@ -174,24 +174,87 @@ export default function Admin() {
     );
 }
 
+/**
+ * Form for the questions, the user can update the question text to change it in the DB
+ * @param questionsInput
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function FormQuestions ({questionsInput}){
+    // State to store the question text from DB, and the updated question text from the input by the User (onChange)
     const [questions, setQuestions] = useState(questionsInput);
     
-    useEffect(() => {
-        
-        //console.log(questionsInput, questions);
-        
-    }, [questionsInput]);
-    
+    // Update the question text in the state when the input changes (onChange)
     const handleChange = (event, index) => {
         const newQuestions = [...questions];
         newQuestions[index].questionText = event.target.value;
         setQuestions(newQuestions);
     };
     
+    const getFormInputA = () => {
+        const newQuestions = [];
+        for (let i = 0; i < questions.length; i++) {
+            const questionId = `AQst0${i+1}`;
+            const questionText = questions[i].questionText;
+            const choices = ["Oui", "Non"]; // Définir les options possibles ici
+            newQuestions.push({ questionId, questionText, choices });
+        }
+        return newQuestions;
+    };
+    
+    const getFormInputB = () => {
+        const newQuestions = [];
+        
+        for (let i = 0; i < questions.length; i++) {
+            // Avoir un ID de type BQst01, BQst02, etc. et dès que i > 9, BQst10, BQst11, etc.
+            const questionId = i < 9 ?
+                                            (`BQst0${i+1}` )
+                                            :
+                                            (`BQst${i+1}`);
+            const questionText = questions[i].questionText;
+            const choices = questions[i].choices;
+            const points = questions[i].points;
+            const multipleChoice = questions[i].multipleChoice;
+            // Vérifier si questionSecondaryText existe avant de l'utiliser
+            const questionSecondaryText = questions[i].questionSecondaryText ? questions[i].questionSecondaryText : null;
+            
+            newQuestions.push({
+                                  questionId,
+                                  questionText,
+                                  choices,
+                                  points,
+                                  multipleChoice,
+                                  ...(questionSecondaryText !== null && { questionSecondaryText }) // Ajouter la propriété uniquement si elle n'est pas null
+                              });
+        }
+        return newQuestions;
+    };
+    
     const handleSubmit = (event) => {
         event.preventDefault();
+        
+        let collectionRef = null;
+        let aggregatedData= null;
+        
         // do something with the updated questions
+        // Verifier la première lettre du questionId pour savoir si c'est une question A ou B
+        const questionId = questions[0].questionId;
+        console.log("ID VERIFICATION",questionId[0]);
+        if(questionId[0] === 'A'){
+            aggregatedData = getFormInputA();
+            collectionRef = collection(db, 'questions_partA');
+        }
+        else if(questionId[0] === 'B'){
+            aggregatedData = getFormInputB();
+            collectionRef = collection(db, 'questions_partB');
+        }
+        else {
+            console.error('QuestionId not valid !');
+        }
+        
+        
+        // Envoyer les données à la DB avec la methode commune
+        updateQuestionsInDB(collectionRef, aggregatedData).then(r => console.log("Questions updated from form "+questionId[0]+" !"));
     };
     
     return (
@@ -203,6 +266,7 @@ function FormQuestions ({questionsInput}){
                     <input
                         type="text"
                         id={`question${index}`}
+                        name={`question${index}`}
                         value={question.questionText}
                         onChange={(event) => handleChange(event, index)}
                     />
@@ -213,6 +277,12 @@ function FormQuestions ({questionsInput}){
     );
 }
 
+/**
+ * Form to update the messages in the DB. The messages are displayed in the form as inputs.
+ * @param messagesInput
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function FormMessages({ messagesInput }) {
     const [messages, setMessages] = useState(messagesInput);
     
