@@ -7,11 +7,14 @@ function BMICalculator() {
   const [bmiClass, setBmiClass] = useState(null);
   const [bmiComment, setBmiComment] = useState('');
 
+
   function calculateBMI() {
+    // calculate bmi value
     const heightInMeters = height / 100;
     const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
     setBmi(bmiValue);
 
+    // set css class and comment according to the result bmi value
     if (bmiValue < 18.5) {
       setBmiClass('underweight');
       setBmiComment('Votre IMC indique que vous êtes maigre. Vous pourriez avoir besoin de prendre du poids pour atteindre un poids santé.');
