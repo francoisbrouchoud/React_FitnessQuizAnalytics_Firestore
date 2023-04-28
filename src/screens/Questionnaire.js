@@ -1,9 +1,9 @@
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import SurveyPartA from "../components/SurveyPartA";
-import SurveyPartB from "../components/SurveyPartB";
-import SurveyPartC from "../components/SurveyPartC";
-import SetResultsToFirebase from "../components/SetResultsToFirebase";
+import SurveyPartA from "../components/Quiz/SurveyPartA";
+import SurveyPartB from "../components/Quiz/SurveyPartB";
+import SurveyPartC from "../components/Quiz/SurveyPartC";
+import SetResultsToFirebase from "../components/Quiz/SetResultsToFirebase";
 
 /**
  * Component that handles the three parts of the survey
