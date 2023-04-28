@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import DisplayResults from "../components/DisplayResults";
-import {ManagesResults,GetResultsFromQuestionnaire} from "../components/GetResults";
+import DisplayResults from "../components/Results/DisplayResults";
+import {ManagesResults,GetResultsFromQuestionnaire} from "../components/Results/GetResults";
 
 /**
  * Function to display the results on the Results page

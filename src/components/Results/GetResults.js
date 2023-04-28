@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {collection, doc, getDocs, getDoc, query, where} from "firebase/firestore";
-import {db,auth} from "../initFirebase";
+import {db,auth} from "../../initFirebase";
 
 //initial table containing the points of questions
 let responseSurvey = [
