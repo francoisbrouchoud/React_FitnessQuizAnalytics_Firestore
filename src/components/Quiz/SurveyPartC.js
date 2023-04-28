@@ -36,7 +36,7 @@ export default function SurveyPartC({setResults}) {
         event.preventDefault();
         const result = emails;
 
-        console.log(result);
+        console.log("submit email");
         setResults(result);
 
     };

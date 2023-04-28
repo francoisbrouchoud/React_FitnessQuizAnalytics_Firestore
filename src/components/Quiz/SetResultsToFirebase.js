@@ -15,10 +15,8 @@ export default async function SetResultsToFirebase(resultsA, resultsB, resultsC)
             hour12: false,
             timeZone: "Europe/Zurich"
         }).replace(/[/:\s]/g, "-");
-        console.log(formattedDate); // Output: 2023-04-17-16-22-30
 
         resultsB.unshift(resultsA)
-        console.log(resultsB)
         const userResultRef = doc(db, "users", auth.currentUser.email, "results", formattedDate);
         await setDoc(userResultRef, {
             groupLeader: resultsC,

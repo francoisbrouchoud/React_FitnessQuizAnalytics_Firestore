@@ -40,7 +40,6 @@ export default function Questionnaire() {
 
     useEffect(() => {
         if (resultsC !== null) {
-            console.log("Results to set in Firebase", resultsA, resultsB, resultsC);
             SetResultsToFirebase(resultsA, resultsB, resultsC);
             navigate('/resultats');
         }
