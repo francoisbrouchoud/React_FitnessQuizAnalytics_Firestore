@@ -256,7 +256,7 @@ export function GetResults() {
 
     switch(messagesAResults){
         case "1":
-            messagesAMessage=+messages[0].messageText+"\n"+messages[0].advices[0]+"\n"+messages[0].advices[1];
+            messagesAMessage=messages[0].messageText+"\n"+messages[0].advices[0]+"\n"+messages[0].advices[1];
             break;
         case "2":
             messagesAMessage=messages[1].messageText+"\n"+messages[1].advices[0];
