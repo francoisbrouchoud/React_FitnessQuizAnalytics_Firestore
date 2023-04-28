@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {auth, db} from "../initFirebase";
-import {collection, doc, getDoc, getDocs, orderBy, setDoc} from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, orderBy} from "firebase/firestore";
 import InitQuestionsPartA from "../components/Admin/InitQuestionsPartA";
 import InitQuestionsPartB from "../components/Admin/InitQuestionsPartB";
 import InitMessagesPartA from "../components/Admin/InitMessagesPartA";
@@ -11,7 +11,7 @@ import {updateQuestionsInDB} from "../components/Admin/UpdateFirestore";
  * Page to display the questions of the DB, and to update them if needed.
  * The page is only accessible to admins.
  * All the questions are displayed in a form, and the admin can update them by clicking on the "Update" button.
- * @returns {JSX.Element}
+ * @returns {JSX.Element} : the page to display the questions of the DB, and to update them if needed.
  * @constructor
  */
 export default function Admin() {
@@ -23,8 +23,6 @@ export default function Admin() {
     const [isAdmin, setIsAdmin] = useState(false);
     
     useEffect(() => {
-        console.log('useEffect Admin');
-        
         checkIfAdmin().then(r => console.log('checkIfAdmin done !'))
         
         getDB().then(r => console.log('getDB done !'))
@@ -37,9 +35,7 @@ export default function Admin() {
         const user = auth.currentUser;
         const userDoc = await getDoc(doc(db, "users", user.email));
         const userData = await userDoc.data();
-        console.log('User Data : ', userData);
         const userIsAdmin = userData.isAdmin;
-        console.log('User is Admin ? : ', userIsAdmin);
         setIsAdmin(userIsAdmin);
     }
     
@@ -59,9 +55,7 @@ export default function Admin() {
             }
             finally
             {
-                console.log('GetDB - isLoading - finally start', isLoading);
                 await setIsLoading(false);
-                console.log('GetDB - isLoading - finally end', isLoading);
             }
         }
     }
@@ -74,7 +68,6 @@ export default function Admin() {
                 const querySnapshot = await getDocs(collection(db, 'questions_partA'),orderBy("questionId", "asc") );
                 const questions = querySnapshot.docs.map(doc => doc.data());
                 setQuestionsDB_A(questions);
-                console.log('Questions A fetched !', questions);
             };
             
             await fetchQuestionsFromDB()
@@ -92,7 +85,6 @@ export default function Admin() {
                 const querySnapshot = await getDocs(collection(db, 'messages_partA'),orderBy("questionId", "asc"));
                 const messages = querySnapshot.docs.map(doc => doc.data());
                 setMessagesDB_A(messages);
-                console.log('Messages A fetched !', messages);
             };
             
             await fetchMessagesFromDB()
@@ -110,7 +102,6 @@ export default function Admin() {
                 const querySnapshot = await getDocs(collection(db, 'questions_partB'),orderBy("questionId", "asc"));
                 const questions = querySnapshot.docs.map(doc => doc.data());
                 setQuestionsDB_B(questions);
-                console.log('Questions B fetched !', questions);
             };
             
             await fetchQuestionsFromDB()
@@ -175,9 +166,9 @@ export default function Admin() {
 }
 
 /**
- * Form for the questions, the user can update the question text to change it in the DB
- * @param questionsInput
- * @returns {JSX.Element}
+ * Form for the questions, the user can update the question text to update it in the DB
+ * @param questionsInput : the questions from the DB (array of objects)
+ * @returns {JSX.Element} : the form with the questions
  * @constructor
  */
 function FormQuestions ({questionsInput}){
@@ -251,8 +242,7 @@ function FormQuestions ({questionsInput}){
         else {
             console.error('QuestionId not valid !');
         }
-        
-        
+
         // Envoyer les données à la DB avec la methode commune
         updateQuestionsInDB(collectionRef, aggregatedData).then(r => console.log("Questions updated from form "+questionId[0]+" !"));
     };
@@ -261,7 +251,6 @@ function FormQuestions ({questionsInput}){
         <form className="card card-result" onSubmit={handleSubmit}>
             {questions.map((question, index) => (
                 <div key={question.questionId}>
-                    {/*<label htmlFor={`question${index}`}>{question.questionText}</label>*/}
                     <label htmlFor={`question${index}`}>{question.questionId} : </label>
                     <input
                         type="text"
@@ -279,16 +268,12 @@ function FormQuestions ({questionsInput}){
 
 /**
  * Form to update the messages in the DB. The messages are displayed in the form as inputs.
- * @param messagesInput
- * @returns {JSX.Element}
+ * @param messagesInput : the messages from the DB (array of objects)
+ * @returns {JSX.Element} : the form with the messages as inputs to update them in the DB
  * @constructor
  */
 function FormMessages({ messagesInput }) {
     const [messages, setMessages] = useState(messagesInput);
-    
-    useEffect(() => {
-         console.log(messagesInput, messages);
-    }, [messagesInput]);
     
     const handleChange = (event, index, key) => {
         const newMessages = [...messages];
@@ -298,7 +283,7 @@ function FormMessages({ messagesInput }) {
     
     const handleSubmit = (event) => {
         event.preventDefault();
-        // do something with the updated messages
+        // do something with the updated messages... (send them to the DB)
     };
     
     return (

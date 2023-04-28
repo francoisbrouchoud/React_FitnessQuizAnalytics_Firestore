@@ -5,8 +5,17 @@ import {Link} from "react-router-dom";
 import {AppHeader} from "./AppHeader";
 
 
-// TODO : CHANGER PHOTO USER
-// TODO : AJOUTER BTN ADD PICTURE (POUR CHANGER LA PHOTO DE PROFIL)
+/**
+ * This component is used to display the user profile.
+ * It fetches the user data from the database and displays it.
+ * There are 2 modes : READONLY & EDITABLE
+ * In READONLY mode, the user can only see his profile and edit it.
+ *      He can also access the group management page if he is a group leader.
+ *      He can also access the admin page if he is an admin.
+ * In EDITABLE mode, the user can edit his profile and save it.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Profile() {
     
     const [isEditable,  setIsEditable]  = useState(false);
@@ -22,7 +31,6 @@ export default function Profile() {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 setUserDatas(data);
-                console.log('Users Data fetched for profile !', data);
             } else {
                 console.error('No such document!');
             }
@@ -108,7 +116,13 @@ export default function Profile() {
 }
 
 
-
+/**
+ * This component is used to display the user profile in EDITABLE mode.
+ * It takes the user data as props and displays it in a form.
+ * @param props : user data (firstName, lastName, birthDate, isGroupLeader)
+ * @returns {JSX.Element} : the form to edit the user profile
+ * @constructor
+ */
 function ProfileEditable(props) {
 
     const [editedData, setEditedData] = useState(
@@ -118,29 +132,11 @@ function ProfileEditable(props) {
                     birthDate:     props.birthDate,
                     isGroupLeader: props.isGroupLeader
                  });
-    
-    //console.log("ProfileEditable props : " , props);
-    
-    // OLD VERSION --> REFACTOR IN 1 METHODE
-    /*function handleFirstNameChange(event) {
-        setEditedFirstName(event.target.value);
-    }
-    
-    function handleLastNameChange(event) {
-        setEditedLastName(event.target.value);
-    }
-    
-    function handleBirthDateChange(event) {
-        setEditedBirthDate(event.target.value);
-    }
-    */
-    
+ 
     function handleInputChange(event) {
         const target = event.target;
         const name = target.name;
-        //const value = target.type === 'radio' ? target.checked : target.value;
         const value = target.type === "checkbox" ? target.checked : target.value;
-        
         
         setEditedData((prevState) => ({
             ...prevState,
@@ -152,17 +148,8 @@ function ProfileEditable(props) {
     async function handleSubmit(event)
     {
         event.preventDefault();
-        // Check if all fields are not empty
-        // if (Object.values(editedData).every((val) => val.trim())) {
-        //     // RETOURNER LES DATA A LA DB
-        //     await updateUserProfile(auth.currentUser.email, editedData);
-        // } else {
-        //     // Handle empty fields error
-        //     console.log("Error: Fields cannot be empty!");
-        // }
 
-        await updateUserProfile(auth.currentUser.email, editedData);
-        
+        await updateUserProfile(auth.currentUser.email, editedData).then(()=>{alert("Profil mis à jour !")});
     }
     
     // UPDATE USER PROFILE
@@ -170,15 +157,13 @@ function ProfileEditable(props) {
     // It takes the userId and newUserData as parameters and updates the user profile in Firestore.
     const updateUserProfile = async (userId, newUserData) =>
     {
-        console.log('UPDATE USER PROFILE FOR '+ userId + " with data : " + newUserData)
         const userRef = doc(db, "users", userId);
         const docSnap = await getDoc(userRef);
         
         if (docSnap.exists()) {
-            await setDoc(userRef, newUserData, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
+            await setDoc(userRef, newUserData, {merge: true}); // merge does not overwrite the existing data (if the document already exists) but updates it with the new data
         }
         
-        console.log("user update result : " + docSnap.data());
     }
     
     return (
@@ -190,7 +175,6 @@ function ProfileEditable(props) {
                     id="first-name-input"
                     name="firstName"
                     value={editedData.firstName}
-                    //defaultValue={null}
                     onChange={handleInputChange}
                 />
             </div>
@@ -201,7 +185,6 @@ function ProfileEditable(props) {
                     id="last-name-input"
                     name="lastName"
                     value={editedData.lastName}
-                    //defaultValue={null}
                     onChange={handleInputChange}
                 />
             </div>
@@ -212,7 +195,6 @@ function ProfileEditable(props) {
                     id="birth-date-input"
                     name="birthDate"
                     value={editedData.birthDate}
-                    //defaultValue={null}
                     onChange={handleInputChange}
                 />
             </div>
@@ -226,50 +208,28 @@ function ProfileEditable(props) {
                 />
                 <label htmlFor="is-group-leader-input">Est chef de groupe</label>
             </div>
-            {/*<div className="form-fields">*/}
-            {/*    <label htmlFor="is-group-leader-input">Est responsable de groupe :</label>*/}
-            {/*    <div className="radio-group">*/}
-            {/*        <label>*/}
-            {/*            <input*/}
-            {/*                type="radio"*/}
-            {/*                id="is-group-leader-yes"*/}
-            {/*                name="isGroupLeader"*/}
-            {/*                value="true"*/}
-            {/*                checked={editedData.isGroupLeader === 'true'}*/}
-            {/*                onChange={handleInputChange}*/}
-            {/*            />*/}
-            {/*            Oui*/}
-            {/*        </label>*/}
-            {/*        <label>*/}
-            {/*            <input*/}
-            {/*                type="radio"*/}
-            {/*                id="is-group-leader-no"*/}
-            {/*                name="isGroupLeader"*/}
-            {/*                value="false"*/}
-            {/*                checked={editedData.isGroupLeader === 'false'}*/}
-            {/*                onChange={handleInputChange}*/}
-            {/*            />*/}
-            {/*            Non*/}
-            {/*        </label>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
             <button className="primary-button" type="submit">Enregistrer</button>
         </form>
     );
 }
 
-
+/**
+ * This component is used to display the user profile in READ-ONLY mode.
+ * It takes the user data as props and displays it.
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function ProfileReadOnly(props) {
     const { firstName, lastName, birthDate, email, isAdmin, isGroupLeader } = props;
 
-    //console.log("ProfileReadOnly props : " , props);
     return (
         <div>
             <p><strong>Prénom :</strong>            {firstName }</p>
             <p><strong>Nom :</strong>               {lastName }</p>
             <p><strong>Date de naissance :</strong> {birthDate}</p>
             <p><strong>E-mail :</strong>            {email}</p>
-            <p><strong>Est chef de groupe :</strong> {isGroupLeader ? "Oui" : "Non"}</p>
+            <p><strong>Est chef de groupe :</strong>{isGroupLeader ? "Oui" : "Non"}</p>
             <p><strong>Est admin :</strong>         {isAdmin ? "Oui" : "Non"}</p>
         </div>
     );

@@ -1,13 +1,13 @@
 import React from 'react';
 import { db } from '../../initFirebase';
-import {doc, setDoc, collection, getDocs, deleteDoc, writeBatch} from "firebase/firestore";
+import {doc, getDocs, deleteDoc, writeBatch} from "firebase/firestore";
 
 /**
  * Uploads the questions to Firestore if they don't already exist.
  * This function is only used once to upload the questions.
- * @param collectionRef
- * @param data
- * @returns {Promise<void>}
+ * @param collectionRef : reference to the collection in Firestore
+ * @param data : array of questions to be uploaded to Firestore (each question is an object). It depends on the format of the questions in the database.
+ * @returns {Promise<void>} : nothing
  */
 export const updateQuestionsInDB = async (collectionRef, data) => {
     try
@@ -36,5 +36,4 @@ export const updateQuestionsInDB = async (collectionRef, data) => {
         console.error('Error uploading questions to Firestore: ', error);
         throw error;
     }
-    
 }

@@ -1,11 +1,12 @@
 import React from 'react';
 import { db } from '../../initFirebase';
-import {doc, setDoc, collection, getDocs} from "firebase/firestore";
-import {messageDataPartA, questionDataPartA} from "../../data/survey.js";
+import { collection} from "firebase/firestore";
+import {messageDataPartA} from "../../data/survey.js";
 import {updateQuestionsInDB} from "./UpdateFirestore";
 
 /**
- * Uploads the questions to Firestore if they don't already exist. This function is only used once to upload the questions.
+ * SEED DEFAULT MESSAGES PART A
+ * Uploads and overwrites the questions to Firestore even if they already exist.
  * @returns {JSX.Element}
  * @constructor
  */
