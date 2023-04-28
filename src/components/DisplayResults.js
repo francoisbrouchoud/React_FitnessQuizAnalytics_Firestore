@@ -21,26 +21,49 @@ import {Link} from "react-router-dom";
  * @returns {JSX.Element} - items to display
  * @constructor
  */
-export default function DisplayResults() {
+export default function DisplayResults({query1,query2, sourceElem}) {
 
     const [data, setData] = useState([]);
     const [questionnaires,setQuestionnaires] = useState([]);
     const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
     const [results,setResults] = useState([]);
     const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        console.log("USEEFFECT 1");
+
+
         async function fetchQuestionnaires(){
-            const listeQuestionnaires = await ManagesResults();
+            const listeQuestionnaires = await query1(); //ManagesResults(); // props.Query
             setQuestionnaires(listeQuestionnaires);
+
         }
+
         fetchQuestionnaires();
-    },[]);
+    },[selectedQuestionnaire]);
 
     useEffect(() =>{
+        console.log("USEEFFECT 2");
+        setResults([]); // Re-initialiser Results
         async function fetchResults(){
             if(selectedQuestionnaire){
-                const myResults = await GetResultsFromQuestionnaire(selectedQuestionnaire);
+
+                const [email, resultDate] = selectedQuestionnaire.split(' : ');
+                let myResults = null;
+
+                if (sourceElem === "RESULTATS")
+                {
+                    myResults = await query2(selectedQuestionnaire); //GetResultsFromQuestionnaire(selectedQuestionnaire);
+                }
+                else if(sourceElem === "GROUPLEADER")
+                {
+                    myResults = await query2(email,resultDate); //GetResultsFromQuestionnaire(selectedQuestionnaire);
+                }
+                else
+                {
+                    console.error("ERROR SOURCE")
+                }
                 setResults(myResults);
             }
         }
@@ -48,6 +71,7 @@ export default function DisplayResults() {
     },[selectedQuestionnaire]);
 
     useEffect(() => {
+        console.log("USEEFFECT 3");
         if (results.length > 0) {
             //data for the radarplot
             const newScores = [
@@ -140,14 +164,29 @@ export default function DisplayResults() {
               <div className="card card-advice info-card">
                   <div className="selectResult">
                       <span>Sélectionner un questionnaire : </span>
-                      <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
-                          <option disabled={selectedQuestionnaire !== null} value={null}>
-                              Sélectionner un questionnaire
-                          </option>
-                          {questionnaires.map((questionnaire, index) => (
-                            <option key={index}>{questionnaire.date}</option>
-                          ))}
-                      </select>
+                      {sourceElem === "RESULTATS" ?
+                          (
+                              <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
+                                  <option disabled={selectedQuestionnaire !== null} value={null}>
+                                      Sélectionner un questionnaire
+                                  </option>
+                                  {questionnaires.map((questionnaire, index) => (
+                                      <option key={index}>{questionnaire.date}</option>
+                                  ))}
+                              </select>
+                          )
+                          :
+                          (
+                              <select value={selectedQuestionnaire} onChange={(e) => setSelectedQuestionnaire(e.target.value)}>
+                                  <option disabled={selectedQuestionnaire !== null} value={null}>
+                                      Sélectionner un questionnaire
+                                  </option>
+                                  {questionnaires.map((questionnaire, index) => (
+                                      <option key={index}> {questionnaire.userEmail} : {questionnaire.date}</option>
+                                  ))}
+                              </select>
+                          )}
+
                   </div>
                     {selectedQuestionnaire !== null && (
                         <>

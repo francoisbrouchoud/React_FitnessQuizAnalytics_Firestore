@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {collection, doc, getDocs, getDoc} from "firebase/firestore";
+import {collection, doc, getDocs, getDoc, query, where} from "firebase/firestore";
 import {db,auth} from "../initFirebase";
 
 //initial table containing the points of questions
@@ -22,6 +22,21 @@ let responseSurvey = [
     { id: "BQst15", points: "0" },
 ];
 
+export async function GetIsLeader() {
+    try{
+        const docRef = doc(db,"users",auth.currentUser.email);
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+        //collect the data saved in the result doc
+        const isGroupLeader = data.isGroupLeader;
+
+        return isGroupLeader;
+    } catch (e){
+        console.log("Error :" + e);
+        return null;
+    }
+}
+
 /**
  * Get a list of questionnaires for a user
  * @returns {Promise<DocumentData[]>}
@@ -31,6 +46,7 @@ export function ManagesResults() {
 
     const getListQuestionnaires = async () => {
 
+        console.log("YAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         //get Docs from Firestore
         const querySnapshot = await getDocs(collection(db, "users",auth.currentUser.email,"results"));
 
@@ -40,8 +56,44 @@ export function ManagesResults() {
         });
         return tab;
     }
-
     return getListQuestionnaires();
+}
+
+export function ManagesResultsGL() {
+    const getListeQuestionnaires = async () => {
+
+        // Récupérer tous les documents de la collection 'users'
+        const usersSnapshot = await getDocs(collection(db, "users"));
+
+        // Utilisez Promise.all pour effectuer plusieurs requêtes en parallèle
+        const resultsPromises = usersSnapshot.docs.map(async (userDoc) => {
+            // Créez une requête pour obtenir tous les documents avec l'e-mail actuel dans le tableau groupLeader
+            const q = query(
+                collection(userDoc.ref, "results"),
+                where("groupLeader", "array-contains", auth.currentUser.email)
+            );
+
+            // Récupérer les documents correspondants
+            const resultsSnapshot = await getDocs(q);
+
+            // Transformer les documents en un tableau d'objets contenant les données et l'ID de l'utilisateur
+            return resultsSnapshot.docs.map((resultDoc) => ({
+                ...resultDoc.data(),
+                userId: userDoc.id,
+                userEmail: userDoc.data().email,
+            }));
+        });
+
+        // Attendez que toutes les requêtes soient terminées
+        const resultsArrays = await Promise.all(resultsPromises);
+
+        // Aplatir le tableau 2D en un tableau 1D
+        const results = resultsArrays.flat();
+
+        return results;
+    }
+
+    return getListeQuestionnaires();
 }
 
 /**
@@ -67,6 +119,33 @@ export async function GetResultsFromQuestionnaire(name){
             console.log("Error :" + e);
             return null;
         }
+}
+
+export async function GetResultsFromUserAndDate(email, resultDate) {
+    try {
+        console.log("Email :", email);
+        console.log("Result Date :", resultDate);
+
+        // Modifier cette partie pour récupérer les résultats en fonction de l'adresse e-mail et de la date du résultat
+        const docRef = doc(db, "users", email, "results", resultDate);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            const myResultsArray = data.results;
+            console.log("Initial array: ", responseSurvey);
+            responseSurvey = myResultsArray.slice();
+            console.log("Replace array: ", responseSurvey);
+
+            return responseSurvey;
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (e) {
+        console.log("Error :" + e);
+        return null;
+    }
 }
 
 /**
