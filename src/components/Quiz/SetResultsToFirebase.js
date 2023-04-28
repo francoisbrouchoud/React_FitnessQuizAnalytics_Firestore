@@ -1,4 +1,4 @@
-import {auth, db} from "../initFirebase";
+import {auth, db} from "../../initFirebase";
 import {setDoc, Timestamp, doc} from "firebase/firestore";
 
 export default async function SetResultsToFirebase(resultsA, resultsB, resultsC){

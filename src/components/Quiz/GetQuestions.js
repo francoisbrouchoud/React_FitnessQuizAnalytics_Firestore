@@ -1,6 +1,6 @@
 import React from "react";
 import {collection, getDocs, orderBy} from "firebase/firestore";
-import {db} from "../initFirebase";
+import {db} from "../../initFirebase";
 
 /**
  * Retrieve the list of question form the Firestore collection

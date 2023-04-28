@@ -27,19 +27,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+p, button, h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif;
+}
 input, select {
   background-color: var(--bgInput);
   border: none;
   padding: 7px;
 }
-p, button, h1, h2, h3 {
-  font-family: 'Montserrat', sans-serif;
-}
 input[type="number"] {
   margin-left: 7px;
-}
-.card {
-  color: var(--text-color);
 }
 h3 {
   margin: 10px 0;
@@ -88,20 +85,41 @@ a {
   max-width: 800px;
   margin: auto;
 }
+.primary-button {
+  background-color: black;
+  color: white;
+  border-radius: 50px;
+  padding: 5px 10px;
+  transition: all .5s ease;
+  border: 2px solid black;
+}
+.primary-button:hover {
+  background-color: transparent;
+  color: black;
+  cursor: pointer;
+}
+.secondary-button {
+  background-color: transparent;
+  color: black;
+  border-radius: 50px;
+  padding: 5px 10px;
+  transition: all .5s ease;
+  border: 2px solid black;
+}
+.secondary-button:hover {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
 .card {
   background-color: var(--secondaryColor);
+  color: var(--text-color);
   border-radius: 15px;
   display: flex;
   flex-direction: column;
   padding: 15px;
   margin-bottom: 20px;
   transition: all .5s ease;
-}
-.card-title {
-  margin-bottom: 20px;
-}
-.card-title h1 {
-  margin: 0;
 }
 .card img {
   margin: 5vw 0;
@@ -118,6 +136,12 @@ a {
 }
 .cards .card:hover {
   background-color: var(--secondaryHover);
+}
+.card-title {
+  margin-bottom: 20px;
+}
+.card-title h1 {
+  margin: 0;
 }
 .info-card {
   padding: 25px;
@@ -155,32 +179,6 @@ a {
   width: 20%;
   min-width: 150px;
 }
-.primary-button {
-  background-color: black;
-  color: white;
-  border-radius: 50px;
-  padding: 5px 10px;
-  transition: all .5s ease;
-  border: 2px solid black;
-}
-.primary-button:hover {
-  background-color: transparent;
-  color: black;
-  cursor: pointer;
-}
-.secondary-button {
-  background-color: transparent;
-  color: black;
-  border-radius: 50px;
-  padding: 5px 10px;
-  transition: all .5s ease;
-  border: 2px solid black;
-}
-.secondary-button:hover {
-  background-color: black;
-  color: white;
-  cursor: pointer;
-}
 .headerButton {
   display: flex;
   gap: 7px;
@@ -216,27 +214,11 @@ a {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.login-fields input {
-  width: 90%;
-  margin-bottom: 20px;
-  padding: 10px;
-}
-.login-fields {
-  margin-bottom: 30px;
-}
-.login-fields div label {
-  text-align: left;
-  text-align: -webkit-left;
-}
 .inline-field {
   display: flex;
 }
 .inline-field input {
   width: auto !important;
-}
-.card-advice {
-  text-align: left;
-  text-align: -webkit-left;
 }
 .profileIcon {
   width: 50px;
@@ -260,7 +242,7 @@ a {
 .form-fields label{
   margin-left: 2px;
 }
-.form-fields {
+.form-fields, .card-advice {
   text-align: left;
   text-align: -webkit-left;
 }
@@ -268,10 +250,6 @@ a {
   width: 90%;
   margin-bottom: 10px;
   padding: 7px;
-}
-.form-fields div {
-  display: flex;
-  flex-direction: column;
 }
 .login-form button {
   margin: 10px 0;
@@ -414,7 +392,6 @@ svg text {
     padding: 40px 20px;
   }
 }
-
 @media (max-width: 735px) {
   .cards {
     display: block;
@@ -431,7 +408,6 @@ svg text {
     margin: 15px 0;
   }
 }
-
 @media (max-width: 350px) {
   .controls-btn {
     flex-direction: column-reverse;
