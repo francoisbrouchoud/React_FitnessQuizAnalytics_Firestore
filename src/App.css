@@ -16,9 +16,6 @@
   font-family: 'Montserrat';
   src: url('./assets/fonts/Montserrat-Regular.ttf') format('truetype');
 }
-html{
-  background-color: var(--bgColor);
-}
 .App {
   text-align: center;
   min-height: 100vh;
