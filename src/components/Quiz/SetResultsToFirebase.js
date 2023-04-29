@@ -1,6 +1,15 @@
 import {auth, db} from "../../initFirebase";
 import {setDoc, Timestamp, doc} from "firebase/firestore";
 
+/**
+ * Set the results of the quiz to the Firestore database
+ * in the user's document in the results collection with the date as the document name
+ * @param resultsA : results of the quiz A
+ * @param resultsB : results of the quiz B
+ * @param resultsC : results of the quiz C (group leader)
+ * @returns {Promise<void>} : nothing
+ * @constructor
+ */
 export default async function SetResultsToFirebase(resultsA, resultsB, resultsC){
     try {
         const timestamp = Timestamp.now();

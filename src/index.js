@@ -3,6 +3,10 @@ import ReactDOM from "react-dom";
 import AppWrapper from "./AppWrapper";
 import reportWebVitals from "./reportWebVitals";
 
+/**
+ * The ReactDOM.render() method is used to render a React element into the DOM
+ * in the supplied container and return a reference to the component (or returns null for stateless components).
+ */
 ReactDOM.render(
   <React.StrictMode>
     <AppWrapper />

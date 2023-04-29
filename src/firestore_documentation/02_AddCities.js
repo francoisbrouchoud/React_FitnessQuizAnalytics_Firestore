@@ -3,7 +3,9 @@
 import {collection, doc, setDoc, addDoc, Timestamp} from "firebase/firestore";
 import {db} from "../initFirebase";
 
-
+/**
+ * DOCUMENTATION RESUME FROM FIREBASE
+ */
 // AJOUTER UNE COLLECTION & UN DOCUMENT *******************************
 // créer ou écraser un seul document, utilisez les méthodes set().
 // Si le document n'existe pas, il sera créé. Si le document existe, son contenu sera remplacé par les nouvelles données fournies

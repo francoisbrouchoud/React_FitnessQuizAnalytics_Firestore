@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
-
 import React, {useEffect, useState} from "react";
 import "../App.css";
 import {auth} from "../initFirebase";
 
 
-
+/**
+ * This component is used to display the home page.
+ * It displays a greeting message and a button to start the questionnaire.
+ * @returns {JSX.Element} : home page
+ * @constructor
+ */
 export default function Home() {
   const [timeOfDay, setTimeOfDay] = useState("");
 

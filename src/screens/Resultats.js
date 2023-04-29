@@ -4,7 +4,7 @@ import {ManagesResults,GetResultsFromQuestionnaire} from "../components/Results/
 
 /**
  * Function to display the results on the Results page
- * @returns {JSX.Element}
+ * @returns {JSX.Element} : DisplayResults component for the Results
  * @constructor
  */
 export default function Resultats(){

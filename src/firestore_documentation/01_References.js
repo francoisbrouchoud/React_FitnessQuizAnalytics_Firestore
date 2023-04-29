@@ -1,6 +1,9 @@
 import { doc } from "firebase/firestore";
 import { db } from "../initFirebase";
 
+/**
+ * DOCUMENTATION RESUME FROM FIREBASE
+ */
 // Get a reference to the users COLLECTION
 const usersCollectionRef    = doc(db, 'users'); // Une référence est un objet léger qui pointe simplement vers un emplacement dans votre base de données.
 

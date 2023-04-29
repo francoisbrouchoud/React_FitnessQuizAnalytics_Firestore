@@ -3,7 +3,7 @@ import DisplayResults from "../components/Results/DisplayResults";
 import {ManagesResultsGL,GetResultsFromUserAndDate} from "../components/Results/GetResults";
 /**
  * Function to display the results on the GroupLeader page
- * @returns {JSX.Element}
+ * @returns {JSX.Element} : DisplayResults component for the GroupLeader
  * @constructor
  */
 export default function GroupLeader() {

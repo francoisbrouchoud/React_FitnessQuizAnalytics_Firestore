@@ -8,6 +8,10 @@
 import {collection, doc, getDocs, getDoc, setDoc, getDocFromCache, query, where, addDoc, Timestamp} from "firebase/firestore";
 import {db} from "../initFirebase";
 
+/**
+ * DOCUMENTATION RESUME FROM FIREBASE
+ */
+
 // Objet Personalisée à transformer en Objet City
 class City {
     constructor (name, state, country ) {

@@ -13,7 +13,7 @@ import {AppHeader} from "./AppHeader";
  *      He can also access the group management page if he is a group leader.
  *      He can also access the admin page if he is an admin.
  * In EDITABLE mode, the user can edit his profile and save it.
- * @returns {JSX.Element}
+ * @returns {JSX.Element} : the profile page with the user data
  * @constructor
  */
 export default function Profile() {

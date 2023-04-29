@@ -1,5 +1,12 @@
 import {Link} from "react-router-dom";
 
+/**
+ * Displays the information page of the application.
+ * It contains information about the team and the application.
+ * It also contains the main links to the developer's website.
+ * @returns {JSX.Element} : the information page of the application
+ * @constructor
+ */
 export default function Information() {
   return (
     <div className="infoContent">

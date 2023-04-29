@@ -4,6 +4,12 @@ import {Link, useNavigate} from "react-router-dom";
 import firebaseApp from "../initFirebase";
 import {ThemeContext} from "../ThemeContext";
 
+/**
+ * Component that displays the header of the application with the logo and the navigation buttons
+ * The navigation buttons are links to the different pages of the application (profile, information, home) and a button to sign out
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function AppHeader() {
   const navigate = useNavigate();
   const handleSignOutClick = async () => {

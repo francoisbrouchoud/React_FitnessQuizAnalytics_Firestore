@@ -3,7 +3,10 @@ import "firebase/compat/auth";
 import {getAuth} from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
 
-// Configure Firebase.
+/**
+ * Firebase configuration object. This is used to initialize the Firebase SDK.
+ * @type {{storageBucket: string, apiKey: *, messagingSenderId: string, appId: string, projectId: string, databaseURL: string, authDomain: *}}
+ */
 const config = {
   apiKey:            process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain:        process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,

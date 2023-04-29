@@ -20,10 +20,11 @@ import Admin from "./screens/Admin";
 import GroupLeader from "./screens/GroupLeader";
 import NotFound from "./screens/NotFound";
 import {ThemeContext, ThemeProvider} from "./ThemeContext";
-;
 
-// Configure FirebaseUI.
-// This object contains the configuration for FirebaseUI, which is used to authenticate users using email and Google Sign-In providers.
+/**
+ * Configure FirebaseUI.
+ * This object contains the configuration for FirebaseUI, which is used to authenticate users using email and Google Sign-In providers.
+ */
 const uiConfig = {
 	// Popup signin flow rather than redirect flow.
 	signInFlow: "redirect",
@@ -42,7 +43,13 @@ const uiConfig = {
 						 },
 };
 
-
+/**
+ * This component is used to render the application.
+ * It contains the routes for the different screens of the application.
+ * It also contains the FirebaseUI widget, which is used to authenticate users.
+ * @returns {JSX.Element} : The application component.
+ * @constructor
+ */
 export default function App()
 {
     // Local signed-in state.
@@ -82,7 +89,7 @@ export default function App()
         // If user is signed in (AUTH), create a default user in the DB
         if (isSignedIn)
         {
-            createDefaultUser().then(r => console.log("createDefaultUser() result : " + r));
+            createDefaultUser();
             
         }
     }, [isSignedIn]); // Use Effect CALLED ONLY WHEN isSignedIn changes
@@ -111,16 +118,11 @@ export default function App()
         }
         const snapshot = await docSnap();
         
-        // If the user profile doesn't exist, create it
-        // If the user profile already exists, update it --> UPDATE SE FAIT DEPUIS LA PAGE WEB MAINTENANT
-        // TODO : Bon ben IF et ELSE font la même chose ici, car le ELSE utilise l'option MERGE qui met à jour les données existantes
+        // If the user profile doesn't exist, create it in the DB with the default values (data)
         if (!snapshot.exists())
         {
             console.log("Document doesn't exist, created default user");
-            /*console.log("TESTING GOOGLE DATA : ",   auth.currentUser.displayName,
-                        auth.currentUser.toJSON(),
-                        auth.currentUser.providerData,
-                        auth.currentUser.photoURL)*/
+            
             getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(auth.currentUser , data);
 
             await setDoc(userRef, data, {merge: true}); // merge permet de ne pas écraser les données existantes (si le document existe déjà) mais de les mettre à jour avec les nouvelles données
@@ -130,28 +132,6 @@ export default function App()
         {
             console.log("Document exists, no updating default user");
         }
-    }
-    
-    // UPDATE USER PROFILE
-    // This function is used to update the user profile in Firestore.
-    // It takes the userId and newUserData as parameters and updates the user profile in Firestore.
-    const updateUserProfile = async (userId, newUserData) =>
-    {
-        console.log('UPDATE USER PROFILE FOR '+ userId + " with data : " + newUserData)
-        const docRef = doc(db, "users", userId);
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists()) {
-            const oldUserData = docSnap.data();
-            const mergedUserData = { ...oldUserData, ...newUserData };
-            
-            // Only update the user profile if the data has changed. This prevents an infinite loop of updates.
-            if (JSON.stringify(oldUserData) !== JSON.stringify(mergedUserData)) {
-                await setDoc(docRef, mergedUserData);
-            }
-        }
-        
-        console.log("user update result : " + docSnap.data());
     }
     
     // Methode to reset password
@@ -247,7 +227,12 @@ export default function App()
     
 }
 
-// Récuperer les informations depius son compte google (firebase)
+
+/**
+ * Get the information from the google account (firebase) and put it in the data (which is the user's document)
+ * @param currentUserAuth
+ * @param data
+ */
 function getInfosIfExisting_FromGoogle_Via_FirebaseAuthName(currentUserAuth, data)
 {
     // Si il a déja un prénom & nom depuis google

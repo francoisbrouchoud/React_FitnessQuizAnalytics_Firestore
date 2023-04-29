@@ -18,9 +18,9 @@ import {Link} from "react-router-dom";
 
 /**
  * Function that determines the items to be displayed as results
- * @param query1 - function to call to define the results to be displayed
+ * @param query1 - function to call to define the questionnaires to be displayed
  * @param query2 - function to call to define the results to be displayed
- * @param sourceElem - element that defines the place (the page) where the results are displayed
+ * @param sourceElem - element that defines the place (the page) where the results are displayed.
  * @returns {JSX.Element} - items to display
  * @constructor
  */

@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 
+/**
+ * Component that handles the BMI calculator and displays the result
+ * The BMI is calculated according to the height and weight entered by the user
+ * The result is displayed with a comment and a color code according to the BMI value obtained
+ * @returns {JSX.Element} : the BMI calculator and the result with a comment and a color code
+ * @constructor
+ */
 function BMICalculator() {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');

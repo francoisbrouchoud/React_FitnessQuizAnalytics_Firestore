@@ -3,6 +3,9 @@
 import {doc, setDoc, updateDoc, serverTimestamp} from "firebase/firestore";
 import {db} from "../initFirebase";
 
+/**
+ * DOCUMENTATION RESUME FROM FIREBASE
+ */
 
 // METTRER A JOUR UN DOCUMENT *******************************************
 // Pour mettre à jour certains champs d'un document sans écraser l'intégralité du document,
