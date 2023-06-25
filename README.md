@@ -7,7 +7,7 @@ Developed as a part of the Web Development Project at the University of Applied 
 
 ## Class diagram
 
-[Class Diagram](./classDiagram.png)
+![classDiagram](./classDiagram.png)
 
 ## Setup instruction
  
